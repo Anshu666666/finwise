@@ -14,6 +14,7 @@ from fastapi import APIRouter, HTTPException, status
 
 import backend.models.database as db
 from backend.schemas import (
+    AgentMarketIntelligence,
     ChatMessageItem,
     ChatRequest,
     ChatResponse,
@@ -22,11 +23,27 @@ from backend.schemas import (
     SessionDetailResponse,
     SessionListItem,
 )
-from backend.services.orchestrator import chat_with_advisor, evaluate_financial_profile
+from backend.services.orchestrator import (
+    chat_with_advisor,
+    evaluate_financial_profile,
+    get_live_market_intelligence,
+)
 
 logger = logging.getLogger("finwise.router")
 
 router = APIRouter(prefix="/advisory", tags=["Financial Advisory & Planning"])
+
+
+@router.get(
+    "/market-intelligence",
+    response_model=AgentMarketIntelligence,
+    status_code=status.HTTP_200_OK,
+    summary="Retrieve Live Macroeconomic Intelligence & Web Citations",
+    description="Queries live DuckDuckGo web search for current benchmark rates, monetary policy indicators, and citations.",
+)
+async def get_market_intelligence_endpoint() -> AgentMarketIntelligence:
+    return await get_live_market_intelligence()
+
 
 
 @router.post(

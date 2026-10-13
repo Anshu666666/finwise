@@ -121,7 +121,12 @@ def create_pydantic_ai_agent(
         provider = OpenAIProvider(base_url=target_base_url, api_key="missing-key")
         model = OpenAIChatModel(target_model, provider=provider)
     else:
-        provider = OpenAIProvider(base_url=target_base_url, api_key=key.strip())
+        try:
+            from openai import AsyncOpenAI
+            openai_client = AsyncOpenAI(base_url=target_base_url, api_key=key.strip(), timeout=30.0)
+            provider = OpenAIProvider(openai_client=openai_client)
+        except Exception:
+            provider = OpenAIProvider(base_url=target_base_url, api_key=key.strip())
         model = OpenAIChatModel(target_model, provider=provider)
 
     # Tool definitions for PydanticAI
@@ -173,6 +178,80 @@ class FinancialAgent:
         """Exposes the underlying PydanticAI Agent instance."""
         return self._pydantic_agent
 
+    async def generate_advisory_report_async(
+        self,
+        profile: Union[Dict[str, Any], Any],
+        expert_evaluation: Union[Dict[str, Any], Any],
+        fuzzy_result: Optional[Union[Dict[str, Any], Any]] = None,
+        model: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Asynchronously synthesizes a grounded natural language advisory plan using OpenRouter & PydanticAI.
+        """
+        if not self.llm_client.has_api_key:
+            raise OpenRouterAuthError(
+                "OPENROUTER_API_KEY is missing. Configure a valid key in .env to perform live LLM requests."
+            )
+
+        norm_profile = _normalize_profile(profile)
+        norm_expert = _normalize_expert_eval(expert_evaluation, fuzzy_result)
+        risk_category = norm_expert.get("risk_category", "Moderate")
+
+        market_intel = self.search_engine.get_market_benchmarks()
+        targeted_search = self.search_engine.search_for_profile_context(norm_profile, risk_category)
+        
+        existing_urls = {c.url for c in market_intel.get("citations", [])}
+        for item in targeted_search:
+            if item.url not in existing_urls:
+                market_intel["citations"].append(item)
+                existing_urls.add(item.url)
+
+        messages = build_advisory_prompt(
+            profile=norm_profile,
+            expert_eval=norm_expert,
+            market_intel=market_intel,
+        )
+
+        try:
+            report_text = await self.llm_client.chat_completion_async(
+                messages=messages,
+                model=model,
+                max_tokens=1500,
+            )
+        except Exception as e:
+            err_msg = str(e)
+            if "401" in err_msg or "Unauthorized" in err_msg or "missing-key" in err_msg:
+                raise OpenRouterAuthError(f"OpenRouter authentication error: {e}") from e
+            raise OpenRouterAPIError(f"OpenRouter advisory synthesis failed: {e}") from e
+
+        referenced_rules = [
+            r["rule_id"] for r in norm_expert.get("rules_fired", [])
+            if r.get("rule_id")
+        ]
+
+        citations_list = market_intel.get("citations", [])
+        citations_dicts = [c.model_dump() if isinstance(c, Citation) else c for c in citations_list]
+
+        response_model = AdvisoryResponse(
+            status="success",
+            risk_score=norm_expert.get("fuzzy_risk_score", 50.0),
+            risk_category=norm_expert.get("risk_category", "Moderate"),
+            asset_allocation=norm_expert.get("asset_allocation", {}),
+            budget_metrics=norm_expert.get("budget_breakdown", {}),
+            debt_metrics=norm_expert.get("debt_analysis", {}),
+            emergency_fund_metrics=norm_expert.get("emergency_fund", {}),
+            grounded_rules_referenced=referenced_rules,
+            market_summary=market_intel.get("market_summary", ""),
+            web_citations=citations_list,
+            citations=citations_list,
+            markdown_report=report_text,
+        )
+
+        res_dict = response_model.model_dump()
+        res_dict["citations"] = citations_dicts
+        res_dict["web_citations"] = citations_dicts
+        return res_dict
+
     def generate_advisory_report(
         self,
         profile: Union[Dict[str, Any], Any],
@@ -181,20 +260,7 @@ class FinancialAgent:
         model: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
-        Synthesizes a grounded natural language advisory plan using PydanticAI.
-        
-        Args:
-            profile: User financial profile facts
-            expert_evaluation: Output from Aman's Expert System
-            fuzzy_result: Optional output from Aman's Fuzzy Risk Evaluator
-            model: Optional OpenRouter LLM model override
-            
-        Returns:
-            Dict conforming strictly to API Contracts Section 2.2 and schemas.AdvisoryResponse.
-            
-        Raises:
-            OpenRouterAuthError: If OPENROUTER_API_KEY is not configured.
-            OpenRouterAPIError: If the remote LLM call fails.
+        Synthesizes a grounded natural language advisory plan using PydanticAI / OpenRouter.
         """
         if not self.llm_client.has_api_key:
             raise OpenRouterAuthError(
@@ -225,25 +291,34 @@ class FinancialAgent:
         )
         user_prompt_content = messages[1]["content"]
 
-        # 4. ACTION: Invoke PydanticAI Agent with OpenRouter and Live Search Tools
+        # 4. ACTION: Invoke Agent / OpenRouter
         try:
-            run_result = self._pydantic_agent.run_sync(
-                user_prompt_content,
-                model_settings=ModelSettings(max_tokens=1500, temperature=0.2),
-            )
-            report_text = run_result.output
+            # Check if event loop is running
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+
+            if loop and loop.is_running():
+                report_text = self.llm_client.chat_completion(messages=messages, model=model)
+            else:
+                run_result = self._pydantic_agent.run_sync(
+                    user_prompt_content,
+                    model_settings=ModelSettings(max_tokens=1500, temperature=0.2),
+                )
+                report_text = run_result.output
         except Exception as e:
             err_msg = str(e)
             if "401" in err_msg or "Unauthorized" in err_msg or "missing-key" in err_msg:
-                raise OpenRouterAuthError(f"OpenRouter authentication error via PydanticAI: {e}") from e
-            elif "402" in err_msg or "credits" in err_msg:
-                # Fallback to direct client call if PydanticAI default overhead triggered 402 token limit
-                logger.warning("PydanticAI encountered token limit. Executing via optimized OpenRouter client.")
-                report_text = self.llm_client.chat_completion(messages=messages, model=model)
+                raise OpenRouterAuthError(f"OpenRouter authentication error: {e}") from e
             else:
-                raise OpenRouterAPIError(f"PydanticAI agent execution failed: {e}") from e
+                logger.warning(f"PydanticAI agent direct invocation had issue ({e}). Routing via resilient OpenRouter client.")
+                try:
+                    report_text = self.llm_client.chat_completion(messages=messages, model=model)
+                except Exception as client_err:
+                    raise OpenRouterAPIError(f"OpenRouter advisory synthesis failed: {client_err}") from client_err
 
-        # Extract list of referenced rule IDs for metadata
         referenced_rules = [
             r["rule_id"] for r in norm_expert.get("rules_fired", [])
             if r.get("rule_id")
@@ -252,7 +327,6 @@ class FinancialAgent:
         citations_list = market_intel.get("citations", [])
         citations_dicts = [c.model_dump() if isinstance(c, Citation) else c for c in citations_list]
 
-        # Assemble structured response conforming to AdvisoryResponse
         response_model = AdvisoryResponse(
             status="success",
             risk_score=norm_expert.get("fuzzy_risk_score", 50.0),
@@ -271,6 +345,82 @@ class FinancialAgent:
         res_dict = response_model.model_dump()
         res_dict["citations"] = citations_dicts
         res_dict["web_citations"] = citations_dicts
+        return res_dict
+
+    async def handle_user_chat_async(
+        self,
+        session_history: List[Dict[str, str]],
+        new_message: str,
+        expert_evaluation: Union[Dict[str, Any], Any],
+        profile: Optional[Union[Dict[str, Any], Any]] = None,
+        fuzzy_result: Optional[Union[Dict[str, Any], Any]] = None,
+        model: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Asynchronously handles interactive conversational Q&A grounded in user plan and live search.
+        """
+        if not self.llm_client.has_api_key:
+            raise OpenRouterAuthError(
+                "OPENROUTER_API_KEY is missing. Configure a valid key in .env to perform live LLM requests."
+            )
+
+        norm_profile = _normalize_profile(profile or {})
+        norm_expert = _normalize_expert_eval(expert_evaluation, fuzzy_result)
+
+        search_citations: List[Citation] = []
+        market_summary = ""
+        lower_msg = new_message.lower()
+        macro_terms = [
+            "rbi", "repo", "repo rate", "inflation", "cpi", "fed rate", "federal reserve",
+            "central bank", "nifty", "sensex", "treasury yield", "benchmark rate",
+            "gdp growth", "current rate", "latest rate", "fd rate", "market condition"
+        ]
+        if any(term in lower_msg for term in macro_terms):
+            search_citations = self.search_engine.search(new_message, max_results=3)
+            benchmarks = self.search_engine.get_market_benchmarks()
+            market_summary = benchmarks.get("market_summary", "Live macroeconomic indicators verified.")
+
+        market_intel = {
+            "market_summary": market_summary,
+            "citations": search_citations,
+        }
+
+        messages = build_chat_prompt(
+            session_history=session_history,
+            new_message=new_message,
+            expert_eval=norm_expert,
+            profile=norm_profile,
+            market_intel=market_intel,
+        )
+
+        try:
+            reply_text = await self.llm_client.chat_completion_async(
+                messages=messages,
+                model=model,
+                max_tokens=1200,
+            )
+        except Exception as e:
+            err_msg = str(e)
+            if "401" in err_msg or "Unauthorized" in err_msg or "missing-key" in err_msg:
+                raise OpenRouterAuthError(f"OpenRouter auth error: {e}") from e
+            raise OpenRouterAPIError(f"OpenRouter chat failed: {e}") from e
+
+        referenced_rules = [
+            r["rule_id"] for r in norm_expert.get("rules_fired", [])
+            if r.get("rule_id") in reply_text or r.get("rule_id", "").lower() in lower_msg
+        ]
+        if not referenced_rules:
+            referenced_rules = [r["rule_id"] for r in norm_expert.get("rules_fired", [])]
+
+        chat_model = ChatResponse(
+            status="success",
+            reply=reply_text,
+            grounded_rules_referenced=referenced_rules,
+            sources_used=search_citations,
+        )
+
+        res_dict = chat_model.model_dump()
+        res_dict["sources_used"] = [s.model_dump() if isinstance(s, Citation) else s for s in search_citations]
         return res_dict
 
     def handle_user_chat(
@@ -313,19 +463,30 @@ class FinancialAgent:
         chat_prompt_content = messages[-1]["content"]
 
         try:
-            run_result = self._pydantic_agent.run_sync(
-                chat_prompt_content,
-                model_settings=ModelSettings(max_tokens=1500, temperature=0.2),
-            )
-            reply_text = run_result.output
-        except Exception as e:
-            err_msg = str(e)
-            if "401" in err_msg or "Unauthorized" in err_msg:
-                raise OpenRouterAuthError(f"OpenRouter auth error via PydanticAI: {e}") from e
-            elif "402" in err_msg:
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = None
+
+            if loop and loop.is_running():
                 reply_text = self.llm_client.chat_completion(messages=messages, model=model)
             else:
-                raise OpenRouterAPIError(f"PydanticAI chat error: {e}") from e
+                run_result = self._pydantic_agent.run_sync(
+                    chat_prompt_content,
+                    model_settings=ModelSettings(max_tokens=1500, temperature=0.2),
+                )
+                reply_text = run_result.output
+        except Exception as e:
+            err_msg = str(e)
+            if "401" in err_msg or "Unauthorized" in err_msg or "missing-key" in err_msg:
+                raise OpenRouterAuthError(f"OpenRouter auth error: {e}") from e
+            else:
+                logger.warning(f"PydanticAI chat error ({e}). Falling back to OpenRouter client.")
+                try:
+                    reply_text = self.llm_client.chat_completion(messages=messages, model=model)
+                except Exception as client_err:
+                    raise OpenRouterAPIError(f"OpenRouter chat failed: {client_err}") from client_err
 
         referenced_rules = [
             r["rule_id"] for r in norm_expert.get("rules_fired", [])

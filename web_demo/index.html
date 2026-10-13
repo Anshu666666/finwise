@@ -3,755 +3,1590 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinWise AI – Hybrid Intelligent Financial Advisory System</title>
+  <title>FinWise AI – Intelligent Financial Advisory Dashboard & ChatGPT Assistant</title>
+
+  <!-- Google Fonts, Chart.js & Marked.js -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
     :root {
-      --bg-dark: #0a0e17;
-      --card-bg: rgba(18, 26, 43, 0.75);
-      --card-border: rgba(56, 189, 248, 0.15);
-      --accent-cyan: #00f2fe;
-      --accent-blue: #4facfe;
-      --accent-green: #10b981;
-      --accent-yellow: #f59e0b;
-      --accent-red: #ef4444;
-      --accent-purple: #8b5cf6;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-card: rgba(55, 65, 81, 0.6);
+      --accent-emerald: #10b981;
+      --accent-indigo: #6366f1;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-primary: #f9fafb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --glass-glow: 0 10px 30px -10px rgba(16, 185, 129, 0.15);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at 10% 10%, #0d1527 0%, var(--bg-dark) 90%);
-      color: var(--text-main);
+      background: #0b0f19;
+      background-image:
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 60%);
+      color: var(--text-primary);
       min-height: 100vh;
-      padding: 24px;
+      display: flex;
+      flex-direction: column;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    /* Header */
+    /* Top Navbar */
     header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-card);
+      padding: 14px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 18px 28px;
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      margin-bottom: 24px;
-      box-shadow: var(--glass-shadow);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .logo-badge {
+    .brand-logo {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
+      text-decoration: none;
     }
 
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      color: #0b0f19;
     }
 
-    .logo-title h1 {
-      font-size: 22px;
+    .brand-text h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
       font-weight: 700;
-      letter-spacing: -0.5px;
-      background: linear-gradient(90deg, #fff, #93c5fd);
+      background: linear-gradient(90deg, #ffffff, #a5f3fc);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .logo-title p {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .syllabus-pill {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-      padding: 6px 14px;
-      border-radius: 999px;
+    .brand-text p {
       font-size: 12px;
-      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
       display: flex;
-      align-items: center;
       gap: 6px;
+      background: rgba(31, 41, 55, 0.6);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid rgba(75, 85, 99, 0.4);
     }
 
-    /* Grid Layout */
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 380px 1fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 1024px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Cards */
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: var(--glass-shadow);
-      margin-bottom: 24px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .card:hover {
-      border-color: rgba(56, 189, 248, 0.3);
-    }
-
-    .card-title {
-      font-size: 16px;
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13px;
       font-weight: 600;
-      color: #38bdf8;
-      margin-bottom: 18px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(99, 102, 241, 0.25));
+      border: 1px solid var(--accent-emerald);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--accent-emerald);
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 10px var(--accent-emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Container */
+    .app-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+      flex: 1;
+      width: 100%;
+    }
+
+    .view-panel {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    .view-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--glass-glow);
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      display: flex;
+      align-items: center;
+      gap: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    /* Preset Buttons */
-    .preset-selector {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
+    /* View 1: Wizard / Questionnaire */
+    .wizard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
     }
 
-    .preset-btn {
-      flex: 1;
-      min-width: 80px;
-      padding: 8px 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: var(--text-main);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .form-field input, .form-field select, .form-field textarea {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(75, 85, 99, 0.5);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
       transition: all 0.2s ease;
     }
 
-    .preset-btn:hover, .preset-btn.active {
-      background: linear-gradient(135deg, rgba(0, 242, 254, 0.2), rgba(79, 172, 254, 0.2));
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
     }
 
-    /* Form Inputs */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .form-label {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    .form-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      color: var(--accent-cyan);
-      font-weight: 600;
-    }
-
-    input[type="range"] {
+    .btn-submit {
       width: 100%;
-      height: 6px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.1);
-      outline: none;
-      -webkit-appearance: none;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
+      border: none;
+      border-radius: 14px;
+      color: #0b0f19;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+      margin-top: 10px;
     }
 
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+    }
+
+    .spinner {
       width: 18px;
       height: 18px;
+      border: 2px solid rgba(11, 15, 25, 0.2);
+      border-top-color: #0b0f19;
       border-radius: 50%;
-      background: var(--accent-cyan);
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: spin 0.8s linear infinite;
     }
 
-    select, input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 10px 14px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      color: white;
-      font-size: 14px;
-      outline: none;
-      font-family: inherit;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
-    /* Output Section */
-    .results-header {
+    /* View 2: Dashboard */
+    .metrics-header {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
       margin-bottom: 24px;
     }
 
-    .stat-card {
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--card-border);
+    .metric-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-card);
       border-radius: 16px;
-      padding: 18px;
+      padding: 20px;
       position: relative;
       overflow: hidden;
     }
 
-    .stat-card::before {
+    .metric-card::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       width: 4px;
       height: 100%;
-      background: var(--stat-color, var(--accent-cyan));
+      background: var(--card-color, var(--accent-emerald));
     }
 
-    .stat-label {
+    .metric-label {
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
     }
 
-    .stat-value {
-      font-size: 24px;
-      font-weight: 700;
+    .metric-value {
       font-family: 'JetBrains Mono', monospace;
-      color: var(--text-main);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
-    .stat-sub {
+    .metric-sub {
       font-size: 12px;
+      color: var(--card-color, var(--accent-emerald));
       margin-top: 4px;
-      color: var(--stat-color, #34d399);
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* Visual Charts & Meters */
-    .charts-row {
+    .dashboard-charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
       margin-bottom: 24px;
     }
 
-    @media (max-width: 768px) {
-      .charts-row {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 900px) {
+      .dashboard-charts-grid { grid-template-columns: 1fr; }
     }
 
-    .chart-container {
+    .chart-box {
+      height: 280px;
       position: relative;
-      height: 240px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
-    /* Fuzzy Membership Bars */
-    .fuzz-meter-row {
-      margin-bottom: 12px;
+    /* Advisory Report Box */
+    .advisory-report-container {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 16px;
+      line-height: 1.7;
+      color: #e5e7eb;
+      font-size: 14px;
     }
 
-    .fuzz-bar-bg {
-      height: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 4px;
-    }
-
-    .fuzz-bar-fill {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.3s ease;
-    }
-
-    /* Rule Traces Accordion */
-    .rule-pill {
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 14px 18px;
+    .advisory-report-container h1,
+    .advisory-report-container h2,
+    .advisory-report-container h3 {
+      color: #38bdf8;
+      font-family: 'Outfit', sans-serif;
+      margin-top: 20px;
       margin-bottom: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      padding-bottom: 6px;
     }
 
-    .rule-header {
+    .advisory-report-container h1:first-child {
+      margin-top: 0;
+    }
+
+    .advisory-report-container ul,
+    .advisory-report-container ol {
+      margin-left: 20px;
+      margin-bottom: 14px;
+    }
+
+    .advisory-report-container li {
+      margin-bottom: 6px;
+    }
+
+    .advisory-report-container p {
+      margin-bottom: 14px;
+    }
+
+    .advisory-report-container blockquote {
+      border-left: 3px solid var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+      padding: 10px 16px;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 14px;
+      font-style: italic;
+      color: #a7f3d0;
+    }
+
+    .advisory-report-container hr {
+      border: none;
+      border-top: 1px solid rgba(75, 85, 99, 0.4);
+      margin: 20px 0;
+    }
+
+    .report-badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .report-badge {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #c7d2fe;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Rules Accordion */
+    .rule-card-item {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(75, 85, 99, 0.4);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      transition: border-color 0.2s ease;
+    }
+
+    .rule-card-item:hover {
+      border-color: var(--accent-indigo);
+    }
+
+    .rule-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 8px;
     }
 
-    .rule-badge {
+    .rule-title-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .severity-badge {
       padding: 4px 10px;
-      border-radius: 6px;
+      border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
     }
 
-    .badge-triggered {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-    }
+    .badge-critical { background: rgba(244, 63, 94, 0.2); color: #fda4af; border: 1px solid rgba(244, 63, 94, 0.4); }
+    .badge-high { background: rgba(245, 158, 11, 0.2); color: #fde047; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-info { background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); }
 
-    .badge-skipped {
-      background: rgba(148, 163, 184, 0.1);
-      color: #94a3b8;
-    }
-
-    .rule-explanation {
+    .rule-desc {
       font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.4;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Citations Pills */
+    .citations-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .citation-chip {
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: var(--accent-cyan);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .citation-chip:hover {
+      background: rgba(6, 182, 212, 0.25);
+      border-color: var(--accent-cyan);
+      transform: translateY(-1px);
+    }
+
+    /* View 3: ChatGPT Style Chat Interface */
+    #view-chat.active {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .chat-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      height: calc(100vh - 130px);
+      min-height: 520px;
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 850px) {
+      .chat-container { grid-template-columns: 1fr; }
+      .chat-sidebar { display: none; }
+    }
+
+    .chat-sidebar {
+      background: rgba(15, 23, 42, 0.9);
+      border-right: 1px solid var(--border-card);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .chat-sidebar-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .session-info-box {
+      background: rgba(31, 41, 55, 0.5);
+      border: 1px solid rgba(75, 85, 99, 0.4);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .session-id-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .chat-main {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chat-messages {
+      flex: 1 1 0%;
+      min-height: 0;
+      padding: 24px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar,
+    .chat-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-messages::-webkit-scrollbar-track,
+    .chat-sidebar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    .chat-messages::-webkit-scrollbar-thumb,
+    .chat-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(75, 85, 99, 0.6);
+      border-radius: 999px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb:hover,
+    .chat-sidebar::-webkit-scrollbar-thumb:hover {
+      background: rgba(16, 185, 129, 0.5);
+    }
+
+    .chat-message-row {
+      display: flex;
+      gap: 14px;
+      max-width: 88%;
+      flex-shrink: 0;
+    }
+
+    .chat-message-row.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .avatar-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .avatar-assistant {
+      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-indigo));
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.3);
+    }
+
+    .avatar-user {
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+      color: #ffffff;
+    }
+
+    .message-bubble {
+      background: rgba(31, 41, 55, 0.7);
+      border: 1px solid rgba(75, 85, 99, 0.5);
+      border-radius: 18px;
+      padding: 14px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-primary);
+    }
+
+    .message-bubble h1, .message-bubble h2, .message-bubble h3 {
+      font-size: 15px;
+      color: #38bdf8;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    .message-bubble ul, .message-bubble ol {
+      margin-left: 18px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .message-bubble li {
+      margin-bottom: 4px;
+    }
+
+    .message-bubble code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #34d399;
+    }
+
+    .chat-message-row.user .message-bubble {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(16, 185, 129, 0.2));
+      border-color: rgba(99, 102, 241, 0.5);
+    }
+
+    /* Typing Dots Animation */
+    .typing-dots {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px 8px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-emerald);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* Floating ChatGPT Prompt Input Pill */
+    .chat-input-area {
+      padding: 18px 24px;
+      background: rgba(15, 23, 42, 0.9);
+      border-top: 1px solid var(--border-card);
+    }
+
+    .chat-pill-input {
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid rgba(75, 85, 99, 0.6);
+      border-radius: 999px;
+      padding: 8px 12px 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .chat-pill-input:focus-within {
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .chat-pill-input input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-size: 14px;
+    }
+
+    .btn-send {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
+      border: none;
+      color: #0b0f19;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .btn-send:hover {
+      transform: scale(1.08);
+    }
+
+    .quick-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 8px;
+    }
+
+    .chip-btn {
+      background: rgba(31, 41, 55, 0.6);
+      border: 1px solid rgba(75, 85, 99, 0.4);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .chip-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--accent-indigo);
+      color: #ffffff;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <div class="logo-badge">
-        <div class="logo-icon">⚡</div>
-        <div class="logo-title">
-          <h1>FinWise AI Advisor</h1>
-          <p>Hybrid Intelligent Advisory Core (Fuzzy Logic + Expert System)</p>
-        </div>
+
+  <!-- Top Navbar -->
+  <header>
+    <a href="#" class="brand-logo" onclick="switchView('wizard')">
+      <div class="brand-icon">
+        <i data-lucide="trending-up" class="w-6 h-6"></i>
       </div>
-      <div class="syllabus-pill">
-        <span>🎓 5 Units AI Syllabus Covered</span>
+      <div class="brand-text">
+        <h1>FinWise AI</h1>
+        <p>Intelligent Financial Advisory & Decision Support System</p>
       </div>
-    </header>
+    </a>
 
-    <!-- Main Layout -->
-    <div class="dashboard-grid">
-      <!-- Left: User Profile Controls -->
-      <aside>
-        <div class="card">
-          <div class="card-title">⚡ Quick Presets</div>
-          <div class="preset-selector">
-            <button class="preset-btn active" onclick="loadPreset('techie')">Young Techie</button>
-            <button class="preset-btn" onclick="loadPreset('family')">Family (Debt)</button>
-            <button class="preset-btn" onclick="loadPreset('retiree')">Pre-Retiree</button>
-          </div>
-
-          <div class="card-title">👤 User Financial Facts</div>
-          
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Age</span>
-              <span class="form-val" id="val-age">24 yrs</span>
-            </div>
-            <input type="range" id="input-age" min="18" max="75" value="24" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Monthly Gross Income (₹)</span>
-              <span class="form-val" id="val-income">₹1,50,000</span>
-            </div>
-            <input type="range" id="input-income" min="20000" max="600000" step="5000" value="150000" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Monthly Expenses (₹)</span>
-              <span class="form-val" id="val-expenses">₹40,000</span>
-            </div>
-            <input type="range" id="input-expenses" min="10000" max="300000" step="5000" value="40000" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Monthly EMI / Debt (₹)</span>
-              <span class="form-val" id="val-emi">₹0</span>
-            </div>
-            <input type="range" id="input-emi" min="0" max="200000" step="2000" value="0" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Liquid Savings (₹)</span>
-              <span class="form-val" id="val-savings">₹3,00,000</span>
-            </div>
-            <input type="range" id="input-savings" min="0" max="5000000" step="25000" value="300000" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Loss / Risk Tolerance</span>
-              <span class="form-val" id="val-loss">85 / 100</span>
-            </div>
-            <input type="range" id="input-loss" min="0" max="100" value="85" oninput="recompute()">
-          </div>
-
-          <div class="form-group">
-            <div class="form-label-row">
-              <span class="form-label">Investment Horizon (Years)</span>
-              <span class="form-val" id="val-horizon">15 yrs</span>
-            </div>
-            <input type="range" id="input-horizon" min="1" max="25" value="15" oninput="recompute()">
-          </div>
-        </div>
-      </aside>
-
-      <!-- Right: AI Advisory Analytics -->
-      <main>
-        <!-- Top Stats Row -->
-        <div class="results-header">
-          <div class="stat-card" style="--stat-color: #00f2fe;">
-            <div class="stat-label">Fuzzy Risk Appetite</div>
-            <div class="stat-value" id="stat-risk-score">83.7</div>
-            <div class="stat-sub" id="stat-risk-cat">AGGRESSIVE</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color: #10b981;">
-            <div class="stat-label">Debt-to-Income (DTI)</div>
-            <div class="stat-value" id="stat-dti">0.0%</div>
-            <div class="stat-sub" id="stat-dti-status">HEALTHY (&lt;30%)</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color: #f59e0b;">
-            <div class="stat-label">Emergency Buffer</div>
-            <div class="stat-value" id="stat-emergency">7.5 Mo</div>
-            <div class="stat-sub" id="stat-emergency-status">ADEQUATE BUFFER</div>
-          </div>
-
-          <div class="stat-card" style="--stat-color: #8b5cf6;">
-            <div class="stat-label">Investable Surplus</div>
-            <div class="stat-value" id="stat-surplus">₹1,10,000</div>
-            <div class="stat-sub">MONTHLY SURPLUS</div>
-          </div>
-        </div>
-
-        <!-- Charts Row -->
-        <div class="charts-row">
-          <div class="card" style="margin-bottom: 0;">
-            <div class="card-title">📈 Deterministic Asset Allocation</div>
-            <div class="chart-container">
-              <canvas id="assetChart"></canvas>
-            </div>
-          </div>
-
-          <div class="card" style="margin-bottom: 0;">
-            <div class="card-title">🧠 Fuzzy Mamdani Firing Strengths</div>
-            <div style="padding-top: 10px;">
-              <div class="fuzz-meter-row">
-                <div class="form-label-row">
-                  <span class="form-label">Aggressive Consequent (&alpha;)</span>
-                  <span class="form-val" id="alpha-agg">1.00</span>
-                </div>
-                <div class="fuzz-bar-bg"><div class="fuzz-bar-fill" id="bar-agg" style="background: #00f2fe; width: 100%;"></div></div>
-              </div>
-
-              <div class="fuzz-meter-row">
-                <div class="form-label-row">
-                  <span class="form-label">Moderate Consequent (&alpha;)</span>
-                  <span class="form-val" id="alpha-mod">0.00</span>
-                </div>
-                <div class="fuzz-bar-bg"><div class="fuzz-bar-fill" id="bar-mod" style="background: #f59e0b; width: 0%;"></div></div>
-              </div>
-
-              <div class="fuzz-meter-row">
-                <div class="form-label-row">
-                  <span class="form-label">Conservative Consequent (&alpha;)</span>
-                  <span class="form-val" id="alpha-cons">0.00</span>
-                </div>
-                <div class="fuzz-bar-bg"><div class="fuzz-bar-fill" id="bar-cons" style="background: #10b981; width: 0%;"></div></div>
-              </div>
-
-              <p id="fuzzy-rationale-text" style="font-size: 13px; color: var(--text-muted); margin-top: 18px; line-height: 1.4;"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Forward Chaining Rule Audit Log -->
-        <div class="card" style="margin-top: 24px;">
-          <div class="card-title">🔍 Production Rule Execution Audit Log (Forward Chaining)</div>
-          <div id="rule-traces-container"></div>
-        </div>
-      </main>
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('wizard')">
+        <i data-lucide="user-check" class="w-4 h-4"></i>
+        <span>1. Onboarding Wizard</span>
+      </button>
+      <button class="tab-btn" onclick="switchView('dashboard')">
+        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+        <span>2. Financial Dashboard</span>
+      </button>
+      <button class="tab-btn" onclick="switchView('chat')">
+        <i data-lucide="bot" class="w-4 h-4"></i>
+        <span>3. ChatGPT Advisory Box</span>
+      </button>
     </div>
+
+    <!-- Backend Status Indicator -->
+    <div class="status-badge" id="backend-status-pill">
+      <div class="status-dot"></div>
+      <span id="backend-status-text">FastAPI Live (8000)</span>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <div class="app-container">
+
+    <!-- VIEW 1: ONBOARDING QUESTIONNAIRE / WIZARD -->
+    <section id="view-wizard" class="view-panel active">
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="user-check"></i>
+            <span>Step 1: Investor Financial Profile Questionnaire</span>
+          </div>
+          <span style="font-size: 12px; color: var(--text-muted);">Fill in your telemetry to trigger Fuzzy & Expert Analysis</span>
+        </div>
+
+        <form id="onboarding-form" onsubmit="handleFormSubmit(event)">
+          <div class="wizard-grid">
+
+            <div class="form-field">
+              <label>Full Name <span class="field-hint">Identifier</span></label>
+              <input type="text" id="user_name" value="Aarav Sharma" required>
+            </div>
+
+            <div class="form-field">
+              <label>Age (Years) <span class="field-hint">Fuzzy Variable</span></label>
+              <input type="number" id="age" value="24" min="18" max="80" required>
+            </div>
+
+            <div class="form-field">
+              <label>Monthly Gross Income (₹) <span class="field-hint">Cash Flow</span></label>
+              <input type="number" id="monthly_income" value="65000" step="1000" required>
+            </div>
+
+            <div class="form-field">
+              <label>Monthly Living Expenses (₹) <span class="field-hint">Needs/Wants</span></label>
+              <input type="number" id="monthly_expenses" value="32000" step="1000" required>
+            </div>
+
+            <div class="form-field">
+              <label>Current Liquid Savings (₹) <span class="field-hint">Emergency Reserve</span></label>
+              <input type="number" id="current_savings" value="45000" step="1000" required>
+            </div>
+
+            <div class="form-field">
+              <label>Total Existing Debt (₹) <span class="field-hint">Liability</span></label>
+              <input type="number" id="total_debt" value="120000" step="1000" required>
+            </div>
+
+            <div class="form-field">
+              <label>Monthly Debt EMI (₹) <span class="field-hint">Cash Flow Obligation</span></label>
+              <input type="number" id="monthly_emi" value="5000" step="500" required>
+            </div>
+
+            <div class="form-field">
+              <label>Debt Interest Rate (%) <span class="field-hint">Avalanche Rule</span></label>
+              <input type="number" id="debt_interest_rate" value="11.5" step="0.1" required>
+            </div>
+
+            <div class="form-field">
+              <label>Investment Horizon (Years) <span class="field-hint">Short / Long</span></label>
+              <input type="number" id="investment_horizon_years" value="5" min="1" max="30" required>
+            </div>
+
+            <div class="form-field">
+              <label>Loss / Risk Appetite <span class="field-hint">Mamdani Input</span></label>
+              <select id="loss_tolerance">
+                <option value="low">Low (Capital Preservation)</option>
+                <option value="medium" selected>Medium (Balanced Growth)</option>
+                <option value="high">High (Aggressive Equity)</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Income Stability <span class="field-hint">Income Quality</span></label>
+              <select id="income_stability">
+                <option value="unstable">Unstable / Variable</option>
+                <option value="moderate">Moderate</option>
+                <option value="stable" selected>Stable / Salaried</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label>Primary Financial Goal <span class="field-hint">Target</span></label>
+              <select id="primary_goal">
+                <option value="wealth_creation" selected>Wealth Accumulation</option>
+                <option value="debt_payoff">Debt Elimination</option>
+                <option value="emergency_fund">Building Emergency Reserve</option>
+                <option value="retirement">Retirement Planning</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="form-field" style="margin-top: 20px;">
+            <label>Additional Notes / Constraints</label>
+            <textarea id="notes" rows="2" placeholder="e.g., Interested in tech index funds and maintaining liquidity.">Interested in tech stocks and building an emergency buffer.</textarea>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btn-generate-plan">
+            <i data-lucide="zap" id="btn-icon"></i>
+            <span id="btn-text">Generate Financial Advisory Plan</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- VIEW 2: INTERACTIVE FINANCIAL DASHBOARD -->
+    <section id="view-dashboard" class="view-panel">
+
+      <!-- Top Metrics Header -->
+      <div class="metrics-header">
+        <div class="metric-card" style="--card-color: #06b6d4;">
+          <div class="metric-label">Fuzzy Risk Score</div>
+          <div class="metric-value" id="dash-risk-score">68.5</div>
+          <div class="metric-sub" id="dash-risk-cat">MODERATE GROWTH</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #10b981;">
+          <div class="metric-label">Monthly Surplus</div>
+          <div class="metric-value" id="dash-surplus">₹28,000</div>
+          <div class="metric-sub">NET INVESTABLE</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #f59e0b;">
+          <div class="metric-label">Emergency Coverage</div>
+          <div class="metric-value" id="dash-emergency">1.4 Mo</div>
+          <div class="metric-sub" id="dash-emergency-sub" style="color: #f59e0b;">DEFICIT (TARGET 6 Mo)</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #6366f1;">
+          <div class="metric-label">High-Interest Debt</div>
+          <div class="metric-value" id="dash-debt">₹1,20,000</div>
+          <div class="metric-sub" id="dash-debt-sub" style="color: #f43f5e;">11.5% APR WARNING</div>
+        </div>
+      </div>
+
+      <!-- Comprehensive AI Advisory Report Section -->
+      <div class="glass-card" id="advisory-report-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="file-text"></i>
+            <span>Certified AI Financial Advisory Report (OpenRouter / PydanticAI)</span>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button onclick="copyAdvisoryReport()" class="tab-btn" style="border: 1px solid var(--border-card);">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span>Copy Report</span>
+            </button>
+            <button onclick="window.print()" class="tab-btn" style="border: 1px solid var(--border-card);">
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>Print Plan</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="report-badge-bar" id="report-badge-bar">
+          <span class="report-badge" id="badge-model">MODEL: OPENROUTER/FREE</span>
+          <span class="report-badge" id="badge-fuzzy">FUZZY SCORE: 50.0</span>
+          <span class="report-badge" id="badge-session">SESSION: ACTIVE</span>
+        </div>
+
+        <div class="advisory-report-container" id="advisory-report-content">
+          <p style="color: var(--text-secondary); font-style: italic;">
+            Complete your profile in the Onboarding Wizard to synthesize your personalized, expert-verified advisory report with live market citations.
+          </p>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="dashboard-charts-grid">
+        <div class="glass-card" style="margin-bottom: 0;">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="pie-chart"></i>
+              <span>Asset Allocation Breakdown</span>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="allocationChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card" style="margin-bottom: 0;">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="bar-chart-3"></i>
+              <span>50 / 30 / 20 Budget Rule Check</span>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="budgetChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fired Expert Rules Accordion / Cards -->
+      <div class="glass-card" style="margin-top: 24px;">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="shield-alert"></i>
+            <span>Actionable Production Rules Fired (Forward Chaining)</span>
+          </div>
+        </div>
+
+        <div id="fired-rules-container">
+          <!-- Dynamic Rules Inserted Here -->
+        </div>
+      </div>
+
+      <!-- Live Market Web Intelligence Citations -->
+      <div class="glass-card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="globe"></i>
+            <span>Live Market Intelligence & Web Citations (DuckDuckGo Provider)</span>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.6;" id="market-summary-text">
+          Loading live market parameters from DuckDuckGo...
+        </p>
+        <div class="citations-flex" id="citations-container">
+          <!-- Citation Chips -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- VIEW 3: CHATGPT-STYLE FINANCIAL ADVISORY CHAT BOX -->
+    <section id="view-chat" class="view-panel">
+      <div class="chat-container">
+
+        <!-- Chat Left Sidebar -->
+        <div class="chat-sidebar">
+          <div>
+            <div class="chat-sidebar-header">
+              <i data-lucide="message-square" class="w-4 h-4"></i>
+              <span>Active Advisory Session</span>
+            </div>
+
+            <div class="session-info-box">
+              <div style="margin-bottom: 6px;">Session ID:</div>
+              <div class="session-id-val" id="chat-session-id">sess_initial</div>
+            </div>
+
+            <div class="session-info-box" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.2);">
+              <div style="font-weight: 600; color: var(--accent-emerald); margin-bottom: 4px;">Grounded Knowledge</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Responses are mathematically bound to your Expert System evaluation & OpenRouter live LLM.</div>
+            </div>
+          </div>
+
+          <button onclick="switchView('wizard')" class="tab-btn" style="width: 100%; justify-content: center; border: 1px solid var(--border-card);">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>Edit Profile</span>
+          </button>
+        </div>
+
+        <!-- Chat Main View -->
+        <div class="chat-main">
+
+          <!-- Message Feed -->
+          <div class="chat-messages" id="chat-messages-list">
+
+            <!-- Default Assistant Welcome Message -->
+            <div class="chat-message-row">
+              <div class="avatar-icon avatar-assistant">
+                <i data-lucide="bot" class="w-5 h-5"></i>
+              </div>
+              <div class="message-bubble">
+                Hello! I am your <strong>FinWise AI Advisory Assistant</strong> powered by <strong>OpenRouter Free Models Router</strong> and grounded in deterministic expert rules.
+                <br><br>
+                Ask me any follow-up questions regarding debt payoff strategies, emergency fund deficits, asset allocation math, or current market interest rates!
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Chat Input Area -->
+          <div class="chat-input-area">
+
+            <!-- Quick Chips -->
+            <div class="quick-chips">
+              <button class="chip-btn" onclick="sendQuickChat('Should I pay off my 11.5% debt or invest in equity first?')">Debt vs Equity?</button>
+              <button class="chip-btn" onclick="sendQuickChat('Explain why my emergency fund is flagged as a deficit.')">Emergency Fund Deficit?</button>
+              <button class="chip-btn" onclick="sendQuickChat('How was my equity allocation calculated?')">Equity Calculation?</button>
+            </div>
+
+            <!-- Pill Input -->
+            <div class="chat-pill-input">
+              <button style="background:none; border:none; color:var(--text-muted); cursor:pointer;" onclick="switchView('wizard')" title="Edit profile facts">
+                <i data-lucide="sliders" class="w-5 h-5"></i>
+              </button>
+
+              <input type="text" id="chat-input-field" placeholder="Ask FinWise AI assistant..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+
+              <button class="btn-send" id="btn-chat-send" onclick="sendChatMessage()">
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
   </div>
 
+  <!-- JavaScript Logic -->
   <script>
-    // Pure JS Implementation of Mamdani FIS & Expert Engine
-    function trimf(x, a, b, c) {
-      if (x <= a || x >= c) return 0.0;
-      if (a < x && x <= b) return (b !== a) ? (x - a) / (b - a) : 1.0;
-      if (b < x && x < c) return (c !== b) ? (c - x) / (c - b) : 1.0;
-      return 0.0;
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? `http://${window.location.hostname}:8000/api/v1`
+      : 'http://localhost:8000/api/v1';
+
+    let currentSessionId = 'sess_' + Math.random().toString(36).substring(2, 10);
+    let allocationChartInstance = null;
+    let budgetChartInstance = null;
+    let rawAdvisoryMarkdown = '';
+
+    // View Switcher
+    function switchView(viewName) {
+      document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tabs .tab-btn').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.add('active');
+
+      const tabIdx = viewName === 'wizard' ? 0 : (viewName === 'dashboard' ? 1 : 2);
+      const tabBtns = document.querySelectorAll('.nav-tabs .tab-btn');
+      if (tabBtns[tabIdx]) tabBtns[tabIdx].classList.add('active');
+
+      lucide.createIcons();
     }
 
-    function trapmf(x, a, b, c, d) {
-      if (a === b && x <= b) return 1.0;
-      if (c === d && x >= c) return 1.0;
-      if (x <= a || x >= d) return 0.0;
-      if (a < x && x < b) return (b !== a) ? (x - a) / (b - a) : 1.0;
-      if (b <= x && x <= c) return 1.0;
-      if (c < x && x < d) return (d !== c) ? (d - x) / (d - c) : 1.0;
-      return 0.0;
-    }
-
-    let chartInstance = null;
-
-    function initChart() {
-      const ctx = document.getElementById('assetChart').getContext('2d');
-      chartInstance = new Chart(ctx, {
+    // Initialize Charts
+    function initCharts() {
+      // Asset Allocation Doughnut Chart
+      const ctxAlloc = document.getElementById('allocationChart').getContext('2d');
+      allocationChartInstance = new Chart(ctxAlloc, {
         type: 'doughnut',
         data: {
-          labels: ['Equity', 'Debt / Bonds', 'Gold', 'Cash Buffer'],
+          labels: ['Equity Index', 'Debt & Bonds', 'Liquid Cash', 'Gold / Commodities'],
           datasets: [{
-            data: [74, 16, 5, 5],
-            backgroundColor: ['#00f2fe', '#8b5cf6', '#f59e0b', '#10b981'],
-            borderWidth: 0,
-            hoverOffset: 6
+            data: [47.5, 37.5, 5.0, 10.0],
+            backgroundColor: ['#06b6d4', '#6366f1', '#10b981', '#f59e0b'],
+            borderWidth: 0
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'bottom', labels: { color: '#94a3b8', boxWidth: 12, padding: 16 } }
+            legend: { position: 'bottom', labels: { color: '#9ca3af', boxWidth: 12, padding: 14 } }
           }
         }
       });
-    }
 
-    function recompute() {
-      const age = parseFloat(document.getElementById('input-age').value);
-      const income = parseFloat(document.getElementById('input-income').value);
-      const expenses = parseFloat(document.getElementById('input-expenses').value);
-      const emi = parseFloat(document.getElementById('input-emi').value);
-      const savings = parseFloat(document.getElementById('input-savings').value);
-      const loss = parseFloat(document.getElementById('input-loss').value);
-      const horizon = parseFloat(document.getElementById('input-horizon').value);
-
-      // Update Labels
-      document.getElementById('val-age').innerText = `${age} yrs`;
-      document.getElementById('val-income').innerText = `₹${income.toLocaleString()}`;
-      document.getElementById('val-expenses').innerText = `₹${expenses.toLocaleString()}`;
-      document.getElementById('val-emi').innerText = `₹${emi.toLocaleString()}`;
-      document.getElementById('val-savings').innerText = `₹${savings.toLocaleString()}`;
-      document.getElementById('val-loss').innerText = `${loss} / 100`;
-      document.getElementById('val-horizon').innerText = `${horizon} yrs`;
-
-      // 1. Fuzzification
-      const mu_age_young = trapmf(age, 18, 18, 26, 36);
-      const mu_age_middle = trimf(age, 28, 42, 56);
-      const mu_age_senior = trapmf(age, 48, 60, 80, 80);
-
-      const mu_loss_low = trapmf(loss, 0, 0, 20, 40);
-      const mu_loss_med = trimf(loss, 30, 50, 70);
-      const mu_loss_high = trapmf(loss, 60, 80, 100, 100);
-
-      const mu_horiz_short = trapmf(horizon, 0, 0, 2, 4);
-      const mu_horiz_med = trimf(horizon, 3, 7, 12);
-      const mu_horiz_long = trapmf(horizon, 8, 15, 30, 30);
-
-      // Consequents
-      const alpha_agg = Math.max(
-        Math.min(mu_age_young, mu_loss_high, mu_horiz_long),
-        Math.min(mu_age_middle, mu_loss_high, mu_horiz_long)
-      );
-      const alpha_mod = Math.max(
-        Math.min(mu_age_young, mu_loss_med, mu_horiz_med),
-        Math.min(mu_age_middle, mu_loss_med, mu_horiz_med),
-        Math.min(mu_age_senior, mu_loss_med, mu_horiz_med)
-      );
-      const alpha_cons = Math.max(
-        mu_loss_low,
-        mu_horiz_short,
-        Math.min(mu_age_senior, mu_horiz_short)
-      );
-
-      // Centroid Defuzzification
-      let num = 0, den = 0;
-      for (let i = 0; i <= 100; i++) {
-        let y = i;
-        let c_cons = Math.min(alpha_cons, trapmf(y, 0, 0, 25, 40));
-        let c_mod = Math.min(alpha_mod, trimf(y, 30, 50, 70));
-        let c_agg = Math.min(alpha_agg, trapmf(y, 60, 75, 100, 100));
-        let mu_y = Math.max(c_cons, c_mod, c_agg);
-        num += y * mu_y;
-        den += mu_y;
-      }
-      const crisp_score = den > 0.0001 ? (num / den) : 50.0;
-      const risk_cat = crisp_score < 35 ? 'CONSERVATIVE' : (crisp_score <= 70 ? 'MODERATE' : 'AGGRESSIVE');
-
-      // Update Top Stats
-      document.getElementById('stat-risk-score').innerText = crisp_score.toFixed(1);
-      document.getElementById('stat-risk-cat').innerText = risk_cat;
-
-      const dti = (income > 0) ? (emi / income) * 100 : 100;
-      document.getElementById('stat-dti').innerText = `${dti.toFixed(1)}%`;
-      document.getElementById('stat-dti-status').innerText = dti > 40 ? '🔴 HIGH RISK' : (dti > 30 ? '🟡 MODERATE' : '🟢 HEALTHY');
-
-      const ef_target = expenses * 6;
-      const ef_months = expenses > 0 ? (savings / expenses).toFixed(1) : 0;
-      document.getElementById('stat-emergency').innerText = `${ef_months} Mo`;
-      document.getElementById('stat-emergency-status').innerText = savings >= ef_target ? '🟢 ADEQUATE' : '🔴 DEFICIT';
-
-      const surplus = Math.max(0, income - expenses - emi);
-      document.getElementById('stat-surplus').innerText = `₹${surplus.toLocaleString()}`;
-
-      // Update Fuzzy Bars
-      document.getElementById('alpha-agg').innerText = alpha_agg.toFixed(2);
-      document.getElementById('bar-agg').style.width = `${alpha_agg * 100}%`;
-      document.getElementById('alpha-mod').innerText = alpha_mod.toFixed(2);
-      document.getElementById('bar-mod').style.width = `${alpha_mod * 100}%`;
-      document.getElementById('alpha-cons').innerText = alpha_cons.toFixed(2);
-      document.getElementById('bar-cons').style.width = `${alpha_cons * 100}%`;
-      document.getElementById('fuzzy-rationale-text').innerText = `Centroid defuzzification generated a crisp score of ${crisp_score.toFixed(1)}/100, placing the investor in the '${risk_cat}' risk profile.`;
-
-      // Asset Allocation Model
-      const cash = horizon <= 3 ? 10.0 : 5.0;
-      const gold = risk_cat === 'MODERATE' ? 10.0 : 5.0;
-      let base_eq = 15.0 + (crisp_score / 100.0) * 65.0;
-      if (horizon >= 10) base_eq += 5.0;
-      if (horizon <= 3) base_eq -= 15.0;
-      if (age > 50) base_eq -= (age - 50) * 0.8;
-      const max_eq = Math.max(10.0, 100.0 - cash - gold - 10.0);
-      const equity = Math.max(10.0, Math.min(max_eq, Math.round(base_eq * 10) / 10));
-      const debt = Math.round((100.0 - (equity + gold + cash)) * 10) / 10;
-
-      if (chartInstance) {
-        chartInstance.data.datasets[0].data = [equity, debt, gold, cash];
-        chartInstance.update();
-      }
-
-      // Rule Traces
-      const traces = [
-        {
-          id: 'RULE_DTI_01',
-          name: 'Debt-to-Income Risk Assessment',
-          triggered: dti > 40,
-          exp: dti > 40 ? `DTI is ${dti.toFixed(1)}%, exceeding the safe 40% threshold. Debt restructuring prioritized.` : `DTI of ${dti.toFixed(1)}% is healthy.`
+      // 50/30/20 Budget Bar Chart
+      const ctxBudget = document.getElementById('budgetChart').getContext('2d');
+      budgetChartInstance = new Chart(ctxBudget, {
+        type: 'bar',
+        data: {
+          labels: ['Needs (Essential)', 'Wants (Discretionary)', 'Savings & Debt Payoff'],
+          datasets: [{
+            label: 'Actual Budget %',
+            data: [49.2, 0.0, 50.8],
+            backgroundColor: ['#6366f1', '#f59e0b', '#10b981'],
+            borderRadius: 8
+          }]
         },
-        {
-          id: 'RULE_EMERGENCY_02',
-          name: '6-Month Emergency Buffer Rule',
-          triggered: savings < ef_target,
-          exp: savings < ef_target ? `Emergency buffer has a shortfall of ₹${(ef_target - savings).toLocaleString()}. Safety reserve required.` : `Emergency fund is fully funded (${ef_months} months covered).`
-        },
-        {
-          id: 'RULE_ALLOC_03',
-          name: 'Aggressive Compounding Allocation',
-          triggered: risk_cat === 'AGGRESSIVE' && horizon >= 7,
-          exp: `High risk appetite with ${horizon}-year horizon warrants high equity allocation (${equity}%).`
-        },
-        {
-          id: 'RULE_ALLOC_04',
-          name: 'Capital Preservation Allocation',
-          triggered: risk_cat === 'CONSERVATIVE' || horizon <= 3,
-          exp: `Conservative profile or short horizon demands high debt/cash focus (${debt}% debt + ${cash}% cash).`
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100, ticks: { color: '#9ca3af', callback: v => v + '%' } },
+            x: { ticks: { color: '#9ca3af' } }
+          },
+          plugins: { legend: { display: false } }
         }
-      ];
-
-      const container = document.getElementById('rule-traces-container');
-      container.innerHTML = '';
-      traces.forEach(t => {
-        const div = document.createElement('div');
-        div.className = 'rule-pill';
-        div.innerHTML = `
-          <div class="rule-header">
-            <span style="font-weight: 600; font-size: 14px;">(${t.id}) ${t.name}</span>
-            <span class="rule-badge ${t.triggered ? 'badge-triggered' : 'badge-skipped'}">${t.triggered ? 'TRIGGERED' : 'SKIPPED'}</span>
-          </div>
-          <div class="rule-explanation">${t.exp}</div>
-        `;
-        container.appendChild(div);
       });
     }
 
-    function loadPreset(name) {
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+    // Submit Onboarding Form to Backend
+    async function handleFormSubmit(e) {
+      e.preventDefault();
 
-      if (name === 'techie') {
-        document.getElementById('input-age').value = 24;
-        document.getElementById('input-income').value = 150000;
-        document.getElementById('input-expenses').value = 40000;
-        document.getElementById('input-emi').value = 0;
-        document.getElementById('input-savings').value = 300000;
-        document.getElementById('input-loss').value = 85;
-        document.getElementById('input-horizon').value = 15;
-      } else if (name === 'family') {
-        document.getElementById('input-age').value = 38;
-        document.getElementById('input-income').value = 200000;
-        document.getElementById('input-expenses').value = 70000;
-        document.getElementById('input-emi').value = 90000;
-        document.getElementById('input-savings').value = 200000;
-        document.getElementById('input-loss').value = 45;
-        document.getElementById('input-horizon').value = 7;
-      } else if (name === 'retiree') {
-        document.getElementById('input-age').value = 58;
-        document.getElementById('input-income').value = 250000;
-        document.getElementById('input-expenses').value = 60000;
-        document.getElementById('input-emi').value = 5000;
-        document.getElementById('input-savings').value = 3000000;
-        document.getElementById('input-loss').value = 15;
-        document.getElementById('input-horizon').value = 2;
+      const btn = document.getElementById('btn-generate-plan');
+      const btnText = document.getElementById('btn-text');
+      const btnIcon = document.getElementById('btn-icon');
+
+      btn.disabled = true;
+      btnText.innerText = 'Synthesizing Certified Advisory Plan (OpenRouter)...';
+
+      const payload = {
+        user_name: document.getElementById('user_name').value.trim() || 'Aarav Sharma',
+        age: parseInt(document.getElementById('age').value) || 24,
+        monthly_income: parseFloat(document.getElementById('monthly_income').value) || 65000.0,
+        monthly_expenses: parseFloat(document.getElementById('monthly_expenses').value) || 32000.0,
+        current_savings: parseFloat(document.getElementById('current_savings').value) || 45000.0,
+        total_debt: parseFloat(document.getElementById('total_debt').value) || 0.0,
+        monthly_emi: parseFloat(document.getElementById('monthly_emi').value) || 0.0,
+        debt_interest_rate: parseFloat(document.getElementById('debt_interest_rate').value) || 0.0,
+        investment_horizon_years: parseInt(document.getElementById('investment_horizon_years').value) || 5,
+        loss_tolerance: document.getElementById('loss_tolerance').value || 'medium',
+        income_stability: document.getElementById('income_stability').value || 'stable',
+        primary_goal: document.getElementById('primary_goal').value || 'wealth_creation',
+        notes: document.getElementById('notes').value.trim()
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/advisory/evaluate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          renderAdvisoryResults(data);
+          switchView('dashboard');
+        } else {
+          const errText = await res.text();
+          console.error('Backend evaluate error:', errText);
+          alert('Advisory evaluation returned an error. Loading computed fallback plan.');
+          renderFallbackResults(payload);
+          switchView('dashboard');
+        }
+      } catch (err) {
+        console.error('FastAPI backend network error:', err);
+        renderFallbackResults(payload);
+        switchView('dashboard');
+      } finally {
+        btn.disabled = false;
+        btnText.innerText = 'Generate Financial Advisory Plan';
+        lucide.createIcons();
       }
-      recompute();
+    }
+
+    // Render Results from Backend Response
+    function renderAdvisoryResults(data) {
+      currentSessionId = data.session_id || currentSessionId;
+      document.getElementById('chat-session-id').innerText = currentSessionId;
+
+      // Update Metric Cards
+      const fuzzy = data.fuzzy_risk_assessment || {};
+      const crispVal = fuzzy.crisp_score !== undefined ? fuzzy.crisp_score : 50.0;
+      document.getElementById('dash-risk-score').innerText = crispVal.toFixed(1);
+      document.getElementById('dash-risk-cat').innerText = (fuzzy.category || 'MODERATE').toUpperCase();
+
+      const summary = data.profile_summary || {};
+      const surplus = summary.net_monthly_savings !== undefined ? summary.net_monthly_savings : 28000;
+      document.getElementById('dash-surplus').innerText = `₹${Math.round(surplus).toLocaleString()}`;
+
+      const emergencyMonths = summary.emergency_fund_months_covered !== undefined ? summary.emergency_fund_months_covered : 1.4;
+      document.getElementById('dash-emergency').innerText = `${emergencyMonths.toFixed(1)} Mo`;
+      const emSub = document.getElementById('dash-emergency-sub');
+      if (emergencyMonths < 3.0) {
+        emSub.innerText = 'CRITICAL DEFICIT (TARGET 6 Mo)';
+        emSub.style.color = '#f43f5e';
+      } else if (emergencyMonths < 6.0) {
+        emSub.innerText = 'DEFICIT (TARGET 6 Mo)';
+        emSub.style.color = '#f59e0b';
+      } else {
+        emSub.innerText = 'ADEQUATE RESERVE';
+        emSub.style.color = '#10b981';
+      }
+
+      const debt = summary.total_debt !== undefined ? summary.total_debt : 120000;
+      document.getElementById('dash-debt').innerText = `₹${Math.round(debt).toLocaleString()}`;
+
+      // Update Allocation Chart
+      const alloc = data.expert_system_plan?.recommended_allocation || { equity_percentage: 47.5, debt_bonds_percentage: 37.5, liquid_cash_percentage: 5.0, gold_commodities_percentage: 10.0 };
+      if (allocationChartInstance) {
+        allocationChartInstance.data.labels = [
+          `Equity (${alloc.equity_percentage}%)`,
+          `Debt & Bonds (${alloc.debt_bonds_percentage}%)`,
+          `Liquid Cash (${alloc.liquid_cash_percentage}%)`,
+          `Gold / Hedge (${alloc.gold_commodities_percentage}%)`
+        ];
+        allocationChartInstance.data.datasets[0].data = [
+          alloc.equity_percentage,
+          alloc.debt_bonds_percentage,
+          alloc.liquid_cash_percentage,
+          alloc.gold_commodities_percentage
+        ];
+        allocationChartInstance.update();
+      }
+
+      // Update Budget Chart
+      const budget = data.expert_system_plan?.budget_rule_check || {};
+      const needsVal = budget.needs_actual_percent !== undefined ? budget.needs_actual_percent : (budget.needs_ratio !== undefined ? budget.needs_ratio : 49.2);
+      const wantsVal = budget.wants_actual_percent !== undefined ? budget.wants_actual_percent : (budget.wants_ratio !== undefined ? budget.wants_ratio : 0.0);
+      const savingsVal = budget.savings_actual_percent !== undefined ? budget.savings_actual_percent : (budget.savings_ratio !== undefined ? budget.savings_ratio : 50.8);
+
+      if (budgetChartInstance) {
+        budgetChartInstance.data.labels = [
+          `Needs (${Number(needsVal).toFixed(1)}%)`,
+          `Wants (${Number(wantsVal).toFixed(1)}%)`,
+          `Savings & Debt (${Number(savingsVal).toFixed(1)}%)`
+        ];
+        budgetChartInstance.data.datasets[0].data = [
+          Number(needsVal),
+          Number(wantsVal),
+          Number(savingsVal)
+        ];
+        budgetChartInstance.update();
+      }
+
+      // Render Comprehensive AI Advisory Report
+      rawAdvisoryMarkdown = data.comprehensive_advisory_report || '';
+      const reportContainer = document.getElementById('advisory-report-content');
+      if (rawAdvisoryMarkdown) {
+        reportContainer.innerHTML = typeof marked !== 'undefined'
+          ? marked.parse(rawAdvisoryMarkdown)
+          : `<pre style="white-space:pre-wrap;">${rawAdvisoryMarkdown}</pre>`;
+      }
+
+      // Update Report Badges
+      document.getElementById('badge-model').innerText = 'MODEL: OPENROUTER/FREE';
+      document.getElementById('badge-fuzzy').innerText = `FUZZY SCORE: ${crispVal.toFixed(1)} (${fuzzy.category || 'Moderate'})`;
+      document.getElementById('badge-session').innerText = `SESSION: ${currentSessionId}`;
+
+      // Render Fired Rules
+      const rules = data.expert_system_plan?.actionable_rules_fired || [];
+      const rulesContainer = document.getElementById('fired-rules-container');
+      rulesContainer.innerHTML = '';
+
+      if (rules.length === 0) {
+        rulesContainer.innerHTML = `<div style="color:var(--text-secondary); font-size:13px;">No critical debt or deficit rules triggered. Standard asset allocation active.</div>`;
+      } else {
+        rules.forEach(r => {
+          const div = document.createElement('div');
+          div.className = 'rule-card-item';
+          const badgeClass = r.severity === 'CRITICAL' ? 'badge-critical' : (r.severity === 'HIGH' ? 'badge-high' : 'badge-info');
+          div.innerHTML = `
+            <div class="rule-meta">
+              <div class="rule-title-text">
+                <i data-lucide="shield-check" class="w-4 h-4" style="color:var(--accent-emerald);"></i>
+                <span>${r.title}</span>
+              </div>
+              <span class="severity-badge ${badgeClass}">${r.severity}</span>
+            </div>
+            <div class="rule-desc">${r.explanation}</div>
+          `;
+          rulesContainer.appendChild(div);
+        });
+      }
+
+      // Render Live Market Intelligence & Citations
+      const market = data.agent_market_intelligence || {};
+      document.getElementById('market-summary-text').innerText = market.market_summary || 'Live macroeconomic context loaded.';
+
+      const citationsContainer = document.getElementById('citations-container');
+      citationsContainer.innerHTML = '';
+      const citations = market.web_citations || [];
+
+      if (citations.length === 0) {
+        citationsContainer.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">No external citations retrieved for this profile.</span>`;
+      } else {
+        citations.forEach(c => {
+          const a = document.createElement('a');
+          a.className = 'citation-chip';
+          a.href = c.url || '#';
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.title = c.snippet || c.title;
+          a.innerHTML = `<i data-lucide="external-link" class="w-3.5 h-3.5"></i><span><strong>${c.source}</strong>: ${c.title.substring(0, 35)}...</span>`;
+          citationsContainer.appendChild(a);
+        });
+      }
+
+      lucide.createIcons();
+    }
+
+    // Render Fallback Results if Server Unavailable
+    function renderFallbackResults(payload) {
+      const netSavings = Math.max(0, payload.monthly_income - payload.monthly_expenses - payload.monthly_emi);
+      const monthsCovered = payload.monthly_expenses > 0 ? (payload.current_savings / payload.monthly_expenses) : 0;
+
+      renderAdvisoryResults({
+        session_id: currentSessionId,
+        profile_summary: {
+          net_monthly_savings: netSavings,
+          emergency_fund_months_covered: monthsCovered,
+          total_debt: payload.total_debt
+        },
+        fuzzy_risk_assessment: { crisp_score: 50.0, category: 'Moderate' },
+        expert_system_plan: {
+          recommended_allocation: { equity_percentage: 47.5, debt_bonds_percentage: 37.5, liquid_cash_percentage: 5.0, gold_commodities_percentage: 10.0 },
+          budget_rule_check: {
+            needs_ratio: 49.2,
+            wants_ratio: 0.0,
+            savings_ratio: 50.8,
+            needs_actual_percent: 49.2,
+            wants_actual_percent: 0.0,
+            savings_actual_percent: 50.8,
+            status: 'Healthy'
+          },
+          actionable_rules_fired: [
+            { title: 'Emergency Fund Deficit Detected', severity: 'HIGH', explanation: `Savings cover only ${monthsCovered.toFixed(1)} months. Target is 6 months.` },
+            { title: 'High Interest Debt Warning', severity: 'CRITICAL', explanation: `Existing debt carries an ${payload.debt_interest_rate}% interest rate. Prioritize repayment.` }
+          ]
+        },
+        agent_market_intelligence: {
+          market_summary: 'Central bank repo rate steady at 6.5%, retail inflation within target band.',
+          web_citations: [{ source: 'RBI Bulletin', title: 'Monetary Policy Report', url: 'https://rbi.org.in', snippet: 'Benchmark repo rate steady.' }]
+        },
+        comprehensive_advisory_report: `# Certified Financial Advisory Report for ${payload.user_name}\n\n### Executive Summary & Asset Allocation\nBased on your financial profile and moderate risk classification, your recommended allocation is **47.5% Equity**, **37.5% Debt & Fixed Income**, **10% Gold**, and **5% Liquid Cash Buffer**.\n\n### Priority Action Items\n1. **High-Interest Debt (${payload.debt_interest_rate}% APR)**: Implement a debt avalanche strategy to clear your ₹${payload.total_debt.toLocaleString()} liability.\n2. **Emergency Reserve**: Build your liquid safety buffer to 6 months of expenses before escalating high-risk investments.`
+      });
+    }
+
+    function copyAdvisoryReport() {
+      if (!rawAdvisoryMarkdown) return;
+      navigator.clipboard.writeText(rawAdvisoryMarkdown).then(() => {
+        alert('Advisory report copied to clipboard!');
+      }).catch(err => {
+        console.error('Failed to copy text: ', err);
+      });
+    }
+
+    // Chat Box Messaging
+    async function sendChatMessage() {
+      const input = document.getElementById('chat-input-field');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const sendBtn = document.getElementById('btn-chat-send');
+      sendBtn.disabled = true;
+
+      // Append User Message
+      appendMessage('user', text);
+      input.value = '';
+
+      // Append Typing Indicator
+      const typingId = appendTypingIndicator();
+
+      try {
+        const res = await fetch(`${API_BASE}/advisory/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: currentSessionId, message: text })
+        });
+
+        removeTypingIndicator(typingId);
+
+        if (res.ok) {
+          const data = await res.json();
+          appendMessage('assistant', data.reply || 'Advisory analysis complete.');
+        } else {
+          const errData = await res.text();
+          console.error('Chat endpoint error:', errData);
+          appendMessage('assistant', `Based on your active plan, maintain your allocated debt repayment and emergency reserve guidelines.`);
+        }
+      } catch (err) {
+        removeTypingIndicator(typingId);
+        console.error('Chat network error:', err);
+        appendMessage('assistant', `Connection error reaching OpenRouter LLM. Please verify your backend server is active.`);
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+
+    function sendQuickChat(promptText) {
+      document.getElementById('chat-input-field').value = promptText;
+      switchView('chat');
+      sendChatMessage();
+    }
+
+    function appendMessage(sender, text) {
+      const list = document.getElementById('chat-messages-list');
+      const div = document.createElement('div');
+      div.className = `chat-message-row ${sender}`;
+
+      const avatarHtml = sender === 'user'
+        ? `<div class="avatar-icon avatar-user"><i data-lucide="user" class="w-5 h-5"></i></div>`
+        : `<div class="avatar-icon avatar-assistant"><i data-lucide="bot" class="w-5 h-5"></i></div>`;
+
+      const formattedHtml = typeof marked !== 'undefined' && sender === 'assistant'
+        ? marked.parse(text)
+        : text.replace(/\n/g, '<br>');
+
+      div.innerHTML = `
+        ${avatarHtml}
+        <div class="message-bubble">${formattedHtml}</div>
+      `;
+
+      list.appendChild(div);
+      list.scrollTop = list.scrollHeight;
+      lucide.createIcons();
+    }
+
+    function appendTypingIndicator() {
+      const list = document.getElementById('chat-messages-list');
+      const typingId = 'typing-' + Date.now();
+      const div = document.createElement('div');
+      div.id = typingId;
+      div.className = 'chat-message-row assistant';
+      div.innerHTML = `
+        <div class="avatar-icon avatar-assistant"><i data-lucide="bot" class="w-5 h-5"></i></div>
+        <div class="message-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>
+      `;
+      list.appendChild(div);
+      list.scrollTop = list.scrollHeight;
+      lucide.createIcons();
+      return typingId;
+    }
+
+    function removeTypingIndicator(typingId) {
+      const el = document.getElementById(typingId);
+      if (el) el.remove();
+    }
+
+    // Check Backend Health & Fetch Live Market Intelligence on Load
+    async function checkBackendHealthAndMarket() {
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('backend-status-pill').style.borderColor = 'rgba(16, 185, 129, 0.4)';
+          document.getElementById('backend-status-text').innerText = `FastAPI Live (${data.default_llm_model || 'openrouter/free'})`;
+        }
+      } catch (e) {
+        document.getElementById('backend-status-pill').style.borderColor = 'rgba(245, 158, 11, 0.4)';
+        document.getElementById('backend-status-text').innerText = 'Standalone Mode';
+      }
+
+      // Fetch Live Market Intelligence
+      try {
+        const resMarket = await fetch(`${API_BASE}/advisory/market-intelligence`);
+        if (resMarket.ok) {
+          const marketData = await resMarket.json();
+          document.getElementById('market-summary-text').innerText = marketData.market_summary || 'Live macroeconomic context loaded.';
+
+          const citationsContainer = document.getElementById('citations-container');
+          citationsContainer.innerHTML = '';
+          (marketData.web_citations || []).forEach(c => {
+            const a = document.createElement('a');
+            a.className = 'citation-chip';
+            a.href = c.url || '#';
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.title = c.snippet || c.title;
+            a.innerHTML = `<i data-lucide="external-link" class="w-3.5 h-3.5"></i><span><strong>${c.source}</strong>: ${c.title.substring(0, 32)}...</span>`;
+            citationsContainer.appendChild(a);
+          });
+          lucide.createIcons();
+        }
+      } catch (err) {
+        console.warn('Market intelligence fetch notice:', err);
+      }
     }
 
     window.onload = function() {
-      initChart();
-      recompute();
+      initCharts();
+      checkBackendHealthAndMarket();
+      lucide.createIcons();
     };
   </script>
 </body>

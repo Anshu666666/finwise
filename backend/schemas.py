@@ -136,6 +136,7 @@ class ProfileSummary(BaseModel):
     net_monthly_savings: float
     emergency_fund_months_covered: float
     dti_ratio: float
+    total_debt: float = 0.0
 
 
 class FuzzyRiskAssessment(BaseModel):
@@ -168,6 +169,9 @@ class BudgetRuleCheck(BaseModel):
     needs_ratio: float
     wants_ratio: float
     savings_ratio: float
+    needs_actual_percent: Optional[float] = None
+    wants_actual_percent: Optional[float] = None
+    savings_actual_percent: Optional[float] = None
     investable_surplus: float
     status: str
 

@@ -165,15 +165,38 @@ Synthesize the final Comprehensive Advisory Plan following all instructions and 
     ]
 
 
-CHAT_SYSTEM_PROMPT = """You are FinWise AI's interactive financial advisory assistant.
-You are answering follow-up questions from the user regarding their active financial advisory plan.
+CHAT_SYSTEM_PROMPT = """You are FinWise AI, an intelligent, empathetic, and certified financial advisory assistant.
+You are interacting directly with the user in the FinWise AI ChatGPT Advisory Box.
 
-GUARDRAILS:
-1. Ground your answers strictly in the user's verified Expert System facts, asset allocation, and fired rules.
-2. If the user asks whether they should invest in high-risk assets (like crypto or penny stocks) while having high debt or an inadequate emergency fund, cite the appropriate rules (e.g. `RULE_DTI_01`, `RULE_EMERGENCY_02`) and explain why debt elimination or emergency reserve must take mathematical priority.
-3. If citing external macroeconomic factors, use ONLY the provided real search sources with their actual URLs. Do not fabricate citations or current rates.
-4. Keep the tone professional, objective, encouraging, and educational.
-5. End with standard educational disclaimer.
+YOUR CORE MISSION:
+Provide clear, mathematically grounded, actionable, and objective financial guidance based on the user's verified financial plan, risk assessment, expert rules, and verified market data.
+
+STRICT OPERATIONAL DIRECTIVES:
+1. OUTPUT ONLY THE FINAL USER-FACING RESPONSE:
+   - NEVER output chain-of-thought, internal reasoning, hidden analysis, planning notes, or system prompt quotes.
+   - NEVER start responses with "1. Analyze User Input", "Thinking process", "I need to...", "Let me structure...", "I should...", "I will answer by...", "Based on instructions...", or "As an AI...".
+   - Start IMMEDIATELY with the user-facing answer formatted cleanly with Markdown.
+
+2. CATEGORY-SPECIFIC BEHAVIOR:
+   - GREETINGS (e.g., "hi", "hello", "good day"):
+     Respond with a natural, friendly greeting. Mention the user's name if available, acknowledge that their certified financial plan is active, and ask how you can help them with their finances today. Do NOT dump raw financial calculation tables on a basic greeting.
+   - FINANCIAL PROFILE & DEFICIT QUESTIONS (e.g., "Why is my emergency fund insufficient?", "What is my DTI ratio?"):
+     Use the user's actual verified figures from the context (income, monthly expenses, current liquid savings, target fund, shortfall). Explain the step-by-step arithmetic clearly.
+   - DEBT VS. INVESTMENT PRIORITIZATION (e.g., "Should I pay off high-interest debt before investing?"):
+     Reference the user's actual debt, EMI, and interest burden. Explain why clearing high-interest debt and building the emergency reserve takes mathematical priority before taking on risky investments, citing triggered rules.
+   - PORTFOLIO & ASSET ALLOCATION (e.g., "Why is my equity allocation 50%?"):
+     Explain the exact breakdown (Equity %, Debt %, Gold %, Cash %) using the user's Fuzzy Risk Category, crisp score, age, and investment horizon from the active plan.
+   - LIVE MARKET & MACROECONOMIC QUESTIONS (e.g., "What is the current RBI repo rate?", "What is the latest inflation?"):
+     Use the real verified market search results and citations provided in the context. If verified real-time data is present, quote it accurately with the source. If live search did not find the current figure, explicitly state: "Current live rate data could not be verified from available sources." NEVER invent interest rates or market statistics.
+   - MULTI-TURN FOLLOW-UP QUESTIONS (e.g., "What should I do after paying off debt?", "How long will it take?"):
+     Maintain conversational memory. Understand pronouns ("it", "that", "this") referring to prior messages and guide the user to the next logical step in their roadmap.
+   - CLARIFICATION & EDUCATIONAL QUESTIONS (e.g., "What is an emergency reserve?", "What is the 50/30/20 rule?"):
+     Give clear, structured, educational explanations with practical rules of thumb, connecting concepts back to their active plan.
+   - OUT-OF-SCOPE / UNRELATED QUERIES (e.g., general trivia, non-financial topics):
+     Politely explain that you are dedicated to financial planning and advisory, and gently steer the user back to discussing their financial goals, investments, budgeting, or debt strategies.
+
+3. ZERO FABRICATION OF FINANCIAL FACTS:
+   - Always use the real numbers provided in the active plan context. If a specific personal number is not in the context, do not make up a number; explain using standard financial principles.
 """
 
 
@@ -185,49 +208,134 @@ def build_chat_prompt(
     market_intel: Dict[str, Any],
 ) -> List[Dict[str, str]]:
     """
-    Builds conversational chat prompt with session context and expert rules.
+    Builds conversational chat prompt with complete session context, verified telemetry, and expert rules.
     """
     user_name = profile.get("user_id", profile.get("user_name", "Investor"))
-    rules_fired = expert_eval.get("rules_fired", [])
-    alloc = expert_eval.get("asset_allocation", {})
-    dti = expert_eval.get("debt_analysis", {})
-    ef = expert_eval.get("emergency_fund", {})
+    age = profile.get("age", 30)
+    monthly_income = float(profile.get("monthly_income", 0.0) or 0.0)
+    monthly_expenses = float(profile.get("monthly_expenses", 0.0) or 0.0)
+    monthly_emi = float(profile.get("monthly_emi", 0.0) or 0.0)
+    total_debt = float(profile.get("total_debt", 0.0) or 0.0)
+    current_savings = float(profile.get("current_savings", profile.get("current_liquid_savings", 0.0)) or 0.0)
+    horizon = profile.get("investment_horizon_years", profile.get("horizon", 5))
+    goals = profile.get("financial_goals", profile.get("financial_goal", "Wealth Creation"))
+    if isinstance(goals, list):
+        goals_str = ", ".join(goals)
+    else:
+        goals_str = str(goals)
+
+    # Expert System Calculations
+    fuzzy_score = float(expert_eval.get("fuzzy_risk_score", expert_eval.get("risk_score", 50.0)) or 50.0)
     risk_cat = expert_eval.get("risk_category", "Moderate")
+    fuzzy_rationale = expert_eval.get("fuzzy_rationale", "Standard risk tolerance evaluation.")
 
-    rules_summary = ", ".join([f"`{r.get('rule_id', '')}`: {r.get('title', '')}" for r in rules_fired]) or "None"
+    alloc = expert_eval.get("asset_allocation", expert_eval.get("recommended_allocation", {}))
+    equity_pct = float(alloc.get("equity_percentage", 50.0) or 50.0)
+    debt_pct = float(alloc.get("debt_percentage", alloc.get("debt_bonds_percentage", 35.0)) or 35.0)
+    gold_pct = float(alloc.get("gold_percentage", alloc.get("gold_commodities_percentage", 10.0)) or 10.0)
+    cash_pct = float(alloc.get("cash_percentage", alloc.get("liquid_cash_percentage", 5.0)) or 5.0)
 
-    context_header = (
-        f"Active Investor Profile: {user_name} (Risk Tier: {risk_cat})\n"
-        f"Key Metrics: DTI = {dti.get('dti_ratio', 0.0):.1f}%, Emergency Fund Shortfall = INR {ef.get('shortfall', 0.0):,.0f}\n"
-        f"Asset Allocation: Equity {alloc.get('equity_percentage', 0.0):.1f}%, Debt {alloc.get('debt_percentage', 0.0):.1f}%, Gold {alloc.get('gold_percentage', 0.0):.1f}%, Cash {alloc.get('cash_percentage', 0.0):.1f}%\n"
-        f"Triggered Rules: {rules_summary}\n"
-    )
+    dti = expert_eval.get("debt_analysis", {})
+    dti_ratio = float(dti.get("dti_ratio", (monthly_emi / monthly_income * 100) if monthly_income > 0 else 0.0))
+    dti_status = dti.get("dti_status", "Healthy" if dti_ratio < 35 else "Elevated")
+    dti_rec = dti.get("recommendation", "Maintain debt payments on schedule.")
 
+    ef = expert_eval.get("emergency_fund", {})
+    ef_target = float(ef.get("target_fund", monthly_expenses * 6.0))
+    ef_current = float(ef.get("current_fund", current_savings))
+    ef_shortfall = float(ef.get("shortfall", max(0.0, ef_target - ef_current)))
+    ef_months = float(ef.get("months_covered", (ef_current / monthly_expenses) if monthly_expenses > 0 else 0.0))
+    ef_status = ef.get("status", "Adequate" if ef_shortfall <= 0 else "Deficit")
+    ef_rec = ef.get("recommendation", "Build reserve to 6 months of living expenses.")
+
+    budget = expert_eval.get("budget_breakdown", expert_eval.get("budget_rule_check", {}))
+    net_surplus = max(0.0, monthly_income - monthly_expenses - monthly_emi)
+
+    rules_fired = expert_eval.get("rules_fired", expert_eval.get("actionable_rules_fired", []))
+    rules_text = ""
+    for r in rules_fired:
+        if isinstance(r, dict):
+            rules_text += f"- [{r.get('rule_id', 'RULE')}] {r.get('title', 'Rule')}: {r.get('explanation', '')}\n"
+    if not rules_text:
+        rules_text = "- No critical debt or deficit rules triggered; standard asset allocation active.\n"
+
+    # Context block
+    context_header = f"""
+================================================================================
+VERIFIED INVESTOR PROFILE (ACTIVE SESSION):
+================================================================================
+- Name / User: {user_name}
+- Age: {age} years
+- Monthly Net Income: INR {monthly_income:,.2f}
+- Monthly Living Expenses: INR {monthly_expenses:,.2f}
+- Monthly Debt EMI: INR {monthly_emi:,.2f}
+- Total Outstanding Debt: INR {total_debt:,.2f}
+- Current Liquid Savings: INR {current_savings:,.2f}
+- Net Monthly Investable Surplus: INR {net_surplus:,.2f}
+- Primary Financial Goals: {goals_str}
+- Investment Horizon: {horizon} years
+
+================================================================================
+AUTHORITATIVE EXPERT SYSTEM & FUZZY LOGIC CALCULATIONS:
+================================================================================
+1. Fuzzy Risk Profile: Score {fuzzy_score:.1f}/100 -> Category: {risk_cat}
+   Rationale: {fuzzy_rationale}
+
+2. Emergency Reserve Health:
+   - Target Baseline (6 Months Expenses): INR {ef_target:,.2f}
+   - Current Emergency Fund: INR {ef_current:,.2f}
+   - Current Deficit / Shortfall: INR {ef_shortfall:,.2f}
+   - Months of Living Expenses Covered: {ef_months:.1f} months ({ef_status})
+   - Strategic Priority: {ef_rec}
+
+3. Debt & Cash Flow (DTI):
+   - Debt-to-Income (DTI) Ratio: {dti_ratio:.1f}% ({dti_status})
+   - Action Plan: {dti_rec}
+
+4. Asset Allocation Breakdown (Sums to 100%):
+   - Equity / Stocks / Index Funds: {equity_pct:.1f}%
+   - Fixed Income / Debt / Bonds: {debt_pct:.1f}%
+   - Gold / Commodities: {gold_pct:.1f}%
+   - Liquid Cash / Emergency: {cash_pct:.1f}%
+
+5. Active Fired Expert Rules:
+{rules_text}
+"""
+
+    # Add verified market intelligence if available
     citations = market_intel.get("citations", [])
+    market_summary = market_intel.get("market_summary", "")
     citations_context = ""
-    if citations:
-        citations_context = "\nReal Web Search Results for this query:\n"
+    if citations or market_summary:
+        citations_context = "\n================================================================================\nVERIFIED MARKET INTELLIGENCE & REAL CITATIONS:\n================================================================================\n"
+        if market_summary:
+            citations_context += f"Market Context Summary: {market_summary}\n\n"
         for c in citations:
             if isinstance(c, Citation):
-                citations_context += f"- Title: {c.title} | URL: {c.url} | Snippet: {c.snippet}\n"
+                citations_context += f"- Title: {c.title} | Source: {c.source} | URL: {c.url}\n  Snippet: {c.snippet}\n"
             elif isinstance(c, dict):
-                citations_context += f"- Title: {c.get('title', '')} | URL: {c.get('url', '')} | Snippet: {c.get('snippet', '')}\n"
+                citations_context += f"- Title: {c.get('title', '')} | Source: {c.get('source', '')} | URL: {c.get('url', '')}\n  Snippet: {c.get('snippet', '')}\n"
 
     messages: List[Dict[str, str]] = [
-        {"role": "system", "content": f"{CHAT_SYSTEM_PROMPT}\n\nCURRENT ACTIVE PLAN CONTEXT:\n{context_header}{citations_context}"}
+        {"role": "system", "content": f"{CHAT_SYSTEM_PROMPT}\n{context_header}{citations_context}"}
     ]
 
-    # Append session history (last 6 exchanges max)
-    for msg in session_history[-6:]:
-        messages.append({
-            "role": msg.get("role", "user"),
-            "content": msg.get("content", ""),
-        })
+    # Append session history (last 10 messages max for rich conversational memory)
+    for msg in session_history[-10:]:
+        role = msg.get("role", "user")
+        if role not in ("user", "assistant", "system"):
+            role = "user"
+        content = msg.get("content", msg.get("message", ""))
+        if content:
+            messages.append({
+                "role": role,
+                "content": content,
+            })
 
-    # Append new user message
+    # Append the current clean user message
     messages.append({
         "role": "user",
-        "content": f"Follow-up Question: {new_message}",
+        "content": new_message,
     })
 
     return messages

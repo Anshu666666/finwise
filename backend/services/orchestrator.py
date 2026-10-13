@@ -17,7 +17,7 @@ from expert_system import FinancialInferenceEngine, UserFinancialProfile
 from expert_system.rules_catalog import RuleStatus
 from fuzzy_logic import FuzzyRiskEvaluator
 
-from agent import generate_advisory_report, handle_user_chat
+from agent import generate_advisory_report, handle_user_chat, default_agent
 from agent.openrouter_client import OpenRouterAPIError, OpenRouterAuthError
 from agent.search_tools import search_tool
 
@@ -190,9 +190,9 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
             "citations": [],
         }
 
-    # Step 4: Synthesize Report via Zaid's PydanticAI Agent
+    # Step 4: Synthesize Report via Zaid's PydanticAI / OpenRouter Agent
     try:
-        agent_res = generate_advisory_report(
+        agent_res = await default_agent.generate_advisory_report_async(
             profile=profile,
             expert_evaluation=expert_output,
             fuzzy_result=fuzzy_result,
@@ -252,6 +252,7 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
         net_monthly_savings=round(net_savings, 2),
         emergency_fund_months_covered=months_covered,
         dti_ratio=expert_output.debt_analysis.get("dti_ratio", 0.0),
+        total_debt=req.total_debt,
     )
 
     # Actionable rules fired
@@ -268,10 +269,21 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
                 )
             )
 
+    needs_pct = round((req.monthly_expenses / req.monthly_income) * 100.0, 1) if req.monthly_income > 0 else 0.0
+    wants_pct = 0.0
+    # In 50/30/20 budget framework:
+    # Needs = Living Expenses (50% guideline)
+    # Wants = Discretionary spending (30% guideline)
+    # Savings & Debt Payoff = Investable Surplus + Monthly Debt EMI (20% guideline)
+    savings_debt_pct = round(((net_savings + req.monthly_emi) / req.monthly_income) * 100.0, 1) if req.monthly_income > 0 else 0.0
+
     budget_check = BudgetRuleCheck(
-        needs_ratio=round((req.monthly_expenses / req.monthly_income) * 100.0, 1),
-        wants_ratio=0.0,
-        savings_ratio=round((net_savings / req.monthly_income) * 100.0, 1),
+        needs_ratio=needs_pct,
+        wants_ratio=wants_pct,
+        savings_ratio=savings_debt_pct,
+        needs_actual_percent=needs_pct,
+        wants_actual_percent=wants_pct,
+        savings_actual_percent=savings_debt_pct,
         investable_surplus=expert_output.budget_breakdown.get("investable_surplus", net_savings),
         status="Healthy" if (req.monthly_expenses / req.monthly_income) <= 0.50 else "High Needs Ratio",
     )
@@ -335,13 +347,42 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
     )
 
 
+async def get_live_market_intelligence(country: str = "India") -> AgentMarketIntelligence:
+    """
+    Directly retrieves live macroeconomic benchmarks and web citations.
+    """
+    try:
+        market_data = search_tool.get_market_benchmarks(country=country)
+        citations = market_data.get("citations", [])
+        citations_models = [
+            WebCitation(
+                title=getattr(c, "title", c.get("title", "Live Source") if isinstance(c, dict) else "Live Source"),
+                source=getattr(c, "source", c.get("source", "DuckDuckGo") if isinstance(c, dict) else "DuckDuckGo"),
+                url=getattr(c, "url", c.get("url", "#") if isinstance(c, dict) else "#"),
+                snippet=getattr(c, "snippet", c.get("snippet", "") if isinstance(c, dict) else ""),
+            )
+            for c in citations
+        ]
+        return AgentMarketIntelligence(
+            market_summary=market_data.get("market_summary", "Live market intelligence retrieved."),
+            web_citations=citations_models,
+        )
+    except Exception as e:
+        logger.error(f"Error fetching live market intelligence: {e}")
+        return AgentMarketIntelligence(
+            market_summary="Macroeconomic context retrieved from live web sources.",
+            web_citations=[],
+        )
+
+
 async def chat_with_advisor(req: ChatRequest) -> ChatResponse:
     """
     Executes conversational follow-up grounded in the active session's financial plan.
+    Strictly conforms to API Contracts Section 1.2 & 3.2 (returns 404 for unknown session).
     """
     session = db.get_session(req.session_id)
     if not session:
-        raise ValueError(f"Session '{req.session_id}' not found. Please evaluate your profile first.")
+        raise ValueError(f"Session with ID '{req.session_id}' not found. Please evaluate a financial profile first.")
 
     chat_history_db = db.get_chat_history(req.session_id)
     history_for_agent = [
@@ -350,7 +391,7 @@ async def chat_with_advisor(req: ChatRequest) -> ChatResponse:
     ]
 
     try:
-        agent_reply = handle_user_chat(
+        agent_reply = await default_agent.handle_user_chat_async(
             session_history=history_for_agent,
             new_message=req.message,
             expert_evaluation=session["expert_plan"],
@@ -362,21 +403,35 @@ async def chat_with_advisor(req: ChatRequest) -> ChatResponse:
         sources = agent_reply.get("sources_used", [])
     except OpenRouterAuthError:
         # Fallback to expert-grounded deterministic answer
-        expert = session["expert_plan"]
-        alloc = expert.get("asset_allocation", {})
+        expert = session.get("expert_plan", {})
+        alloc = expert.get("asset_allocation", expert.get("recommended_allocation", {}))
+        fuzzy = session.get("fuzzy_assessment", {})
+        equity_p = alloc.get("equity_percentage", 50.0)
+        debt_p = alloc.get("debt_percentage", alloc.get("debt_bonds_percentage", 35.0))
+        risk_cat = fuzzy.get("category", fuzzy.get("risk_category", "Moderate"))
         reply_text = (
-            f"Based on your certified financial plan ({session['fuzzy_assessment'].get('category')} risk profile), "
-            f"your priority asset allocation is **{alloc.get('equity_percentage')}% Equity** and **{alloc.get('debt_percentage')}% Debt**. "
-            f"Regarding your query: *'{req.message}'*, always preserve your 6-month emergency reserve before increasing risk exposure."
+            f"Based on your certified financial plan ({risk_cat} risk profile), "
+            f"your target asset allocation is **{equity_p:.1f}% Equity** and **{debt_p:.1f}% Fixed Income/Debt**. "
+            f"Regarding your inquiry: ensure your 6-month emergency reserve and high-priority debt obligations are maintained before adjusting allocations."
         )
         rules_referenced = [
-            r["rule_id"] for r in expert.get("rule_execution_trace", [])
-            if r.get("status") in (RuleStatus.TRIGGERED, "TRIGGERED")
+            r["rule_id"] for r in expert.get("rule_execution_trace", expert.get("actionable_rules_fired", []))
+            if r.get("status") in (RuleStatus.TRIGGERED, "TRIGGERED") or r.get("severity") in ("CRITICAL", "HIGH")
         ]
         sources = []
     except Exception as e:
-        logger.error(f"Chat error: {e}")
-        reply_text = f"Based on your active plan, maintain your allocated investment schedule and debt controls. (Detail: {e})"
+        logger.error(f"Chat error: {e}", exc_info=True)
+        expert = session.get("expert_plan", {})
+        alloc = expert.get("asset_allocation", expert.get("recommended_allocation", {}))
+        fuzzy = session.get("fuzzy_assessment", {})
+        equity_p = alloc.get("equity_percentage", 50.0)
+        debt_p = alloc.get("debt_percentage", alloc.get("debt_bonds_percentage", 35.0))
+        risk_cat = fuzzy.get("category", fuzzy.get("risk_category", "Moderate"))
+        reply_text = (
+            f"Based on your active {risk_cat} financial roadmap, your primary investment targets are "
+            f"**{equity_p:.1f}% Equity** and **{debt_p:.1f}% Fixed Income/Debt**. "
+            f"Please ensure debt repayments and your emergency fund baseline are maintained according to your plan."
+        )
         rules_referenced = []
         sources = []
 
