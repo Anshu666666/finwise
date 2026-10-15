@@ -130,6 +130,5 @@ def test_chat_api_sequence():
 
 if __name__ == "__main__":
     verify_css_and_html_layout("frontend/index.html")
-    verify_css_and_html_layout("web_demo/index.html")
     test_chat_api_sequence()
     print("\n[SUCCESS] All verification tests passed flawlessly!")

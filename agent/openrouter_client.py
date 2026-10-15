@@ -152,7 +152,7 @@ class OpenRouterClient:
         api_key: Optional[str] = None,
         default_model: Optional[str] = None,
         base_url: Optional[str] = None,
-        site_url: str = "https://github.com/Anshu666666/ai-project-financial-advisory-system",
+        site_url: str = "https://github.com/Anshu666666/finwise",
         site_name: str = "FinWise AI Financial Advisory",
         timeout: Optional[float] = None,
     ):

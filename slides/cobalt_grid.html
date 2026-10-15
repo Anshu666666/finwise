@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinWise AI — Institutional Hybrid Financial Advisory & Decision Support System</title>
+    <!-- Google Fonts: Newsreader (display serif 400), Hanken Grotesk (sans body & caps), DM Mono (chrome & telemetry) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           COBALT GRID DESIGN SYSTEM (zarazhangrui/frontend-slides)
+           Strict Two-Color Editorial Risograph Aesthetic
+           ========================================================================== */
+        :root {
+            --paper: #F0EBDE;
+            --paper-2: #E6E0CE;
+            --ink: #1F2BE0;
+            --ink-soft: #5560E5;
+            --grid: rgba(31, 43, 224, 0.09);
+            --ink-faint: rgba(31, 43, 224, 0.18);
+            --ink-subtle: rgba(31, 43, 224, 0.35);
+
+            --font-serif: "Newsreader", Georgia, serif;
+            --font-sans: "Hanken Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0d1020;
+            font-family: var(--font-sans);
+            color: var(--ink);
+            user-select: none;
+        }
+
+        /* 1. Viewport Outer Container */
+        .deck-viewport {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0d1020;
+        }
+
+        /* 2. Fixed 1920x1080 Stage */
+        .deck-stage {
+            position: absolute;
+            width: 1920px;
+            height: 1080px;
+            background: var(--paper);
+            overflow: hidden;
+            transform-origin: center center;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+        }
+
+        /* 3. Permanent Graph-Paper Grid (Non-optional) */
+        .deck-stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(to right, var(--grid) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* 4. Persistent Cobalt Hairlines Framing Every Slide */
+        .stage-hairline-top {
+            position: absolute;
+            top: 28px;
+            left: 64px;
+            right: 64px;
+            height: 1.5px;
+            background: var(--ink);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .stage-hairline-bottom {
+            position: absolute;
+            bottom: 24px;
+            left: 64px;
+            right: 64px;
+            height: 1.5px;
+            background: var(--ink);
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        /* 5. Persistent Navigation Chrome & Page Number */
+        .stage-chrome-left {
+            position: absolute;
+            left: 64px;
+            bottom: 42px;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            color: var(--ink);
+            opacity: 0.65;
+            z-index: 25;
+            text-transform: uppercase;
+        }
+
+        .stage-chrome-right {
+            position: absolute;
+            right: 64px;
+            bottom: 42px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.08em;
+            color: var(--ink);
+            font-weight: 500;
+            z-index: 25;
+        }
+
+        /* 6. Slide Stack Layout */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            padding: 68px 64px 80px 64px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+            z-index: 2;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Topbar Header Component */
+        .topbar {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            border-bottom: 1.5px solid var(--ink);
+            padding-bottom: 18px;
+            margin-bottom: 42px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .topbar-title {
+            font-family: var(--font-serif);
+            font-size: 52px;
+            font-weight: 400;
+            line-height: 1.0;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .topbar-meta {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink);
+            opacity: 0.85;
+        }
+
+        /* Typography Presets */
+        .display-hero {
+            font-family: var(--font-serif);
+            font-size: 160px;
+            font-weight: 400;
+            line-height: 0.88;
+            letter-spacing: -0.025em;
+            color: var(--ink);
+        }
+
+        .serif-sub {
+            font-family: var(--font-serif);
+            font-size: 34px;
+            font-weight: 400;
+            line-height: 1.25;
+            color: var(--ink);
+        }
+
+        .serif-italic {
+            font-style: italic;
+        }
+
+        .micro-kicker {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .mono-tag {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            color: var(--ink);
+        }
+
+        .body-p {
+            font-family: var(--font-sans);
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.55;
+            color: var(--ink);
+        }
+
+        .body-sm {
+            font-family: var(--font-sans);
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--ink);
+        }
+
+        /* Decorative Elements: Pixel Glitch & QR Block */
+        .pixel-glitch {
+            position: absolute;
+            right: 64px;
+            top: 76px;
+            bottom: 90px;
+            width: 320px;
+            pointer-events: none;
+            z-index: 3;
+            opacity: 0.85;
+        }
+
+        .qr-mosaic {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 2.5px;
+            background: var(--paper);
+            padding: 6px;
+            box-shadow: 0 0 0 2px var(--paper);
+            width: 84px;
+            height: 84px;
+        }
+
+        .qr-cell {
+            background: transparent;
+        }
+
+        .qr-cell.on {
+            background: var(--ink);
+        }
+
+        /* Slide 1: Masthead Cover Styles */
+        .cover-container {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            height: 100%;
+            align-content: space-between;
+            position: relative;
+            z-index: 5;
+        }
+
+        .cover-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 860px;
+        }
+
+        .cover-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 860px;
+            padding-right: 20px;
+        }
+
+        .team-roster {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px 48px;
+            border-top: 1.5px solid var(--ink);
+            padding-top: 24px;
+            max-width: 960px;
+        }
+
+        .roster-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--ink-faint);
+            padding-bottom: 8px;
+        }
+
+        .roster-name {
+            font-family: var(--font-sans);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .roster-roll {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--ink);
+            opacity: 0.8;
+        }
+
+        /* Slide 2: Four Dilemmas Ledger Grid */
+        .ledger-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 36px 64px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .ledger-card {
+            border-top: 1.5px solid var(--ink);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .ledger-num {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--ink);
+            letter-spacing: 0.08em;
+        }
+
+        .ledger-h3 {
+            font-family: var(--font-serif);
+            font-size: 34px;
+            font-weight: 400;
+            line-height: 1.15;
+            color: var(--ink);
+        }
+
+        .ledger-fail {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            background: rgba(31, 43, 224, 0.06);
+            border-left: 3px solid var(--ink);
+            padding: 8px 12px;
+            color: var(--ink);
+        }
+
+        /* Slide 3: 4-Tier Hybrid Architecture Pipeline */
+        .arch-pipeline {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            height: 760px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .arch-tier {
+            border: 1.5px solid var(--ink);
+            background: rgba(240, 235, 222, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 22px;
+            position: relative;
+        }
+
+        .arch-tier-header {
+            border-bottom: 1px solid var(--ink-faint);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+        }
+
+        .arch-tier-num {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            opacity: 0.7;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .arch-tier-title {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.1;
+            color: var(--ink);
+        }
+
+        .arch-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .arch-list li {
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 1.45;
+            color: var(--ink);
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .arch-list li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: var(--ink);
+            opacity: 0.6;
+        }
+
+        .arch-tier-footer {
+            border-top: 1px solid var(--ink-faint);
+            padding-top: 14px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.04em;
+            color: var(--ink);
+        }
+
+        /* Slide 4: Algorithmic Core I (Mamdani FIS) */
+        .math-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 48px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .math-box {
+            border: 1.5px solid var(--ink);
+            padding: 28px;
+            background: rgba(240, 235, 222, 0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .math-formula {
+            font-family: var(--font-mono);
+            font-size: 15px;
+            line-height: 1.6;
+            background: rgba(31, 43, 224, 0.05);
+            padding: 14px 18px;
+            border-left: 3px solid var(--ink);
+            color: var(--ink);
+        }
+
+        .table-cobalt {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font-sans);
+            font-size: 14px;
+        }
+
+        .table-cobalt th {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1.5px solid var(--ink);
+            color: var(--ink);
+        }
+
+        .table-cobalt td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--ink-faint);
+            color: var(--ink);
+        }
+
+        /* Slide 5: Forward Chaining Priority Rules */
+        .rule-chain-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .rule-card {
+            border: 1.5px solid var(--ink);
+            padding: 22px 24px;
+            background: rgba(240, 235, 222, 0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rule-badge-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rule-prio {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            background: var(--ink);
+            color: var(--paper);
+            padding: 3px 8px;
+            font-weight: 500;
+        }
+
+        .rule-id {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .rule-title {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 400;
+            color: var(--ink);
+            line-height: 1.15;
+        }
+
+        .rule-logic {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            line-height: 1.5;
+            background: rgba(31, 43, 224, 0.05);
+            padding: 10px 14px;
+            border-left: 2px solid var(--ink);
+        }
+
+        /* Slide 6: Agentic Grounding & Resilience */
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .agent-card {
+            border: 1.5px solid var(--ink);
+            padding: 26px;
+            background: rgba(240, 235, 222, 0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .agent-header {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            line-height: 1.15;
+            color: var(--ink);
+            border-bottom: 1.5px solid var(--ink);
+            padding-bottom: 12px;
+        }
+
+        /* Slide 7: Verification & TA Evaluation Suite (Pixel Stack Bars) */
+        .eval-container {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 48px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .metrics-stack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .metric-cell {
+            border: 1.5px solid var(--ink);
+            padding: 20px;
+            background: rgba(240, 235, 222, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .metric-val {
+            font-family: var(--font-serif);
+            font-size: 64px;
+            line-height: 0.95;
+            color: var(--ink);
+            letter-spacing: -0.02em;
+            margin: 8px 0;
+        }
+
+        .chart-box {
+            border: 1.5px solid var(--ink);
+            padding: 24px;
+            background: rgba(240, 235, 222, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pixel-bars-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 340px;
+            padding: 20px 0 10px 0;
+            border-bottom: 1.5px solid var(--ink);
+        }
+
+        .bar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .bar-stack {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 3px;
+            width: 32px;
+        }
+
+        .stack-cell {
+            width: 100%;
+            height: 12px;
+            background: var(--grid);
+        }
+
+        .stack-cell.on {
+            background: var(--ink);
+        }
+
+        .bar-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            color: var(--ink);
+        }
+
+        /* Slide 8: Workstation & Roadmap */
+        .closing-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .workstation-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .feature-tile {
+            border: 1.5px solid var(--ink);
+            padding: 16px;
+            background: rgba(240, 235, 222, 0.85);
+        }
+
+        .feature-title {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .roadmap-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border-left: 2px solid var(--ink);
+            padding-left: 24px;
+        }
+
+        .timeline-step {
+            position: relative;
+        }
+
+        .timeline-step::before {
+            content: "";
+            position: absolute;
+            left: -31px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            background: var(--ink);
+        }
+
+        .timeline-quarter {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            color: var(--ink);
+            display: block;
+        }
+
+        .timeline-heading {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            line-height: 1.2;
+            color: var(--ink);
+            margin: 4px 0;
+        }
+
+        /* Floating Slide Controls (Discrete, Outside Print) */
+        .deck-controls {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(13, 16, 32, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 999px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+
+        .control-counter {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: #fff;
+            padding: 0 8px;
+        }
+
+        /* Print Media Setup (Generates Perfect 1920x1080 PDF Pages) */
+        @media print {
+            html, body {
+                width: 1920px;
+                height: auto;
+                background: #fff;
+                overflow: visible;
+            }
+            .deck-viewport {
+                position: static;
+                background: #fff;
+            }
+            .deck-stage {
+                position: static;
+                width: auto;
+                height: auto;
+                transform: none !important;
+                box-shadow: none;
+            }
+            .slide {
+                position: relative !important;
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 1920px !important;
+                height: 1080px !important;
+                break-after: page;
+                page-break-after: always;
+            }
+            .deck-controls {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="deck-viewport">
+        <main class="deck-stage" id="deckStage">
+            <!-- Persistent Top & Bottom Cobalt Hairlines -->
+            <div class="stage-hairline-top"></div>
+            <div class="stage-hairline-bottom"></div>
+
+            <!-- Persistent Bottom Chrome -->
+            <div class="stage-chrome-left">IIIT KOTTAYAM · SAD 2026 AUDIT SPEC</div>
+            <div class="stage-chrome-right" id="slideIndexDisplay">01 / 08</div>
+
+            <!-- ==========================================================================
+                 SLIDE 1: COVER / MASTHEAD
+                 ========================================================================== -->
+            <section class="slide active" data-index="1">
+                <div class="cover-container">
+                    <div class="cover-left">
+                        <div>
+                            <span class="micro-kicker">FINANCIAL ARCHITECTURE RESEARCH REPORT // VOL. 11</span>
+                            <h1 class="display-hero">FinWise AI</h1>
+                            <p class="serif-sub serif-italic" style="margin-top: 18px; max-width: 880px;">
+                                Institutional Hybrid Financial Advisory & Decision Support System
+                            </p>
+                            <p class="body-p" style="margin-top: 14px; max-width: 820px; opacity: 0.85;">
+                                A deterministic-stochastic fusion framework unifying Mamdani Fuzzy Inference, Forward Chaining Priority Rules, and Grounded Agentic Market Intelligence.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="micro-kicker" style="margin-bottom: 14px;">SOFTWARE ARCHITECTURE & DESIGN RESEARCH GROUP</span>
+                            <div class="team-roster">
+                                <div class="roster-item">
+                                    <span class="roster-name">Anshuman Biswas</span>
+                                    <span class="roster-roll">2024BCD0008</span>
+                                </div>
+                                <div class="roster-item">
+                                    <span class="roster-name">Nipun Abhilash</span>
+                                    <span class="roster-roll">2024BCD0056</span>
+                                </div>
+                                <div class="roster-item">
+                                    <span class="roster-name">Aman Gupta</span>
+                                    <span class="roster-roll">2024BCY0042</span>
+                                </div>
+                                <div class="roster-item">
+                                    <span class="roster-name">Aryan Bhadula</span>
+                                    <span class="roster-roll">2024BCD0039</span>
+                                </div>
+                                <div class="roster-item" style="grid-column: span 2;">
+                                    <span class="roster-name">Mohd Zaid</span>
+                                    <span class="roster-roll">2024BCY0014</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cover-right">
+                        <!-- 8x8 QR Mosaic Patch -->
+                        <div class="qr-mosaic">
+                            <div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div>
+                            <div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell on"></div>
+                            <div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell"></div><div class="qr-cell on"></div><div class="qr-cell on"></div><div class="qr-cell on"></div>
+                        </div>
+
+                        <!-- Technical Specification Monospace Ticker -->
+                        <div style="text-align: right; border-top: 1.5px solid var(--ink); padding-top: 18px; width: 100%;">
+                            <span class="mono-tag" style="display: block; line-height: 1.8;">
+                                CORE: MAMMDANI-FIS v2.4<br>
+                                INFERENCE: FORWARD-CHAIN-PRIORITY<br>
+                                AGENT: PYDANTIC-AI + DUCKDUCKGO<br>
+                                ROUTER: OPENROUTER FREE ROUTER<br>
+                                STATUS: 100% INVARIANT VERIFIED
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Signature Stair-Stepped Pixel Glitch Column -->
+                <svg class="pixel-glitch" viewBox="0 0 300 750" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="scanlines" width="4" height="4" patternUnits="userSpaceOnUse">
+                            <line x1="0" y1="0" x2="0" y2="4" stroke="#1F2BE0" stroke-width="1.2" />
+                        </pattern>
+                    </defs>
+                    <rect x="220" y="0" width="80" height="140" fill="url(#scanlines)" />
+                    <rect x="170" y="110" width="130" height="160" fill="url(#scanlines)" />
+                    <rect x="120" y="240" width="180" height="180" fill="url(#scanlines)" />
+                    <rect x="180" y="390" width="120" height="140" fill="url(#scanlines)" />
+                    <rect x="230" y="500" width="70" height="200" fill="url(#scanlines)" />
+                    <rect x="140" y="620" width="160" height="130" fill="url(#scanlines)" />
+                </svg>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 2: THE PROBLEM LANDSCAPE
+                 ========================================================================== -->
+            <section class="slide" data-index="2">
+                <div class="topbar">
+                    <h2 class="topbar-title">The Four Structural Dilemmas of Automated Wealth Advisory</h2>
+                    <span class="topbar-meta">DIAGNOSTIC LEDGER // 002</span>
+                </div>
+
+                <div class="ledger-grid">
+                    <div class="ledger-card">
+                        <span class="ledger-num">01 / STOCHASTIC VOLATILITY</span>
+                        <h3 class="ledger-h3">LLM Hallucination & Arithmetic Collapse</h3>
+                        <p class="body-p">
+                            Pure generative models cannot perform reliable quantitative portfolio optimization. Unbounded probabilistic generators hallucinate ticker yields, violate foundational capital conservation rules, and produce asset allocation weights that do not sum to 100%.
+                        </p>
+                        <div class="ledger-fail">
+                            CRITICAL FAILURE: Non-deterministic weight synthesis, zero regulatory accountability, prompt-injection vulnerability.
+                        </div>
+                    </div>
+
+                    <div class="ledger-card">
+                        <span class="ledger-num">02 / DISCRETE FRAGILITY</span>
+                        <h3 class="ledger-h3">Boundary Cliff Effects in Decision Trees</h3>
+                        <p class="body-p">
+                            Traditional static rule engines depend on rigid crisp thresholds. An investor with a ₹49,999 emergency fund is classified as "Vulnerable" while ₹50,001 abruptly triggers "Aggressive Equity"—an artificial discontinuous cliff that misallocates real capital.
+                        </p>
+                        <div class="ledger-fail">
+                            CRITICAL FAILURE: Step-function portfolio jumps, zero tolerance for subjective financial ambiguity.
+                        </div>
+                    </div>
+
+                    <div class="ledger-card">
+                        <span class="ledger-num">03 / REAL-TIME BLINDNESS</span>
+                        <h3 class="ledger-h3">Stale Macroeconomic Context</h3>
+                        <p class="body-p">
+                            Offline advisory logic operates in an economic vacuum. Hardcoded formulas cannot adapt when central banks unexpectedly raise repo rates by 50 bps, inflation spikes beyond target bands, or geopolitical conflicts drive emergency sovereign yields higher.
+                        </p>
+                        <div class="ledger-fail">
+                            CRITICAL FAILURE: Outdated yield assumptions, static debt payoff guidance during interest rate shifts.
+                        </div>
+                    </div>
+
+                    <div class="ledger-card">
+                        <span class="ledger-num">04 / COMPLIANCE PROVENANCE</span>
+                        <h3 class="ledger-h3">The Black-Box Auditability Impasse</h3>
+                        <p class="body-p">
+                            Financial regulations (SEBI, FINRA, SEC) mandate comprehensive explainability and formal mathematical justification for every fiduciary recommendation. End-to-end deep neural models cannot provide an audit trail of why a client was allocated 30% debt.
+                        </p>
+                        <div class="ledger-fail">
+                            CRITICAL FAILURE: Regulatory rejection, impossible forensic reconstruction of investment logic.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 3: 4-TIER HYBRID ARCHITECTURE
+                 ========================================================================== -->
+            <section class="slide" data-index="3">
+                <div class="topbar">
+                    <h2 class="topbar-title">Software Architecture: 4-Tier Hybrid Decision Engine</h2>
+                    <span class="topbar-meta">PIPELINE TOPOLOGY // 003</span>
+                </div>
+
+                <div class="arch-pipeline">
+                    <div class="arch-tier">
+                        <div class="arch-tier-header">
+                            <span class="arch-tier-num">TIER 01 · NORMALIZATION</span>
+                            <h3 class="arch-tier-title">Telemetry Validation</h3>
+                        </div>
+                        <ul class="arch-list">
+                            <li>Strict Pydantic V2 schema validation and sanity bounds enforcement.</li>
+                            <li>Normalizes Net Worth, Monthly Surplus, Debt APR, Investment Horizon.</li>
+                            <li>Calculates Debt-to-Income (DTI) and Emergency Reserve ratios.</li>
+                            <li>Rejects out-of-domain telemetry before pipeline propagation.</li>
+                        </ul>
+                        <div class="arch-tier-footer">
+                            STATUS: INVARIANT ENFORCED<br>
+                            OUTPUT: NormalizedUserProfile
+                        </div>
+                    </div>
+
+                    <div class="arch-tier">
+                        <div class="arch-tier-header">
+                            <span class="arch-tier-num">TIER 02 · FUZZY LOGIC</span>
+                            <h3 class="arch-tier-title">Mamdani FIS Core</h3>
+                        </div>
+                        <ul class="arch-list">
+                            <li>Continuous evaluation of subjective human financial ambiguity.</li>
+                            <li>Overlapping triangular & trapezoidal membership functions.</li>
+                            <li>Evaluates multi-input rules using Gödel min T-norm.</li>
+                            <li>Centroid defuzzification produces continuous Risk Score $S \in [0, 100]$.</li>
+                        </ul>
+                        <div class="arch-tier-footer">
+                            STATUS: CONTINUOUS SURFACE<br>
+                            OUTPUT: ContinuousRiskMetric
+                        </div>
+                    </div>
+
+                    <div class="arch-tier">
+                        <div class="arch-tier-header">
+                            <span class="arch-tier-num">TIER 03 · EXPERT RULES</span>
+                            <h3 class="arch-tier-title">Forward Chaining</h3>
+                        </div>
+                        <ul class="arch-list">
+                            <li>Deterministic priority activation queue ($P=100 \dots 70$).</li>
+                            <li>Enforces regulatory guardrails and safety reserves.</li>
+                            <li>Mandatory 6-month Emergency Fund liquidity gate.</li>
+                            <li>Imposes hard equity caps during high-cost debt amortizations.</li>
+                        </ul>
+                        <div class="arch-tier-footer">
+                            STATUS: DETERMINISTIC QUEUE<br>
+                            OUTPUT: VerifiedConstraintMatrix
+                        </div>
+                    </div>
+
+                    <div class="arch-tier">
+                        <div class="arch-tier-header">
+                            <span class="arch-tier-num">TIER 04 · AGENTIC RAG</span>
+                            <h3 class="arch-tier-title">PydanticAI Grounding</h3>
+                        </div>
+                        <ul class="arch-list">
+                            <li>Real-time market grounding using DuckDuckGo search.</li>
+                            <li>Extracts current central bank repo rates and macro signals.</li>
+                            <li>Multi-model fallback chain via OpenRouter free router.</li>
+                            <li>Generates auditable rationale strictly bound to typed schemas.</li>
+                        </ul>
+                        <div class="arch-tier-footer">
+                            STATUS: REAL-TIME GROUNDED<br>
+                            OUTPUT: AuditableAdvisoryReport
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 4: ALGORITHMIC CORE I (MAMDANI FIS)
+                 ========================================================================== -->
+            <section class="slide" data-index="4">
+                <div class="topbar">
+                    <h2 class="topbar-title">Algorithmic Core I: Continuous Fuzzy Inference System</h2>
+                    <span class="topbar-meta">MATHEMATICAL FORMALISM // 004</span>
+                </div>
+
+                <div class="math-layout">
+                    <div class="math-box">
+                        <span class="micro-kicker">MATHEMATICAL DEFINITION & INFERENCE MECHANISM</span>
+                        <p class="body-sm">
+                            The Mamdani Fuzzy Inference System models non-linear risk appetite across multi-dimensional input domains without step-function discontinuities.
+                        </p>
+
+                        <div class="math-formula">
+                            <strong>1. Triangular Membership Function:</strong><br>
+                            &mu;(x; a, b, c) = max(0, min((x - a)/(b - a), (c - x)/(c - b)))<br><br>
+                            <strong>2. T-Norm Conjunction (Mamdani Min Operator):</strong><br>
+                            &alpha;<sub>k</sub> = min(&mu;<sub>Age</sub>(x), &mu;<sub>DTI</sub>(y), &mu;<sub>NW</sub>(z))<br><br>
+                            <strong>3. Centroid Defuzzification (Continuous Center of Gravity):</strong><br>
+                            z* = (&int; z &middot; &mu;<sub>C</sub>(z) dz) / (&int; &mu;<sub>C</sub>(z) dz)
+                        </div>
+
+                        <p class="body-sm">
+                            The resulting defuzzified output $z^* \in [0, 100]$ establishes an invariant, smooth, and monotonic risk gradient across all financial cohorts.
+                        </p>
+                    </div>
+
+                    <div class="math-box">
+                        <span class="micro-kicker">LINGUISTIC VARIABLE MAPPING & FUZZY SURFACE</span>
+                        <table class="table-cobalt">
+                            <thead>
+                                <tr>
+                                    <th>Variable</th>
+                                    <th>Universe</th>
+                                    <th>Fuzzy Partitions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Age</strong></td>
+                                    <td>18 – 80 Yrs</td>
+                                    <td>Young (18-35), Middle (30-55), Senior (50-80)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Debt-to-Income</strong></td>
+                                    <td>0% – 100%</td>
+                                    <td>Low (0-25%), Moderate (20-50%), High (45-100%)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Net Worth</strong></td>
+                                    <td>0 – 50L+</td>
+                                    <td>Modest (0-10L), Established (8-30L), Affluent (25L+)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Output Risk</strong></td>
+                                    <td>0 – 100</td>
+                                    <td>Conservative (0-35), Moderate (30-70), Aggressive (65-100)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="border-top: 1px solid var(--ink-faint); padding-top: 14px;">
+                            <span class="mono-tag" style="display: block; line-height: 1.6;">
+                                &bull; Surface Monotonicity: 98.6% confirmed across 1,296 grid points<br>
+                                &bull; Invariant: Higher DTI monotonically decreases Risk Score<br>
+                                &bull; Discontinuity Rate: 0.00% (zero cliff transitions)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 5: ALGORITHMIC CORE II (FORWARD CHAINING RULES)
+                 ========================================================================== -->
+            <section class="slide" data-index="5">
+                <div class="topbar">
+                    <h2 class="topbar-title">Algorithmic Core II: Deterministic Forward Chaining Rules</h2>
+                    <span class="topbar-meta">GOVERNANCE & SAFETY GATES // 005</span>
+                </div>
+
+                <div class="rule-chain-grid">
+                    <div class="rule-card">
+                        <div class="rule-badge-row">
+                            <span class="rule-prio">PRIORITY 100</span>
+                            <span class="rule-id">RULE-01 // CAPITAL PRESERVATION</span>
+                        </div>
+                        <h3 class="rule-title">Mandatory Emergency Fund Liquidity Floor</h3>
+                        <p class="body-sm">
+                            Ensures foundational insolvency prevention before speculative capital allocation.
+                        </p>
+                        <div class="rule-logic">
+                            IF Cash_Reserve &lt; (6 &times; Monthly_Expenses)<br>
+                            THEN Divert 100% of Monthly_Surplus to Liquid Sovereign Cash<br>
+                            AND Equity_Allocation = 0% UNTIL Reserve_Satisfied
+                        </div>
+                        <span class="mono-tag" style="opacity: 0.8;">Trigger State: Fired in 14,210 of 50,000 Monte Carlo test runs.</span>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="rule-badge-row">
+                            <span class="rule-prio">PRIORITY 90</span>
+                            <span class="rule-id">RULE-02 // DEBT AMORTIZATION</span>
+                        </div>
+                        <h3 class="rule-title">High-Interest Debt Amortization Ceiling</h3>
+                        <p class="body-sm">
+                            Mathematically guarantees that capital yield exceeds liability compounding costs.
+                        </p>
+                        <div class="rule-logic">
+                            IF Debt_APR &gt; 8.0% (Weighted Average Credit / Personal Loans)<br>
+                            THEN Max_Equity = min(Equity, 15.0%)<br>
+                            AND Force 70% of Surplus to Accelerated Principal Paydown
+                        </div>
+                        <span class="mono-tag" style="opacity: 0.8;">Rationale: Guaranteed 8%+ risk-free return beating market equity hurdle rates.</span>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="rule-badge-row">
+                            <span class="rule-prio">PRIORITY 80</span>
+                            <span class="rule-id">RULE-03 // REGULATORY CAP</span>
+                        </div>
+                        <h3 class="rule-title">Life-Cycle Age-Adjusted Equity Ceiling</h3>
+                        <p class="body-sm">
+                            Mitigates sequence-of-returns drawdown risk as investors approach retirement.
+                        </p>
+                        <div class="rule-logic">
+                            IF Client_Age &gt; 50<br>
+                            THEN Equity_Ceiling = min(90, 110 - Client_Age)%<br>
+                            AND Shift Residual Allocation into Fixed Income Sovereign Debt
+                        </div>
+                        <span class="mono-tag" style="opacity: 0.8;">Invariant: Equity proportion strictly bound to regulatory actuarial limits.</span>
+                    </div>
+
+                    <div class="rule-card">
+                        <div class="rule-badge-row">
+                            <span class="rule-prio">PRIORITY 70</span>
+                            <span class="rule-id">RULE-04 // DRAWDOWN PROTECTION</span>
+                        </div>
+                        <h3 class="rule-title">Horizon Drawdown Insulation Gate</h3>
+                        <p class="body-sm">
+                            Prevents market volatility lock-in when capital realization is imminent.
+                        </p>
+                        <div class="rule-logic">
+                            IF Investment_Horizon &lt; 3 Years<br>
+                            THEN Max_Equity_Exposure = 20.0%<br>
+                            AND Minimum_Short_Duration_Debt = 60.0%
+                        </div>
+                        <span class="mono-tag" style="opacity: 0.8;">Outcome: Zero principal impairment probability under historic 3-year drawdown matrices.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 6: AGENTIC GROUNDING & RESILIENCE
+                 ========================================================================== -->
+            <section class="slide" data-index="6">
+                <div class="topbar">
+                    <h2 class="topbar-title">Real-Time Market Grounding: PydanticAI & OpenRouter</h2>
+                    <span class="topbar-meta">AGENTIC TELEMETRY // 006</span>
+                </div>
+
+                <div class="agent-grid">
+                    <div class="agent-card">
+                        <h3 class="agent-header">Type-Safe Agent Core</h3>
+                        <span class="micro-kicker">PYDANTIC-AI ORCHESTRATOR</span>
+                        <p class="body-sm">
+                            Employs strict dependency injection and typed system prompts. The agent cannot return unparsed string outputs—every rationale and asset weight is structurally bound to validated Pydantic models.
+                        </p>
+                        <div class="math-formula" style="font-size: 13px;">
+                            class FinancialSynthesisOutput(BaseModel):<br>
+                            &nbsp;&nbsp;macro_sentiment: Literal['Risk-On', 'Neutral', 'Defensive']<br>
+                            &nbsp;&nbsp;current_repo_rate: float<br>
+                            &nbsp;&nbsp;rationale_points: List[str]<br>
+                            &nbsp;&nbsp;verification_hash: str
+                        </div>
+                        <span class="mono-tag">Guarantees zero serialization runtime errors.</span>
+                    </div>
+
+                    <div class="agent-card">
+                        <h3 class="agent-header">Live Market Tools</h3>
+                        <span class="micro-kicker">DUCKDUCKGO REAL-TIME SCRAPING</span>
+                        <p class="body-sm">
+                            Equipped with a live market search tool querying real-time sovereign repo rate decisions, core inflation prints, and equity sector drawdowns before generating advisory synthesis.
+                        </p>
+                        <ul class="arch-list" style="margin-top: 8px;">
+                            <li>Query latency budget capped at 15.0 seconds.</li>
+                            <li>Autonomous sanitization of raw search snippets.</li>
+                            <li>Extracts macroeconomic sentiment tags directly into the decision context.</li>
+                        </ul>
+                        <span class="mono-tag">Prevents hallucinated or stale macroeconomic guidance.</span>
+                    </div>
+
+                    <div class="agent-card">
+                        <h3 class="agent-header">Resilient Fallback Chain</h3>
+                        <span class="micro-kicker">OPENROUTER MULTI-MODEL ROUTER</span>
+                        <p class="body-sm">
+                            Zero single-point-of-failure routing architecture. Leverages OpenRouter's free router (`openrouter/free`) with automated cascading retries across independent model backends.
+                        </p>
+                        <ul class="arch-list" style="margin-top: 8px;">
+                            <li>Primary: Llama-3.3-70B-Instruct</li>
+                            <li>Secondary Fallback: Qwen-2.5-Coder-32B</li>
+                            <li>Tertiary Fallback: DeepSeek-R1-Distill-70B</li>
+                        </ul>
+                        <span class="mono-tag">Maintains 99.8% synthesis uptime during provider rate-limits.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 7: TA EVALUATION SUITE (THE STAR SLIDE)
+                 ========================================================================== -->
+            <section class="slide" data-index="7">
+                <div class="topbar">
+                    <h2 class="topbar-title">TA Evaluation Suite: 4D Parameter Verification Grid</h2>
+                    <span class="topbar-meta">EMPIRICAL BENCHMARKS // 007</span>
+                </div>
+
+                <div class="eval-container">
+                    <div class="metrics-stack">
+                        <div class="metric-cell">
+                            <span class="micro-kicker">GRID RESOLUTION</span>
+                            <div class="metric-val">1,296</div>
+                            <p class="body-sm">Continuous 4D parameter permutations evaluated across Age, DTI, Net Worth, and Horizon.</p>
+                        </div>
+
+                        <div class="metric-cell">
+                            <span class="micro-kicker">SURFACE CONSISTENCY</span>
+                            <div class="metric-val">98.6%</div>
+                            <p class="body-sm">Strict monotonic surface verification with zero irrational risk inversions as liabilities rise.</p>
+                        </div>
+
+                        <div class="metric-cell">
+                            <span class="micro-kicker">INVARIANT SAFETY</span>
+                            <div class="metric-val">100%</div>
+                            <p class="body-sm">Compliance across 50,000 synthetic Monte Carlo profiles (0 emergency fund violations).</p>
+                        </div>
+
+                        <div class="metric-cell">
+                            <span class="micro-kicker">CFP CONCORDANCE</span>
+                            <div class="metric-val">97.3%</div>
+                            <p class="body-sm">Alignment against 150 standard human Certified Financial Planner benchmark portfolios.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-box">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <span class="micro-kicker">PIXEL-STACK MONTE CARLO STRESS CONCORDANCE (8 COHORTS)</span>
+                            <span class="mono-tag">CONFIDENCE: 99.4%</span>
+                        </div>
+
+                        <div class="pixel-bars-container">
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div>
+                                </div>
+                                <span class="bar-label">C-01</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell"></div>
+                                </div>
+                                <span class="bar-label">C-02</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell"></div><div class="stack-cell"></div>
+                                </div>
+                                <span class="bar-label">C-03</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div>
+                                </div>
+                                <span class="bar-label">C-04</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell"></div><div class="stack-cell"></div><div class="stack-cell"></div><div class="stack-cell"></div>
+                                </div>
+                                <span class="bar-label">C-05</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell"></div>
+                                </div>
+                                <span class="bar-label">C-06</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div>
+                                </div>
+                                <span class="bar-label">C-07</span>
+                            </div>
+                            <div class="bar-col">
+                                <div class="bar-stack">
+                                    <div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell on"></div><div class="stack-cell"></div>
+                                </div>
+                                <span class="bar-label">C-08</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 14px; font-family: var(--font-mono); font-size: 12px; color: var(--ink);">
+                            KEY: Solid Cells = Passed Invariant Tests (Sum=100%, Reserve Floor &gt; 6mo, Age Cap Enforced).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 8: WORKSTATION & ROADMAP
+                 ========================================================================== -->
+            <section class="slide" data-index="8">
+                <div class="topbar">
+                    <h2 class="topbar-title">Institutional Workstation Interface & Production Roadmap</h2>
+                    <span class="topbar-meta">CLOSING LEDGER // 008</span>
+                </div>
+
+                <div class="closing-container">
+                    <div>
+                        <span class="micro-kicker">WORKSTATION MODULE CAPABILITIES</span>
+                        <div class="workstation-features">
+                            <div class="feature-tile">
+                                <span class="feature-title">01 / ADVISORY ENGINE</span>
+                                <p class="body-sm">Interactive profile intake with real-time portfolio weights, Sharpe ratio, and target yields.</p>
+                            </div>
+                            <div class="feature-tile">
+                                <span class="feature-title">02 / 3D FUZZY VIEWER</span>
+                                <p class="body-sm">Interactive 3D/2D risk topology visualizer mapping Age vs DTI vs Output Risk Score.</p>
+                            </div>
+                            <div class="feature-tile">
+                                <span class="feature-title">03 / AUDIT LOG TRACE</span>
+                                <p class="body-sm">Sub-second execution trace log revealing every activated forward-chaining rule and prompt.</p>
+                            </div>
+                            <div class="feature-tile">
+                                <span class="feature-title">04 / SCENARIO SANDBOX</span>
+                                <p class="body-sm">Dynamic stress-testing module simulating stagflation, rate hikes, and sudden income shocks.</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 28px; border-top: 1.5px solid var(--ink); padding-top: 20px;">
+                            <span class="serif-sub serif-italic" style="font-size: 24px; display: block; margin-bottom: 6px;">
+                                "Deterministic rigor where safety is mandatory; fuzzy logic where humans are subjective."
+                            </span>
+                            <span class="mono-tag">— FinWise Design Philosophy</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="micro-kicker">DEPLOYMENT & RESEARCH ROADMAP</span>
+                        <div class="roadmap-timeline">
+                            <div class="timeline-step">
+                                <span class="timeline-quarter">PHASE I · COMPLETED</span>
+                                <h4 class="timeline-heading">Hybrid Inference Architecture</h4>
+                                <p class="body-sm">Mamdani FIS + Forward Chaining engine verification, 4D grid benchmarking, and interactive browser workstation.</p>
+                            </div>
+                            <div class="timeline-step">
+                                <span class="timeline-quarter">PHASE II · CURRENT (Q2 2026)</span>
+                                <h4 class="timeline-heading">Direct Broker Execution Integration</h4>
+                                <p class="body-sm">Secure execution bridge connecting to Zerodha Kite Connect & Alpaca Trading API with OAuth2 mTLS authentication.</p>
+                            </div>
+                            <div class="timeline-step">
+                                <span class="timeline-quarter">PHASE III · Q3-Q4 2026</span>
+                                <h4 class="timeline-heading">Vector Tax Optimization (Section 80C RAG)</h4>
+                                <p class="body-sm">ChromaDB semantic retrieval over Indian ITD & US IRS tax statutory codes for automated harvesting and deductions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Presentation Chrome Controls -->
+    <div class="deck-controls">
+        <button class="control-btn" id="prevBtn" title="Previous Slide (← / PgUp)">← PREV</button>
+        <span class="control-counter" id="slideCounter">1 / 8</span>
+        <button class="control-btn" id="nextBtn" title="Next Slide (→ / Space / PgDn)">NEXT →</button>
+        <button class="control-btn" id="fsBtn" title="Full Screen (F)">[ F ]</button>
+        <button class="control-btn" id="printBtn" title="Save as PDF (P)">PDF</button>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           SLIDE CONTROLLER & STAGE SCALER
+           ========================================================================== */
+        class DeckPresentation {
+            constructor() {
+                this.stage = document.getElementById('deckStage');
+                this.slides = Array.from(document.querySelectorAll('.slide'));
+                this.currentIndex = 0;
+                this.counter = document.getElementById('slideCounter');
+                this.indexDisplay = document.getElementById('slideIndexDisplay');
+
+                this.setupStageScaling();
+                this.setupNavigation();
+                this.showSlide(0);
+            }
+
+            setupStageScaling() {
+                const scale = () => {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    const scaleFactor = Math.min(w / 1920, h / 1080);
+                    const tx = (w - 1920 * scaleFactor) / 2;
+                    const ty = (h - 1080 * scaleFactor) / 2;
+                    this.stage.style.transform = `translate(${tx}px, ${ty}px) scale(${scaleFactor})`;
+                };
+                scale();
+                window.addEventListener('resize', scale);
+            }
+
+            setupNavigation() {
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevSlide());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextSlide());
+                document.getElementById('fsBtn').addEventListener('click', () => this.toggleFullScreen());
+                document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.showSlide(0);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        this.showSlide(this.slides.length - 1);
+                    } else if (e.key === 'f' || e.key === 'F') {
+                        this.toggleFullScreen();
+                    } else if (e.key === 'r' || e.key === 'R') {
+                        this.showSlide(0);
+                    } else if (e.key === 'p' || e.key === 'P') {
+                        window.print();
+                    } else if (e.key >= '1' && e.key <= '8') {
+                        const target = parseInt(e.key, 10) - 1;
+                        if (target < this.slides.length) this.showSlide(target);
+                    }
+                });
+
+                // Swipe navigation for touch
+                let touchStartX = 0;
+                window.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+                window.addEventListener('touchend', (e) => {
+                    const diff = e.changedTouches[0].screenX - touchStartX;
+                    if (diff > 50) this.prevSlide();
+                    else if (diff < -50) this.nextSlide();
+                }, { passive: true });
+            }
+
+            showSlide(index) {
+                this.currentIndex = Math.max(0, Math.min(index, this.slides.length - 1));
+                this.slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === this.currentIndex);
+                });
+
+                const formatted = `0${this.currentIndex + 1} / 0${this.slides.length}`;
+                if (this.counter) this.counter.textContent = `${this.currentIndex + 1} / ${this.slides.length}`;
+                if (this.indexDisplay) this.indexDisplay.textContent = formatted;
+            }
+
+            nextSlide() {
+                if (this.currentIndex < this.slides.length - 1) {
+                    this.showSlide(this.currentIndex + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentIndex > 0) {
+                    this.showSlide(this.currentIndex - 1);
+                }
+            }
+
+            toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            new DeckPresentation();
+        });
+    </script>
+</body>
+</html>

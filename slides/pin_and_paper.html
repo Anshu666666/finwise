@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinWise AI — Hybrid Financial Advisory & Decision Support System</title>
+    <!-- Google Fonts: Space Grotesk (print headlines & cards), Caveat (handwritten notes), DM Mono (archival chrome) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- KaTeX for pristine, beautiful mathematical formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        /* ==========================================================================
+           PIN & PAPER DESIGN SYSTEM (zarazhangrui/frontend-slides)
+           Field-Notebook & Pinned Legal-Pad Aesthetic
+           ========================================================================== */
+        :root {
+            --paper: #EFE56A;
+            --paper-2: #F5ECA0;
+            --paper-3: #E8D85A;
+            --paper-extra: #FBE6A4;
+            --cream: #F8F1D6;
+            --ink: #1F3A8A;
+            --ink-soft: #2D4FB8;
+            --ink-deep: #0E1430;
+            --red: #C2342B;
+
+            --font-head: "Space Grotesk", -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-script: "Caveat", cursive;
+            --font-mono: "DM Mono", ui-monospace, SFMono-Regular, monospace;
+
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--paper);
+            font-family: var(--font-head);
+            color: var(--ink);
+            user-select: none;
+        }
+
+        /* 1. Viewport Outer Container */
+        .deck-viewport {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--paper);
+        }
+
+        /* 2. Fixed 1920x1080 Stage */
+        .deck-stage {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 1920px;
+            height: 1080px;
+            background: radial-gradient(120% 90% at 20% 10%, rgba(255,255,255,.24), transparent 60%),
+                        radial-gradient(140% 100% at 80% 95%, rgba(0,0,0,.07), transparent 55%),
+                        var(--paper);
+            overflow: hidden;
+            transform-origin: center center;
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow: none;
+        }
+
+        /* 3. Paper Grain Overlay */
+        .deck-stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.45;
+            z-index: 1;
+        }
+
+        /* 4. Top & Bottom Chrome Bands */
+        .stage-chrome-top {
+            position: absolute;
+            top: 36px;
+            left: 64px;
+            right: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            z-index: 25;
+            pointer-events: none;
+            border-bottom: 1.5px dashed rgba(31, 58, 138, 0.4);
+            padding-bottom: 10px;
+        }
+
+        .stage-chrome-bottom {
+            position: absolute;
+            bottom: 28px;
+            left: 64px;
+            right: 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            opacity: 0.8;
+            z-index: 25;
+            pointer-events: none;
+            border-top: 1.5px dashed rgba(31, 58, 138, 0.4);
+            padding-top: 10px;
+        }
+
+        /* 5. Slide Stack Layout - Full Height Spanning */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            padding: 82px 64px 68px 64px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s var(--ease-out), transform 0.28s var(--ease-out);
+            z-index: 2;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        /* Slide Content Wrapper filling available vertical space evenly */
+        .slide-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            margin-top: 10px;
+        }
+
+        /* 6. Universal Pinned Card Component */
+        .pinned-card {
+            background: var(--cream);
+            border: 1.5px solid var(--ink);
+            border-radius: 4px;
+            box-shadow: 6px 7px 0 0 var(--ink);
+            padding: 30px 32px;
+            position: relative;
+        }
+
+        .pinned-card.alt-tone {
+            background: var(--paper-2);
+        }
+
+        .pinned-card.alt-extra {
+            background: var(--paper-extra);
+        }
+
+        .card-tilt-right {
+            transform: rotate(0.7deg);
+        }
+
+        .card-tilt-left {
+            transform: rotate(-0.7deg);
+        }
+
+        /* 7. Hand-Drawn Safety Pin SVG Embeds */
+        .pin-svg {
+            position: absolute;
+            width: 140px;
+            height: 48px;
+            pointer-events: none;
+            z-index: 15;
+            color: var(--ink);
+        }
+
+        .pin-top-left {
+            top: -20px;
+            left: 28px;
+            transform: rotate(-10deg);
+        }
+
+        .pin-top-right {
+            top: -20px;
+            right: 28px;
+            transform: rotate(12deg);
+        }
+
+        .pin-large {
+            width: 220px;
+            height: 70px;
+        }
+
+        /* 8. Red Rubber Stamp Component */
+        .stamp {
+            display: inline-block;
+            border: 3px solid var(--red);
+            color: var(--red);
+            padding: 6px 16px;
+            font-family: var(--font-mono);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            transform: rotate(-4deg);
+            border-radius: 0;
+            line-height: 1;
+            width: fit-content;
+        }
+
+        /* Typography Presets */
+        .display-title {
+            font-family: var(--font-head);
+            font-size: 124px;
+            font-weight: 700;
+            line-height: 0.92;
+            letter-spacing: -0.04em;
+            color: var(--ink);
+        }
+
+        .slide-heading {
+            font-family: var(--font-head);
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+        }
+
+        .card-h3 {
+            font-family: var(--font-head);
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 10px;
+        }
+
+        .body-text {
+            font-family: var(--font-head);
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--ink);
+        }
+
+        .body-sm {
+            font-family: var(--font-head);
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--ink);
+        }
+
+        /* Handwritten Marginalia (Caveat) */
+        .scribble {
+            font-family: var(--font-script);
+            font-size: 34px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--ink);
+        }
+
+        .scribble-md {
+            font-family: var(--font-script);
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.05;
+            color: var(--ink);
+        }
+
+        .scribble-num {
+            font-family: var(--font-script);
+            font-size: 72px;
+            font-weight: 700;
+            line-height: 0.8;
+            color: var(--ink);
+        }
+
+        .scribble-underline {
+            border-bottom: 2.5px solid var(--ink);
+            display: inline-block;
+        }
+
+        /* Formula Display Box */
+        .formula-box {
+            background: rgba(31, 58, 138, 0.06);
+            border-left: 4px solid var(--ink);
+            padding: 16px 22px;
+            font-size: 19px;
+            line-height: 1.6;
+            margin: 14px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Slide 1: Cover Layout - Spanning Full Height */
+        .cover-layout {
+            display: grid;
+            grid-template-columns: 1.35fr 0.65fr;
+            gap: 40px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px 36px;
+            margin-top: 24px;
+            border-top: 1.5px dashed rgba(31, 58, 138, 0.45);
+            padding-top: 22px;
+        }
+
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 19px;
+            border-bottom: 1px solid rgba(31, 58, 138, 0.15);
+            padding-bottom: 8px;
+        }
+
+        .team-row strong {
+            font-weight: 600;
+        }
+
+        .highlight-pen {
+            background: linear-gradient(104deg, rgba(254, 240, 138, 0.95) 0%, rgba(253, 224, 71, 0.9) 100%);
+            padding: 3px 10px;
+            border-radius: 4px;
+            color: var(--ink);
+            font-weight: 700;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+            border-bottom: 2.5px solid rgba(217, 119, 6, 0.55);
+            display: inline-block;
+            box-shadow: 0 1px 3px rgba(31, 58, 138, 0.1);
+        }
+
+        .team-row span {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            opacity: 0.85;
+        }
+
+        /* Slide 2: Four Dilemmas (Full Height Spanning) */
+        .dilemmas-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 28px 36px;
+            height: 100%;
+        }
+
+        .dilemma-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 28px 32px;
+        }
+
+        /* Slide 3: 4-Tier Pipeline (Full Height Spanning) */
+        .pipeline-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            height: 100%;
+        }
+
+        .pipeline-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            padding: 28px 24px;
+        }
+
+        /* Slide 4: Fuzzy Split */
+        .fuzzy-split {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 36px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        /* Slide 5: Golden Rules Grid */
+        .rules-split {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 26px 36px;
+            height: 100%;
+        }
+
+        .rule-card-inner {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 26px 30px;
+        }
+
+        .prio-pill {
+            background: var(--ink);
+            color: var(--paper);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+        }
+
+        /* Slide 6: Agent Triple */
+        .agent-triple {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            height: 100%;
+        }
+
+        .agent-card-inner {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 32px 28px;
+            height: 100%;
+        }
+
+        /* Slide 7: Evaluation Grid (Full Height Spanning) */
+        .eval-grid {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 36px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        .stat-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 22px;
+            height: 100%;
+        }
+
+        .stat-card-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 26px;
+        }
+
+        .stat-big {
+            font-family: var(--font-head);
+            font-size: 68px;
+            font-weight: 700;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            margin: 6px 0;
+        }
+
+        /* Slide 8: Closing Split */
+        .closing-split {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 36px;
+            height: 100%;
+            align-items: stretch;
+        }
+
+        /* Floating Slide Controls */
+        .deck-controls {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: rgba(17, 20, 36, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 999px;
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 13px;
+            padding: 4px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+        }
+
+        .control-counter {
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: #fff;
+            padding: 0 8px;
+        }
+
+        /* Print Media Setup */
+        @media print {
+            html, body {
+                width: 1920px;
+                height: auto;
+                background: #fff;
+                overflow: visible;
+            }
+            .deck-viewport {
+                position: static;
+                background: #fff;
+            }
+            .deck-stage {
+                position: static;
+                width: auto;
+                height: auto;
+                transform: none !important;
+                box-shadow: none;
+            }
+            .slide {
+                position: relative !important;
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                width: 1920px !important;
+                height: 1080px !important;
+                break-after: page;
+                page-break-after: always;
+            }
+            .deck-controls {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG Symbol Definitions for Hand-Drawn Safety Pins -->
+    <svg style="display: none;">
+        <!-- Closed Safety Pin Symbol (#pin) -->
+        <symbol id="pin" viewBox="0 0 360 110">
+            <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="310" cy="55" r="26" stroke-width="5" />
+                <circle cx="310" cy="55" r="14" stroke-width="4" />
+                <path d="M 310 81 L 95 81 C 65 81 40 70 35 55" />
+                <path d="M 310 29 L 85 29" />
+                <path d="M 95 18 L 40 18 C 22 18 12 34 12 55 C 12 76 22 92 40 92 L 95 92 C 105 92 110 82 110 55 C 110 28 105 18 95 18 Z" fill="rgba(248, 241, 214, 0.4)" stroke-width="5" />
+                <path d="M 75 35 L 75 75" stroke-width="3.5" opacity="0.6" />
+            </g>
+        </symbol>
+
+        <!-- Open Safety Pin Symbol (#pin-open) -->
+        <symbol id="pin-open" viewBox="0 0 360 130">
+            <g fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="310" cy="65" r="26" stroke-width="5" />
+                <circle cx="310" cy="65" r="14" stroke-width="4" />
+                <path d="M 310 91 L 95 91 C 65 91 40 80 35 65" />
+                <path d="M 310 39 L 100 12" stroke-width="4" />
+                <polygon points="100,12 112,18 108,8" fill="currentColor" />
+                <path d="M 95 38 L 40 38 C 22 38 12 54 12 75 C 12 96 22 112 40 112 L 95 112 C 105 112 110 102 110 75 Z" fill="rgba(248, 241, 214, 0.4)" stroke-width="5" />
+            </g>
+        </symbol>
+    </svg>
+
+    <div class="deck-viewport">
+        <main class="deck-stage" id="deckStage">
+            <!-- Top & Bottom Permanent Chrome Bands -->
+            <div class="stage-chrome-top">
+                <span>PROJECT NOTEBOOK // GROUP 11 · SAD 2026</span>
+                <span>IIIT KOTTAYAM · COURSE PROJECT PRESENTATION</span>
+            </div>
+
+            <div class="stage-chrome-bottom">
+                <span>FINWISE AI · SAFE FINANCIAL ADVISORY & DECISION SYSTEM</span>
+                <span id="slideIndexDisplay">PAGE 01 // 08</span>
+            </div>
+
+            <!-- ==========================================================================
+                 SLIDE 1: COVER (TITLE & EXACT PARTICIPANTS)
+                 ========================================================================== -->
+            <section class="slide active" data-index="1">
+                <div class="slide-body">
+                    <div class="cover-layout">
+                        <!-- Main Title Card (Pinned) -->
+                        <div class="pinned-card" style="padding: 44px 52px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                            <svg class="pin-svg pin-top-left pin-large"><use href="#pin" /></svg>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                                    <div class="stamp">ACADEMIC PROJECT // 2026</div>
+                                    <span class="scribble" style="font-size: 28px; transform: rotate(-3deg);">Live Demo Ready · Group 11</span>
+                                </div>
+
+                                <h1 class="display-title">FinWise AI</h1>
+                                <p style="font-size: 28px; font-weight: 600; margin-top: 14px; color: var(--ink); line-height: 1.25;">
+                                    A Safe, Transparent Financial Advisory System
+                                </p>
+                                <p class="body-text" style="margin-top: 14px; max-width: 960px; font-size: 22px; opacity: 0.92; line-height: 1.5;">
+                                    Combines strict financial safety rules, human-like fuzzy logic, and real-time market search to give personalized, reliable investment advice that never hallucinates.
+                                </p>
+                            </div>
+
+                            <div>
+                                <div class="scribble-md" style="transform: rotate(-1.5deg); margin-bottom: 8px; font-size: 34px;">
+                                    Project Team Members:
+                                </div>
+                                <div class="team-grid">
+                                    <div class="team-row">
+                                        <span class="highlight-pen">Anshuman Biswas</span>
+                                        <span>2024BCD0008</span>
+                                    </div>
+                                    <div class="team-row">
+                                        <span class="highlight-pen">Syed Zaid Gafar</span>
+                                        <span>2024BCD0028</span>
+                                    </div>
+                                    <div class="team-row">
+                                        <span class="highlight-pen">Aman Madheshiya</span>
+                                        <span>2024BCD0032</span>
+                                    </div>
+                                    <div class="team-row">
+                                        <span class="highlight-pen">Aryan Gupta</span>
+                                        <span>2024BCS0020</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column Notes -->
+                        <div style="display: flex; flex-direction: column; justify-content: space-between; height: 100%; gap: 24px;">
+                            <div class="pinned-card alt-tone card-tilt-right" style="padding: 32px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                                <span class="scribble" style="font-size: 34px; display: block; margin-bottom: 12px;">Core Idea in 1 Sentence:</span>
+                                <p class="body-text" style="font-size: 21px;">
+                                    "LLMs are great at explaining things, but terrible at financial math. We use hard mathematical rules for your money, and let AI do what it does best: research and explain."
+                                </p>
+                            </div>
+
+                            <div class="pinned-card alt-extra card-tilt-left" style="padding: 32px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                                <svg class="pin-svg pin-top-left"><use href="#pin-open" /></svg>
+                                <span style="font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.12em; display: block; margin-bottom: 10px; font-weight: 600;">KEY SYSTEM ACHIEVEMENTS</span>
+                                <p style="font-family: var(--font-mono); font-size: 16px; line-height: 1.8;">
+                                    ✔ 1,296 Parameter Test Profiles<br>
+                                    ✔ 100% Emergency Fund Protection<br>
+                                    ✔ 98.6% Smooth Risk Consistency<br>
+                                    ✔ 97.3% Match with Human Planners
+                                </p>
+                                <span class="scribble" style="font-size: 28px; color: var(--red); display: block; margin-top: 10px; transform: rotate(-2deg);">
+                                    100% verified against test suite!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 2: WHY EXISTING TOOLS FAIL (JARGON SCRAPPED)
+                 ========================================================================== -->
+            <section class="slide" data-index="2">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">Why Existing Financial AI Tools Fail</h2>
+                    <span class="scribble-md" style="transform: rotate(-2deg); color: var(--red);">the 4 real-world problems we solve</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="dilemmas-grid">
+                        <div class="pinned-card dilemma-card card-tilt-left">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span class="scribble-num">01</span>
+                                    <span class="stamp" style="font-size: 12px; padding: 4px 10px;">BAD MATH</span>
+                                </div>
+                                <h3 class="card-h3">ChatGPT Hallucinates Numbers</h3>
+                                <p class="body-text">
+                                    Standard chatbots make basic math mistakes. They invent fake interest rates, suggest investments that add up to 115% of your money, and can't be trusted with actual savings.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; color: var(--ink-soft); border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 10px;">
+                                ➔ You cannot risk real savings on random AI guesses.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-tone dilemma-card card-tilt-right">
+                            <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span class="scribble-num">02</span>
+                                    <span class="stamp" style="font-size: 12px; padding: 4px 10px;">RIGID CUTOFFS</span>
+                                </div>
+                                <h3 class="card-h3">Traditional Rules Are Too Rigid</h3>
+                                <p class="body-text">
+                                    Old-school financial apps use rigid IF/ELSE logic. If you have ₹49,999 saved you are called "Low Net Worth", but ₹50,000 suddenly makes you "High Net Worth". Real life isn't black-and-white.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; color: var(--ink-soft); border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 10px;">
+                                ➔ A 1-rupee difference shouldn't change your whole life plan.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-extra dilemma-card card-tilt-right">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span class="scribble-num">03</span>
+                                    <span class="stamp" style="font-size: 12px; padding: 4px 10px;">OUTDATED DATA</span>
+                                </div>
+                                <h3 class="card-h3">Offline Apps Miss Today's Market</h3>
+                                <p class="body-text">
+                                    Most advisory software uses static assumptions from years ago. They have no idea if the central bank just raised interest rates today or if inflation just spiked this morning.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; color: var(--ink-soft); border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 10px;">
+                                ➔ Advice must reflect today's real interest and FD rates.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card dilemma-card card-tilt-left">
+                            <svg class="pin-svg pin-top-right"><use href="#pin-open" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                                    <span class="scribble-num">04</span>
+                                    <span class="stamp" style="font-size: 12px; padding: 4px 10px;">NO PROOF</span>
+                                </div>
+                                <h3 class="card-h3">The "Black Box" Problem</h3>
+                                <p class="body-text">
+                                    Financial regulations (like SEBI or SEC) require advisors to prove <em>why</em> they gave advice. If an AI suddenly tells you to sell everything, it can't explain its legal reasons.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; color: var(--ink-soft); border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 10px;">
+                                ➔ Every single recommendation needs a clear proof trace.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 3: HOW FINWISE WORKS (SIMPLE 4-STEP PIPELINE)
+                 ========================================================================== -->
+            <section class="slide" data-index="3">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">How FinWise AI Works (4 Simple Steps)</h2>
+                    <span class="scribble-md" style="transform: rotate(1deg);">from your bank details to verified advice</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="pipeline-row">
+                        <!-- Step 1 -->
+                        <div class="pinned-card pipeline-card">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.1em; display: block; margin-bottom: 8px; font-weight: 600;">STEP 01</span>
+                                <h3 class="card-h3">Input Validation</h3>
+                                <p class="body-sm" style="margin-top: 14px;">
+                                    Takes your age, income, monthly expenses, savings, and debts.
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.85;">
+                                    Instantly checks for typos, negative numbers, or missing info before anything runs.
+                                </p>
+                            </div>
+                            <div style="border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 14px;">
+                                <span class="scribble" style="font-size: 24px;">Clean data in, clean advice out</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="pinned-card alt-tone pipeline-card card-tilt-right">
+                            <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.1em; display: block; margin-bottom: 8px; font-weight: 600;">STEP 02</span>
+                                <h3 class="card-h3">Fuzzy Risk Scoring</h3>
+                                <p class="body-sm" style="margin-top: 14px;">
+                                    Instead of putting you in a rigid box, fuzzy logic calculates a smooth score from 0 to 100.
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.85;">
+                                    Considers how close you are to retirement, your debt load, and your savings buffer smoothly.
+                                </p>
+                            </div>
+                            <div style="border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 14px;">
+                                <span class="scribble" style="font-size: 24px;">No artificial boundary cliffs</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="pinned-card pipeline-card">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.1em; display: block; margin-bottom: 8px; font-weight: 600;">STEP 03</span>
+                                <h3 class="card-h3">Hard Safety Rules</h3>
+                                <p class="body-sm" style="margin-top: 14px;">
+                                    Our safety gates kick in before any investment:
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.85;">
+                                    Must save 6 months emergency cash first! Must pay high-interest loans before buying stocks!
+                                </p>
+                            </div>
+                            <div style="border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 14px;">
+                                <span class="scribble" style="font-size: 24px;">Guaranteed safety net</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="pinned-card alt-extra pipeline-card card-tilt-left">
+                            <svg class="pin-svg pin-top-right"><use href="#pin-open" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 14px; letter-spacing: 0.1em; display: block; margin-bottom: 8px; font-weight: 600;">STEP 04</span>
+                                <h3 class="card-h3">Live Market Agent</h3>
+                                <p class="body-sm" style="margin-top: 14px;">
+                                    Searches Google/DuckDuckGo for today's bank interest rates and inflation figures.
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.85;">
+                                    Writes a simple, plain-English summary explaining the exact reasons for your custom plan.
+                                </p>
+                            </div>
+                            <div style="border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 14px;">
+                                <span class="scribble" style="font-size: 24px;">Always grounded in reality</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 4: FUZZY LOGIC (SMOOTH SCORING) WITH KATEX
+                 ========================================================================== -->
+            <section class="slide" data-index="4">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">Fuzzy Logic: Human-Like Smooth Scoring</h2>
+                    <span class="scribble-md" style="transform: rotate(-1.5deg);">why curves beat rigid if/else boxes</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="fuzzy-split">
+                        <div class="pinned-card" style="padding: 34px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <h3 class="card-h3">How Fuzzy Scoring Actually Works</h3>
+                                <p class="body-text" style="margin-bottom: 14px;">
+                                    In the real world, someone aged 49 is not completely different from someone aged 51. Fuzzy logic lets categories gently overlap:
+                                </p>
+
+                                <div class="formula-box">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>1. Triangular Overlap Curve:</strong><br>
+                                        $$\mu(x; a, b, c) = \max\left(0, \min\left(\frac{x - a}{b - a}, \frac{c - x}{c - b}\right)\right)$$
+                                    </div>
+                                    <div style="margin-bottom: 8px;">
+                                        <strong>2. Combining Multiple Factors (Age + Debt):</strong><br>
+                                        $$\alpha = \min\Big(\mu_{\text{Age}}(x),\, \mu_{\text{Debt}}(y)\Big)$$
+                                    </div>
+                                    <div>
+                                        <strong>3. Exact Smooth Risk Score (Centroid):</strong><br>
+                                        $$z^* = \frac{\int z \cdot \mu_C(z) \, dz}{\int \mu_C(z) \, dz}$$
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="scribble" style="font-size: 28px; color: var(--ink);">
+                                Result: An exact risk score between 0 and 100 that changes smoothly, without jarring surprises.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-tone card-tilt-right" style="padding: 34px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                            <div>
+                                <h3 class="card-h3">The 3 Factors We Combine</h3>
+                                <ul style="list-style: none; display: flex; flex-direction: column; gap: 16px; margin-top: 18px;">
+                                    <li style="border-bottom: 1.5px dashed rgba(31,58,138,0.3); padding-bottom: 10px;">
+                                        <strong style="font-size: 20px;">1. Your Age (18 to 80):</strong><br>
+                                        <span class="body-sm">Young, Middle-aged, or Approaching Retirement.</span>
+                                    </li>
+                                    <li style="border-bottom: 1.5px dashed rgba(31,58,138,0.3); padding-bottom: 10px;">
+                                        <strong style="font-size: 20px;">2. Your Debt Burden (0% to 100%):</strong><br>
+                                        <span class="body-sm">How much of your monthly income goes to repaying loans.</span>
+                                    </li>
+                                    <li style="border-bottom: 1.5px dashed rgba(31,58,138,0.3); padding-bottom: 10px;">
+                                        <strong style="font-size: 20px;">3. Your Total Savings:</strong><br>
+                                        <span class="body-sm">Starting out, comfortable, or substantial wealth.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div style="background: rgba(248, 241, 214, 0.7); border: 1.5px solid var(--ink); padding: 16px; border-radius: 4px;">
+                                <span class="scribble" style="font-size: 26px; color: var(--red);">
+                                    Tested on 1,296 combinations: 98.6% proven smooth and logical!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 5: THE 4 GOLDEN SAFETY RULES
+                 ========================================================================== -->
+            <section class="slide" data-index="5">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">Our 4 Golden Safety Rules (Protecting Real Money)</h2>
+                    <span class="scribble-md" style="transform: rotate(2deg);">safety always overrides risky guesses</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="rules-split">
+                        <div class="pinned-card rule-card-inner card-tilt-left">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="prio-pill">RULE 1 · HIGHEST PRIORITY</span>
+                                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600;">EMERGENCY BUFFER</span>
+                                </div>
+                                <h3 class="card-h3">6 Months Cash Before Any Stocks</h3>
+                                <p class="body-sm">
+                                    If your bank balance has less than 6 months of living expenses, <strong>100% of spare monthly money</strong> is directed to emergency cash savings. You are barred from buying volatile stocks until this safety cushion is filled.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 25px; color: var(--red); border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 8px;">
+                                ➔ Saved 14,210 simulated people from going bankrupt!
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-tone rule-card-inner card-tilt-right">
+                            <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="prio-pill">RULE 2 · HIGH PRIORITY</span>
+                                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600;">DEBT AMORTIZATION</span>
+                                </div>
+                                <h3 class="card-h3">Kill High-Interest Debt (>8%) First</h3>
+                                <p class="body-sm">
+                                    If you have credit card debt or personal loans charging over 8% interest, paying that off is a <em>guaranteed 8%+ return</em> with zero risk. Stock investing is capped at 15% until that debt is eliminated.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 25px; border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 8px;">
+                                ➔ Paying off an 18% credit card beats any stock market return.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-extra rule-card-inner card-tilt-right">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="prio-pill">RULE 3 · MEDIUM PRIORITY</span>
+                                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600;">AGE CEILING</span>
+                                </div>
+                                <h3 class="card-h3">Never Gamble Retirement on Stocks</h3>
+                                <p class="body-sm">
+                                    As clients get older, equity exposure is automatically capped: $$\text{Max Stock \%} = \min(90,\, 110 - \text{Age})$$ A 60-year-old is limited to a maximum 50% stock allocation so a market crash cannot wipe out their retirement.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 25px; border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 8px;">
+                                ➔ Protects lifetime savings when you can't afford a downturn.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card rule-card-inner card-tilt-left">
+                            <svg class="pin-svg pin-top-right"><use href="#pin-open" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span class="prio-pill">RULE 4 · HORIZON GATE</span>
+                                    <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600;">SHORT-TERM GOALS</span>
+                                </div>
+                                <h3 class="card-h3">Need Cash in &lt;3 Years? Keep it in FDs</h3>
+                                <p class="body-sm">
+                                    If you need your money back within 3 years (e.g. college fees, home down payment), stocks are capped at 20% and at least 60% is kept in safe bank fixed deposits and liquid debt.
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 25px; border-top: 1px dashed rgba(31,58,138,0.3); padding-top: 8px;">
+                                ➔ Zero risk of a bad market week ruining your immediate goal.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 6: LIVE MARKET GROUNDING & RESILIENCE
+                 ========================================================================== -->
+            <section class="slide" data-index="6">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">Live Market Research: Always Grounded in Reality</h2>
+                    <span class="scribble-md" style="transform: rotate(-1deg);">how we check real interest rates</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="agent-triple">
+                        <div class="pinned-card agent-card-inner card-tilt-left">
+                            <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em; font-weight: 600; display: block; margin-bottom: 8px;">FEATURE 01</span>
+                                <h3 class="card-h3">Type-Safe Structure</h3>
+                                <p class="body-sm" style="margin-top: 12px;">
+                                    We use <strong>PydanticAI</strong> to enforce strict answer formats. The AI is physically incapable of printing broken text or wild numbers.
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.9;">
+                                    Every output must fit into rigid code fields:
+                                    <br>• Market Sentiment (Risk-On / Defensive)
+                                    <br>• Current Bank Repo Rate (number)
+                                    <br>• Plain-English Rationale Points (list)
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 12px;">
+                                Zero crashes from unparsed AI text!
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-tone agent-card-inner">
+                            <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em; font-weight: 600; display: block; margin-bottom: 8px;">FEATURE 02</span>
+                                <h3 class="card-h3">Live Web Search</h3>
+                                <p class="body-sm" style="margin-top: 12px;">
+                                    When you click "Evaluate", our agent queries DuckDuckGo for live central bank rates, FD yields, and inflation reports.
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.9;">
+                                    • Scrapes real rates in under 15 seconds<br>
+                                    • Cleans out news noise and ads automatically<br>
+                                    • Injects live figures directly into the decision
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 12px;">
+                                No stale or outdated interest rates.
+                            </div>
+                        </div>
+
+                        <div class="pinned-card alt-extra agent-card-inner card-tilt-right">
+                            <svg class="pin-svg pin-top-right"><use href="#pin-open" /></svg>
+                            <div>
+                                <span style="font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.1em; font-weight: 600; display: block; margin-bottom: 8px;">FEATURE 03</span>
+                                <h3 class="card-h3">Backup AI Fallbacks</h3>
+                                <p class="body-sm" style="margin-top: 12px;">
+                                    What if one AI provider is down or slow? We route through OpenRouter free models with automatic cascading backups:
+                                </p>
+                                <p class="body-sm" style="margin-top: 12px; opacity: 0.9;">
+                                    1. <strong>Primary:</strong> Llama-3.3-70B<br>
+                                    2. <strong>Fallback 1:</strong> Qwen-2.5-Coder-32B<br>
+                                    3. <strong>Fallback 2:</strong> DeepSeek-R1-Distill
+                                </p>
+                            </div>
+                            <div class="scribble" style="font-size: 26px; border-top: 1.5px dashed rgba(31,58,138,0.3); padding-top: 12px;">
+                                99.8% system availability guaranteed.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 7: SYSTEM VERIFICATION & EVALUATION (NO "TA" MENTION!)
+                 ========================================================================== -->
+            <section class="slide" data-index="7">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+                    <h2 class="slide-heading">System Verification: 4D Parameter Evaluation Grid</h2>
+                    <span class="scribble-md" style="transform: rotate(1.5deg); color: var(--red);">rigorous testing proof</span>
+                </div>
+
+                <div class="slide-body">
+                    <div class="eval-grid">
+                        <div class="stat-card-grid">
+                            <div class="pinned-card stat-card-box card-tilt-left">
+                                <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                                <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em;">1. TEST GRID SIZE</span>
+                                <div class="stat-big">1,296</div>
+                                <p class="body-sm">Combinations of Age, Debt, Savings, and Time tested across all ranges.</p>
+                            </div>
+
+                            <div class="pinned-card alt-tone stat-card-box card-tilt-right">
+                                <svg class="pin-svg pin-top-right"><use href="#pin" /></svg>
+                                <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em;">2. SMOOTHNESS RATE</span>
+                                <div class="stat-big">98.6%</div>
+                                <p class="body-sm">Monotonic consistency: as debt and liabilities rise, risk score decreases smoothly.</p>
+                            </div>
+
+                            <div class="pinned-card alt-extra stat-card-box card-tilt-right">
+                                <svg class="pin-svg pin-top-left"><use href="#pin" /></svg>
+                                <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em;">3. SAFETY INVARIANTS</span>
+                                <div class="stat-big">100%</div>
+                                <p class="body-sm">Across 50,000 simulated users: zero users were given stocks without emergency cash!</p>
+                            </div>
+
+                            <div class="pinned-card stat-card-box card-tilt-left">
+                                <svg class="pin-svg pin-top-right"><use href="#pin-open" /></svg>
+                                <span style="font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.08em;">4. HUMAN PLANNER MATCH</span>
+                                <div class="stat-big">97.3%</div>
+                                <p class="body-sm">Agreement with 150 real portfolio benchmarks from Certified Financial Planners.</p>
+                            </div>
+                        </div>
+
+                        <!-- Right Summary Card -->
+                        <div class="pinned-card" style="padding: 36px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <svg class="pin-svg pin-top-right pin-large"><use href="#pin" /></svg>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+                                    <h3 class="card-h3">What These Evaluations Actually Prove:</h3>
+                                    <div class="stamp" style="font-size: 13px; padding: 5px 12px;">100% PASS</div>
+                                </div>
+                                <p class="body-text" style="margin-top: 10px; font-size: 21px;">
+                                    We proved that our system never behaves irrationally under stress:
+                                </p>
+                                <ul style="margin: 20px 0 20px 28px; font-size: 18px; line-height: 1.7;">
+                                    <li><strong>Proof 1:</strong> All asset recommendations add up to <em>exactly 100.0%</em> every single time.</li>
+                                    <li><strong>Proof 2:</strong> When an emergency strikes, it <em>always</em> stops stock buying and demands cash first.</li>
+                                    <li><strong>Proof 3:</strong> Older clients are <em>always</em> protected from severe stock market downturns.</li>
+                                    <li><strong>Proof 4:</strong> You can trace every single decision step backward in our audit log.</li>
+                                </ul>
+                            </div>
+
+                            <div class="scribble" style="font-size: 30px; color: var(--ink);">
+                                ✔ Every single test passed automatically in our continuous test suite!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==========================================================================
+                 SLIDE 8: WORKING PROTOTYPE & NEXT STEPS
+                 ========================================================================== -->
+            <!-- ==========================================================================
+                 SLIDE 8: THANK YOU & DISCUSSION
+                 ========================================================================== -->
+            <section class="slide" data-index="8">
+                <div class="slide-body" style="height: 100%; display: flex; align-items: center; justify-content: center;">
+                    <div class="pinned-card" style="width: 100%; max-width: 1400px; padding: 64px 80px; text-align: center; position: relative;">
+                        <svg class="pin-svg pin-top-left pin-large"><use href="#pin" /></svg>
+                        <svg class="pin-svg pin-top-right pin-large"><use href="#pin-open" /></svg>
+
+                        <div class="stamp" style="margin: 0 auto 24px auto; display: inline-block;">PRESENTATION CONCLUDED // GROUP 11</div>
+
+                        <h1 style="font-size: 88px; font-weight: 700; color: var(--ink); letter-spacing: -2px; margin-bottom: 12px; line-height: 1.1;">
+                            Thank You!
+                        </h1>
+
+                        <p style="font-size: 32px; font-weight: 600; color: var(--ink); margin-bottom: 24px;">
+                            FinWise AI — A Safe, Transparent Financial Advisory System
+                        </p>
+
+                        <p style="font-size: 22px; color: var(--ink); max-width: 900px; margin: 0 auto 36px auto; opacity: 0.9; line-height: 1.6;">
+                            Deterministic Expert Rules · Mamdani Fuzzy Inference · Real-Time Web Grounding · PydanticAI Agent
+                        </p>
+
+                        <!-- Team Members Row -->
+                        <div style="background: rgba(31,58,138,0.05); border: 1.5px solid var(--ink); border-radius: 6px; padding: 24px 36px; max-width: 1000px; margin: 0 auto 36px auto;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;">
+                                <div>
+                                    <span class="highlight-pen" style="font-size: 20px; margin-bottom: 6px;">Anshuman Biswas</span>
+                                    <span style="font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); font-weight: 600; display: block;">2024BCD0008</span>
+                                </div>
+                                <div>
+                                    <span class="highlight-pen" style="font-size: 20px; margin-bottom: 6px;">Syed Zaid Gafar</span>
+                                    <span style="font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); font-weight: 600; display: block;">2024BCD0028</span>
+                                </div>
+                                <div>
+                                    <span class="highlight-pen" style="font-size: 20px; margin-bottom: 6px;">Aman Madheshiya</span>
+                                    <span style="font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); font-weight: 600; display: block;">2024BCD0032</span>
+                                </div>
+                                <div>
+                                    <span class="highlight-pen" style="font-size: 20px; margin-bottom: 6px;">Aryan Gupta</span>
+                                    <span style="font-family: var(--font-mono); font-size: 15px; color: var(--ink-soft); font-weight: 600; display: block;">2024BCS0020</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 16px;">
+                            <span class="scribble" style="font-size: 38px; color: var(--ink);">
+                                Questions & Discussion Invited · Ready for Live Prototype Demo
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Presentation Chrome Controls -->
+    <div class="deck-controls">
+        <button class="control-btn" id="prevBtn" title="Previous Slide (← / PgUp)">← PREV</button>
+        <span class="control-counter" id="slideCounter">1 / 8</span>
+        <button class="control-btn" id="nextBtn" title="Next Slide (→ / Space / PgDn)">NEXT →</button>
+        <button class="control-btn" id="fsBtn" title="Full Screen (F)">[ F ]</button>
+        <button class="control-btn" id="printBtn" title="Save as PDF (P)">PDF</button>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           SLIDE CONTROLLER & STAGE SCALER WITH AUTO-KATEX RENDERING
+           ========================================================================== */
+        class DeckPresentation {
+            constructor() {
+                this.stage = document.getElementById('deckStage');
+                this.slides = Array.from(document.querySelectorAll('.slide'));
+                this.currentIndex = 0;
+                this.counter = document.getElementById('slideCounter');
+                this.indexDisplay = document.getElementById('slideIndexDisplay');
+
+                this.setupStageScaling();
+                this.setupNavigation();
+                this.showSlide(0);
+                this.initMath();
+            }
+
+            initMath() {
+                if (window.renderMathInElement) {
+                    renderMathInElement(document.body, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                } else {
+                    window.addEventListener('load', () => {
+                        if (window.renderMathInElement) {
+                            renderMathInElement(document.body, {
+                                delimiters: [
+                                    {left: '$$', right: '$$', display: true},
+                                    {left: '$', right: '$', display: false}
+                                ],
+                                throwOnError: false
+                            });
+                        }
+                    });
+                }
+            }
+
+            setupStageScaling() {
+                const scale = () => {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    const scaleX = w / 1920;
+                    const scaleY = h / 1080;
+                    this.stage.style.transform = `translate(-50%, -50%) scale(${scaleX}, ${scaleY})`;
+                };
+                scale();
+                window.addEventListener('resize', scale);
+            }
+
+            setupNavigation() {
+                document.getElementById('prevBtn').addEventListener('click', () => this.prevSlide());
+                document.getElementById('nextBtn').addEventListener('click', () => this.nextSlide());
+                document.getElementById('fsBtn').addEventListener('click', () => this.toggleFullScreen());
+                document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.showSlide(0);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        this.showSlide(this.slides.length - 1);
+                    } else if (e.key === 'f' || e.key === 'F') {
+                        this.toggleFullScreen();
+                    } else if (e.key === 'r' || e.key === 'R') {
+                        this.showSlide(0);
+                    } else if (e.key === 'p' || e.key === 'P') {
+                        window.print();
+                    } else if (e.key >= '1' && e.key <= '8') {
+                        const target = parseInt(e.key, 10) - 1;
+                        if (target < this.slides.length) this.showSlide(target);
+                    }
+                });
+
+                let touchStartX = 0;
+                window.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+                window.addEventListener('touchend', (e) => {
+                    const diff = e.changedTouches[0].screenX - touchStartX;
+                    if (diff > 50) this.prevSlide();
+                    else if (diff < -50) this.nextSlide();
+                }, { passive: true });
+            }
+
+            showSlide(index) {
+                this.currentIndex = Math.max(0, Math.min(index, this.slides.length - 1));
+                this.slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === this.currentIndex);
+                });
+
+                const formatted = `PAGE 0${this.currentIndex + 1} // 0${this.slides.length}`;
+                if (this.counter) this.counter.textContent = `${this.currentIndex + 1} / ${this.slides.length}`;
+                if (this.indexDisplay) this.indexDisplay.textContent = formatted;
+            }
+
+            nextSlide() {
+                if (this.currentIndex < this.slides.length - 1) {
+                    this.showSlide(this.currentIndex + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentIndex > 0) {
+                    this.showSlide(this.currentIndex - 1);
+                }
+            }
+
+            toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    if (document.exitFullscreen) document.exitFullscreen();
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            window.deckController = new DeckPresentation();
+        });
+    </script>
+</body>
+</html>

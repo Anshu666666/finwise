@@ -9,7 +9,7 @@ chat advisory, and historical session retrieval.
 """
 
 import logging
-from typing import List
+from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException, status
 
 import backend.models.database as db
@@ -64,6 +64,55 @@ async def get_evaluation_metrics_endpoint():
             detail=f"Failed to generate evaluation report: {str(e)}",
         )
 
+
+@router.get(
+    "/mamdani-plot",
+    summary="Generate or Retrieve Mamdani Fuzzy Inference Matplotlib Plot",
+    description="Returns a 4-panel publication-grade PNG diagram illustrating Fuzzification, Implication, Aggregation, and Centroid Defuzzification.",
+)
+async def get_mamdani_plot_endpoint(
+    preset: Optional[str] = None,
+    age: Optional[float] = None,
+    horizon: Optional[float] = None,
+    loss_tolerance: Optional[str] = None,
+    income_stability: Optional[str] = None,
+):
+    from fastapi.responses import Response
+    from fuzzy_logic.visualizer import generate_mamdani_plot
+
+    presets_data = {
+        "techie": {"age": 24, "horizon": 12, "loss_tol": 80.0, "income_stab": 90.0, "name": "Aarav Sharma (Young Tech Worker)"},
+        "family": {"age": 38, "horizon": 8, "loss_tol": 50.0, "income_stab": 85.0, "name": "Priya & Vikram Nair (Mid-Career Family)"},
+        "retiree": {"age": 68, "horizon": 3, "loss_tol": 20.0, "income_stab": 95.0, "name": "Col. K. R. Nambiar (Near-Retirement Senior)"},
+        "debt_stress": {"age": 29, "horizon": 4, "loss_tol": 30.0, "income_stab": 40.0, "name": "Sameer Sen (High Debt Stress)"},
+    }
+
+    if preset and preset in presets_data:
+        p = presets_data[preset]
+        plot_bytes = generate_mamdani_plot(
+            age=p["age"],
+            horizon_years=p["horizon"],
+            loss_tolerance_val=p["loss_tol"],
+            income_stability_val=p["income_stab"],
+            user_name=p["name"],
+        )
+    else:
+        actual_age = age if age is not None else 35.0
+        actual_horizon = horizon if horizon is not None else 5.0
+        lt_map = {"low": 20.0, "medium": 50.0, "high": 80.0}
+        stab_map = {"unstable": 25.0, "moderate": 55.0, "stable": 85.0}
+        actual_lt = lt_map.get((loss_tolerance or "medium").lower(), 50.0)
+        actual_stab = stab_map.get((income_stability or "stable").lower(), 85.0)
+
+        plot_bytes = generate_mamdani_plot(
+            age=actual_age,
+            horizon_years=actual_horizon,
+            loss_tolerance_val=actual_lt,
+            income_stability_val=actual_stab,
+            user_name="Evaluated Investor Profile",
+        )
+
+    return Response(content=plot_bytes, media_type="image/png")
 
 
 @router.post(

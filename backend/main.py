@@ -33,6 +33,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
+# Silence noisy external library logs during live demo
+logging.getLogger("ddgs").setLevel(logging.ERROR)
+logging.getLogger("duckduckgo_search").setLevel(logging.ERROR)
+logging.getLogger("primp").setLevel(logging.WARNING)
 logger = logging.getLogger("finwise.main")
 
 
