@@ -114,6 +114,10 @@ def calculate_asset_allocation(
     if age > 50:
         base_equity -= (age - 50) * 0.8
 
+    # Senior capital preservation safeguard (SEBI / CFP retirement standard: cap equity at 100 - age)
+    if age >= 60:
+        base_equity = min(base_equity, float(max(10, 100 - age)))
+
     # Leave at least 10% room for debt
     max_equity = max(10.0, 100.0 - cash - gold - 10.0)
     equity = max(10.0, min(max_equity, round(base_equity, 1)))

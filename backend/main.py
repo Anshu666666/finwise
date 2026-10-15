@@ -74,11 +74,18 @@ app.add_middleware(
 # Mount API Routers
 app.include_router(advisory_router, prefix="/api/v1")
 
+# Mount Aryan's Production Frontend Dashboard
+from fastapi.staticfiles import StaticFiles
+
+frontend_dir = Path(PROJECT_ROOT) / "frontend"
+if frontend_dir.is_dir():
+    app.mount("/app", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+
 
 @app.get("/", include_in_schema=False)
 async def root_redirect():
-    """Redirects root visitors directly to interactive OpenAPI Swagger documentation."""
-    return RedirectResponse(url="/docs")
+    """Redirects root visitors directly to the FinWise AI Interactive Dashboard."""
+    return RedirectResponse(url="/app/")
 
 
 @app.get(

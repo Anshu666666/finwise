@@ -45,6 +45,26 @@ async def get_market_intelligence_endpoint() -> AgentMarketIntelligence:
     return await get_live_market_intelligence()
 
 
+@router.get(
+    "/evaluation-metrics",
+    status_code=status.HTTP_200_OK,
+    summary="Retrieve Formal AI Evaluation & TA Verification Metrics",
+    description="Returns quantitative monotonicity, coverage, continuity, and CFP benchmark concordance metrics for the Fuzzy Logic & Expert System.",
+)
+async def get_evaluation_metrics_endpoint():
+    try:
+        from evaluation.evaluator import FinWiseEvaluator
+        evaluator = FinWiseEvaluator()
+        report = evaluator.run_full_evaluation()
+        return report.to_dict()
+    except Exception as e:
+        logger.error(f"Error computing evaluation metrics: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to generate evaluation report: {str(e)}",
+        )
+
+
 
 @router.post(
     "/evaluate",
