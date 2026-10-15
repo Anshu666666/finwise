@@ -1,6 +1,6 @@
 # 🔌 Interface & API Contracts
 
-This document establishes the exact JSON contracts between the frontend and backend, as well as the internal Python contracts between the Backend Orchestrator (Person 2), the LLM Agent (Person 3), and the Expert System (Person 4).
+This document establishes the exact JSON contracts between the frontend and backend, as well as the internal Python contracts between the Backend Orchestrator (Anshuman), the LLM Agent (Zaid), the Expert System (Aman), and the Frontend Workstation (Aryan).
 
 ---
 
@@ -123,11 +123,11 @@ Allows the user to ask follow-up questions grounded in their active financial pl
 ---
 
 ## 2. Internal Python Module Contracts
-
-### 2.1 Person 4 (Expert & Fuzzy Engine) $\rightarrow$ Person 2 (Backend Orchestrator)
-
+ 
+### 2.1 Aman (Expert & Fuzzy Engine) $\rightarrow$ Anshuman (Backend Orchestrator)
+ 
 ```python
-# Signature in backend/expert_system/engine.py
+# Signature in expert_system/engine.py
 def evaluate_financial_profile(profile: dict) -> dict:
     """
     Evaluates profile through Fuzzy Logic and Forward-Chaining Rules.
@@ -144,18 +144,18 @@ def evaluate_financial_profile(profile: dict) -> dict:
             - 'budget_metrics': dict (needs, wants, savings ratios)
     """
 ```
-
-### 2.2 Person 3 (Intelligent Agent & Search) $\rightarrow$ Person 2 (Backend Orchestrator)
-
+ 
+### 2.2 Zaid (Intelligent Agent & Search) $\rightarrow$ Anshuman (Backend Orchestrator)
+ 
 ```python
-# Signature in backend/agent/financial_agent.py
+# Signature in agent/pydantic_agent.py
 def generate_advisory_report(profile: dict, expert_evaluation: dict) -> dict:
     """
     Triggers web search for market benchmarks and synthesizes final natural language plan.
     
     Args:
         profile: User profile dictionary
-        expert_evaluation: Output from Person 4's evaluate_financial_profile
+        expert_evaluation: Output from Aman's evaluate_financial_profile
         
     Returns:
         dict containing:

@@ -1,6 +1,6 @@
 # 👥 Parallel Work Division Plan for Team of 4
 
-To ensure that all 4 team members can work **concurrently without blocking one another or having Git merge conflicts**, the project is partitioned into 4 decoupled subsystems connected through strictly defined [API Contracts](file:///c:/Users/anshu/OneDrive/Desktop/ai-project-financial-advisory-system/docs/API_CONTRACTS.md).
+To ensure that all 4 team members can work **concurrently without blocking one another or having Git merge conflicts**, the project is partitioned into 4 decoupled subsystems connected through strictly defined [API Contracts](API_CONTRACTS.md).
 
 ---
 
