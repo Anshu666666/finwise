@@ -95,8 +95,8 @@ def generate_mamdani_plot(
     c_tan = "#C9A66B"
     c_green = "#15803D"
 
-    fig = plt.figure(figsize=(14, 10.5), facecolor=c_cream)
-    gs = fig.add_gridspec(2, 2, hspace=0.38, wspace=0.25, left=0.08, right=0.95, top=0.81, bottom=0.08)
+    fig = plt.figure(figsize=(14, 11.0), facecolor=c_cream)
+    gs = fig.add_gridspec(2, 2, hspace=0.40, wspace=0.25, left=0.08, right=0.95, top=0.78, bottom=0.08)
 
 
     # --------------------------------------------------------------------------

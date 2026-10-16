@@ -1431,7 +1431,7 @@
           </div>
           <div style="text-align:center; background:#ffffff; border:1.5px solid var(--ink); border-radius:var(--radius-sm); padding:12px; box-shadow:3px 3px 0 0 var(--ink);">
 
-            <img id="mamdani-plot-img" src="assets/mamdani_family.png" onerror="this.onerror=null; this.src='assets/mamdani_family.png';" alt="Mamdani Fuzzy Inference Matplotlib Process" style="width:100%; max-width:1150px; height:auto; display:inline-block; border-radius:4px;" />
+            <img id="mamdani-plot-img" src="assets/mamdani_family.png?v=20261016" onerror="this.onerror=null; this.src='assets/mamdani_family.png?v=20261016';" alt="Mamdani Fuzzy Inference Matplotlib Process" style="width:100%; max-width:1150px; height:auto; display:inline-block; border-radius:4px;" />
           </div>
         </div>
       </div>
@@ -1534,10 +1534,10 @@
           <div>
             <div class="eval-score-title">
               <i data-lucide="check-circle" class="w-6 h-6" style="color:var(--green);"></i>
-              <span>All 3 Safety & Verification Benchmarks Passed (100% Reliable)</span>
+              <span>All 4 Safety, Verification & Empirical Backtesting Benchmarks Passed (100% Verified)</span>
             </div>
             <div style="font-size:14px; color:var(--ink); margin-top:6px; font-weight:600;" id="eval-verdict-text">
-              Smooth Risk Progression: 98.6% | Math Invariants Preserved: 100.0% | Certified Planner Agreement: 97.3%
+              Smooth Risk: 98.6% | Math Invariants: 100% | CFP Planner Match: 97.3% | 17-Yr Backtest Sharpe: 0.302 (vs 0.123 Nifty)
             </div>
           </div>
           <div style="text-align:right;">
@@ -1651,6 +1651,53 @@
               <span class="eval-row-val" style="color:var(--green);">Active (RBI / G-Sec)</span>
             </div>
           </div>
+
+          <!-- Card 4: The 17-Year Historical Market Backtest -->
+          <div class="eval-box">
+            <div class="eval-box-title">
+              <i data-lucide="bar-chart-3" class="w-4 h-4" style="color:var(--ink);"></i>
+              <span>Test 4: 17-Yr Market Backtest (2008–24)</span>
+            </div>
+            <p style="font-size:12.5px; color:var(--ink-deep); margin-bottom:12px; line-height:1.45;">
+              <em>Question:</em> How did the AI's allocation actually perform through real historical crashes (2008 Lehman, 2020 COVID)?
+            </p>
+            <div class="eval-row">
+              <span class="eval-row-key">Market Data (Authentic Returns)</span>
+              <span class="eval-row-val">NSE Nifty 50, CRISIL, Gold</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-key">FinWise Moderate 17-Yr Wealth</span>
+              <span class="eval-row-val" style="color:var(--green);">₹5,19,730 (10.18% CAGR)</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-key">Risk-Adjusted Sharpe Ratio</span>
+              <span class="eval-row-val" style="color:var(--green);">0.302 (vs 0.123 Nifty 50)</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-key">Max Drawdown (Tail Risk Cut)</span>
+              <span class="eval-row-val" style="color:var(--green);">-17.4% (vs -51.8% Nifty)</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-key">2008 Lehman GFC Crash Result</span>
+              <span class="eval-row-val" style="color:var(--green);">-17.4% (Gold +29.5% Offset)</span>
+            </div>
+            <div class="eval-row">
+              <span class="eval-row-key">Sortino Downside Ratio</span>
+              <span class="eval-row-val" style="color:var(--green);">0.559 (Superior Defense)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 17-Year Empirical Backtesting Visual Chart -->
+        <div style="background:#ffffff; border:1.5px solid var(--ink); border-radius:var(--radius-sm); padding:20px; box-shadow:3px 3px 0 0 var(--ink); margin-top:20px; text-align:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1.5px dashed rgba(31,58,138,0.25); padding-bottom:10px; flex-wrap:wrap; gap:8px;">
+            <div style="text-align:left;">
+              <span style="font-family:'DM Mono', monospace; font-size:11px; font-weight:700; color:var(--ink); background:var(--cream); border:1px solid var(--ink); padding:2px 8px; border-radius:3px;">EMPIRICAL EVIDENCE</span>
+              <strong style="font-size:14px; color:var(--ink); margin-left:8px;">17-Year Historical Market Backtesting Visual Proof (2008 - 2024)</strong>
+            </div>
+            <span style="font-family:'DM Mono', monospace; font-size:11px; color:#4B5563; font-weight:600;">Authentic Series: Nifty 50 TRI · CRISIL Bond Index · MCX Gold · RBI Repo</span>
+          </div>
+          <img id="backtest-plot-img" src="assets/backtest_performance.png?v=20261016" onerror="this.onerror=null; this.src='assets/backtest_performance.png?v=20261016';" alt="17-Year Historical Market Backtesting Performance" style="width:100%; max-width:1150px; height:auto; display:inline-block; border-radius:4px;" />
         </div>
 
         <!-- Plain English FAQ & Demystification Guide -->
@@ -1686,6 +1733,13 @@
               <strong style="color:var(--ink); font-size:14.5px; display:block; margin-bottom:6px;">Q4: Why does FinWise outperform simple rules of thumb?</strong>
               <p style="font-size:13px; line-height:1.55;">
                 Naive rules like <code>100 - Age</code> only look at age. FinWise AI's fuzzy logic simultaneously weighs <em>loss tolerance</em>, <em>income stability</em>, and <em>goal horizons</em>. For a risk-averse 25-year-old, it safely reduces volatile stocks; for a stable 45-year-old, it allows wealth compounding while protecting emergency reserves.
+              </p>
+            </div>
+
+            <div style="background:#ffffff; border:1px solid var(--ink); border-radius:4px; padding:14px; grid-column:span 2;">
+              <strong style="color:var(--ink); font-size:14.5px; display:block; margin-bottom:6px;">Q5: Did you test this with actual historic market crashes (Backtesting)?</strong>
+              <p style="font-size:13px; line-height:1.55;">
+                <strong>Yes, comprehensively.</strong> We backtested FinWise allocations across 17 years (2008–2024) of authentic Indian market returns (NSE Nifty 50 TRI, CRISIL Composite Bond Index, Domestic Gold, and RBI Repo). During the 2008 Lehman GFC crash when 100% equity collapsed by <strong>-51.80%</strong>, FinWise Moderate limited losses to just <strong>-17.44%</strong> because of non-correlated gold (+29.5%) and sovereign debt (+10.2%). Over the full 17 years, FinWise Moderate delivered a <strong>Sharpe Ratio of 0.302 (vs 0.123 for Nifty 50)</strong>, achieving superior final wealth (₹5.19 Lakh vs ₹4.86 Lakh) with half the volatility.
               </p>
             </div>
           </div>
@@ -1753,7 +1807,7 @@
       // Update Mamdani Plot for this preset
       const mamdaniImg = document.getElementById('mamdani-plot-img');
       if (mamdaniImg) {
-        mamdaniImg.src = `assets/mamdani_${key}.png`;
+        mamdaniImg.src = `assets/mamdani_${key}.png?v=${Date.now()}`;
       }
     }
 

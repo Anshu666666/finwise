@@ -112,7 +112,11 @@ async def get_mamdani_plot_endpoint(
             user_name="Evaluated Investor Profile",
         )
 
-    return Response(content=plot_bytes, media_type="image/png")
+    return Response(
+        content=plot_bytes,
+        media_type="image/png",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"}
+    )
 
 
 @router.post(
