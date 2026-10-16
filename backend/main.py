@@ -85,6 +85,10 @@ frontend_dir = Path(PROJECT_ROOT) / "frontend"
 if frontend_dir.is_dir():
     app.mount("/app", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
 
+report_dir = Path(PROJECT_ROOT) / "report"
+if report_dir.is_dir():
+    app.mount("/report", StaticFiles(directory=str(report_dir), html=True), name="report")
+
 
 @app.get("/", include_in_schema=False)
 async def root_redirect():
