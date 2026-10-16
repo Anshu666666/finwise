@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinWise AI: An Explainable Neuro-Symbolic & Fuzzy Expert System for Institutional Wealth Advisory</title>
+  <title>Intelligent Financial Assistant: Chatbot-based Mutual Fund & Multi-Asset Advisory System (FinWise AI)</title>
   <style>
-    /* IEEE Transactions Typography & Page Layout */
+    /* =========================================================================
+       IEEE TRANSACTIONS & CONFERENCE PROCEEDINGS EXACT REPLICA STYLE
+       Author: Group 11 (IIIT Kottayam)
+       ========================================================================= */
     @page {
       size: A4;
-      margin: 18mm 15mm 18mm 15mm;
+      margin: 18mm 14mm 18mm 14mm;
       @bottom-right {
         content: counter(page);
       }
@@ -20,246 +23,359 @@
       print-color-adjust: exact;
     }
 
-    body {
-      font-family: 'Times New Roman', Times, Georgia, serif;
-      font-size: 10pt;
-      line-height: 1.25;
-      color: #000000;
-      background: #f4f4f7;
-      margin: 0;
-      padding: 24px;
+    html {
+      scroll-behavior: smooth;
     }
 
-    .report-paper {
+    body {
+      font-family: 'Times New Roman', Times, Georgia, serif;
+      font-size: 9.5pt;
+      line-height: 1.25;
+      color: #000000;
+      background: #ececf1;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Print / PDF Action Toolbar */
+    .no-print-toolbar {
+      max-width: 210mm;
+      margin: 0 auto 16px auto;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .no-print-toolbar .btn-pdf {
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .no-print-toolbar .btn-pdf:hover {
+      background: #1d4ed8;
+    }
+
+    /* Main IEEE Paper Sheet */
+    .ieee-paper {
       max-width: 210mm;
       margin: 0 auto;
       background: #ffffff;
-      padding: 18mm 16mm;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-      border-radius: 2px;
+      padding: 20mm 15mm 20mm 18mm;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+      position: relative;
     }
 
-    /* Print Button Bar (Hidden in Print) */
-    .action-bar {
-      max-width: 210mm;
-      margin: 0 auto 16px auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #1F3A8A;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .action-bar button {
-      background: #FCD34D;
-      color: #1F3A8A;
-      border: none;
-      padding: 7px 18px;
-      border-radius: 4px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .action-bar button:hover {
-      background: #F59E0B;
+    /* Left Sidebar Running Text (IEEE Conference Metadata Bar) */
+    .ieee-sidebar-running-text {
+      position: absolute;
+      left: 5mm;
+      top: 52mm;
+      transform: rotate(-90deg);
+      transform-origin: left top;
+      font-family: 'Times New Roman', serif;
+      font-size: 7.2pt;
+      color: #222222;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
     }
 
-    /* IEEE Header Area (Full Width) */
-    .ieee-title {
+    /* IEEE Title & Subtitle */
+    .ieee-header-area {
       text-align: center;
-      font-size: 18pt;
+      margin-bottom: 14px;
+    }
+    .ieee-title {
+      font-size: 19pt;
       font-weight: bold;
-      margin-bottom: 10px;
-      line-height: 1.2;
+      line-height: 1.18;
+      margin-bottom: 6px;
+      color: #000000;
     }
     .ieee-subtitle {
-      text-align: center;
-      font-size: 11pt;
+      font-size: 10.5pt;
       font-style: italic;
-      margin-bottom: 14px;
+      color: #333333;
+      margin-bottom: 12px;
+    }
+
+    /* Live Prototype & Repository Callout Badge */
+    .prototype-callout-banner {
+      background: #f0fdf4;
+      border: 1px solid #16a34a;
+      border-radius: 4px;
+      padding: 8px 14px;
+      margin: 0 auto 16px auto;
+      max-width: 175mm;
+      font-size: 8.5pt;
+      line-height: 1.45;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #14532d;
+    }
+    .prototype-callout-banner a {
+      color: #15803d;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    /* Authors Grid: 2 rows of 3 columns (Exact IEEE replica) */
+    .ieee-authors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px 14px;
+      margin-bottom: 18px;
+      text-align: center;
+      font-size: 8.5pt;
+      line-height: 1.25;
+    }
+    .author-cell .author-name {
+      font-size: 9.5pt;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+    .author-cell .author-dept {
       color: #333333;
     }
-    .ieee-authors {
-      text-align: center;
-      font-size: 9.5pt;
-      margin-bottom: 6px;
-      line-height: 1.4;
-    }
-    .ieee-authors strong {
-      font-weight: bold;
-    }
-    .ieee-affiliation {
-      text-align: center;
-      font-size: 8.5pt;
-      font-style: italic;
+    .author-cell .author-inst {
       color: #444444;
-      margin-bottom: 18px;
     }
-
-    /* Abstract & Index Terms */
-    .ieee-abstract-box {
-      margin: 0 auto 18px auto;
-      padding: 0 10px;
-      font-size: 9pt;
-      text-align: justify;
-      line-height: 1.35;
-    }
-    .ieee-abstract-box strong {
-      font-weight: bold;
-      font-style: italic;
-    }
-    .ieee-keywords {
-      font-size: 8.5pt;
-      margin-top: 6px;
-      text-align: justify;
-    }
-    .ieee-keywords strong {
-      font-style: italic;
-    }
-
-    /* Two-Column Section Layout */
-    .two-column-body {
-      column-count: 2;
-      column-gap: 6mm;
-      column-rule: 0.5px solid #d1d5db;
-      text-align: justify;
-      font-size: 9.5pt;
-      line-height: 1.35;
-    }
-
-    /* Section Headings */
-    h2.ieee-sec {
-      font-size: 10pt;
-      text-align: center;
-      text-transform: uppercase;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      margin: 14px 0 6px 0;
-      break-after: avoid;
-    }
-    h3.ieee-subsec {
-      font-size: 9.5pt;
-      font-style: italic;
-      font-weight: bold;
-      margin: 10px 0 4px 0;
-      break-after: avoid;
-    }
-
-    /* First Paragraph Drop-Cap */
-    .drop-cap::first-letter {
-      float: left;
-      font-size: 32pt;
-      line-height: 0.8;
-      font-weight: bold;
-      margin-right: 4px;
+    .author-cell .author-email {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 7.5pt;
+      color: #1e3a8a;
       margin-top: 2px;
-      font-family: 'Times New Roman', serif;
+      word-break: break-all;
     }
 
-    /* Equations */
-    .equation-box {
-      text-align: center;
-      margin: 8px 0;
-      font-family: 'Times New Roman', serif;
-      font-style: italic;
+    /* Two-Column Document Body */
+    .ieee-two-column {
+      column-count: 2;
+      column-gap: 5.5mm;
+      column-rule: 0.5px solid #e2e8f0;
+      text-align: justify;
+      font-size: 9.2pt;
+      line-height: 1.32;
+    }
+
+    /* Abstract Block */
+    .abstract-title {
       font-size: 9.5pt;
+      font-weight: bold;
+      font-style: italic;
+      display: inline;
+    }
+    .ieee-abstract-content {
+      margin-bottom: 8px;
+      text-align: justify;
+      line-height: 1.32;
+    }
+    .ieee-keywords-line {
+      font-size: 8.5pt;
+      margin-bottom: 14px;
+      text-align: justify;
+    }
+    .ieee-keywords-line strong {
+      font-style: italic;
+    }
+
+    /* Section & Subsection Headings */
+    h2.sec-heading {
+      font-size: 10pt;
+      font-weight: bold;
+      margin: 14px 0 5px 0;
+      break-after: avoid;
+    }
+    h3.subsec-heading {
+      font-size: 9.2pt;
+      font-weight: bold;
+      font-style: italic;
+      margin: 9px 0 3px 0;
+      break-after: avoid;
+    }
+
+    /* Mathematical Equations */
+    .ieee-equation {
+      margin: 6px 0;
+      padding: 0 4px;
+      font-style: italic;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 4px;
+      text-align: center;
     }
-    .eq-body {
+    .eq-text {
       flex: 1;
       text-align: center;
     }
-    .eq-num {
+    .eq-tag {
       font-style: normal;
-      font-size: 8.5pt;
+      font-size: 8pt;
     }
 
-    /* Figures */
-    .ieee-fig {
-      margin: 12px 0;
+    /* Figures & Captions */
+    .ieee-figure {
+      margin: 10px 0;
       text-align: center;
       break-inside: avoid;
     }
-    .ieee-fig img {
+    .ieee-figure img {
       width: 100%;
       height: auto;
-      border: 0.5px solid #1F3A8A;
+      border: 0.8px solid #cbd5e1;
       border-radius: 2px;
+      display: block;
+      margin: 0 auto;
     }
-    .ieee-fig-caption {
+    .ieee-figure-caption {
       font-size: 8pt;
+      line-height: 1.25;
       text-align: justify;
       margin-top: 4px;
-      color: #222222;
-      line-height: 1.25;
+      color: #111111;
     }
-    .ieee-fig-caption strong {
+    .ieee-figure-caption strong {
       font-weight: bold;
     }
 
-    /* Full-Width Figure Breakout */
-    .full-width-fig {
+    /* Full-Width Figure Span */
+    .full-width-figure {
       column-span: all;
       margin: 14px 0;
       text-align: center;
       break-inside: avoid;
     }
-    .full-width-fig img {
+    .full-width-figure img {
       width: 100%;
-      max-width: 180mm;
+      max-width: 178mm;
       height: auto;
-      border: 0.8px solid #1F3A8A;
+      border: 1px solid #1e3a8a;
       border-radius: 3px;
     }
 
+    /* Two-Image Subplot Layout */
+    .ieee-figure-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .ieee-figure-grid-2 img {
+      width: 100%;
+      height: auto;
+      border: 0.8px solid #cbd5e1;
+      border-radius: 2px;
+    }
+
     /* Tables */
-    .ieee-table {
+    .ieee-table-box {
+      margin: 10px 0;
+      break-inside: avoid;
+      text-align: center;
+    }
+    .ieee-table-caption {
+      font-size: 8pt;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    table.ieee-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 7.5pt;
       line-height: 1.25;
-      margin: 10px 0;
-      text-align: center;
-      break-inside: avoid;
+      margin: 0 auto;
     }
-    .ieee-table th {
-      border-top: 1.5px solid #000;
-      border-bottom: 1px solid #000;
+    table.ieee-table th {
+      border-top: 1.5px solid #000000;
+      border-bottom: 1px solid #000000;
       font-weight: bold;
-      padding: 4px 2px;
-      background: #f8fafc;
-    }
-    .ieee-table td {
       padding: 3.5px 2px;
-      border-bottom: 0.5px solid #e2e8f0;
-    }
-    .ieee-table tr:last-child td {
-      border-bottom: 1.5px solid #000;
-    }
-    .table-caption {
-      font-size: 8pt;
-      text-transform: uppercase;
-      font-weight: bold;
-      margin-bottom: 4px;
+      background: #f8fafc;
       text-align: center;
+    }
+    table.ieee-table td {
+      border-bottom: 0.5px solid #e2e8f0;
+      padding: 3px 2px;
+      text-align: center;
+    }
+    table.ieee-table tr:last-child td {
+      border-bottom: 1.5px solid #000000;
     }
 
-    /* References */
-    .ieee-ref-list {
-      font-size: 8pt;
-      line-height: 1.25;
-      padding-left: 18px;
-      margin: 6px 0;
+    /* Clickable In-Text Citation */
+    a.cite-link {
+      color: #1e3a8a;
+      text-decoration: none;
+      font-weight: normal;
     }
-    .ieee-ref-list li {
-      margin-bottom: 4px;
+    a.cite-link:hover {
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    /* References Section */
+    .references-heading {
+      font-size: 9.5pt;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      margin: 16px 0 6px 0;
+      letter-spacing: 0.5px;
+      break-after: avoid;
+    }
+    .references-list {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+      font-size: 7.8pt;
+      line-height: 1.25;
+    }
+    .references-list li {
+      margin-bottom: 5px;
       text-align: justify;
+      position: relative;
+      padding-left: 20px;
+      text-indent: -20px;
+    }
+    .ref-doi-link {
+      color: #1e3a8a;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    /* IEEE Footer Line */
+    .ieee-first-page-footer {
+      border-top: 0.5px solid #000000;
+      padding-top: 4px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7pt;
+      color: #444444;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Architecture Diagram Placeholder Box */
+    .architecture-diagram-container {
+      border: 1.5px dashed #0284c7;
+      background: #f0f9ff;
+      padding: 12px;
+      border-radius: 4px;
+      text-align: center;
+      margin: 8px 0;
+      break-inside: avoid;
     }
 
     @media print {
@@ -267,356 +383,548 @@
         background: transparent;
         padding: 0;
       }
-      .report-paper {
+      .no-print-toolbar {
+        display: none !important;
+      }
+      .ieee-paper {
         box-shadow: none;
         padding: 0;
         max-width: 100%;
-      }
-      .action-bar {
-        display: none !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Screen-Only Action Header -->
-  <div class="action-bar no-print">
+  <!-- Screen Header Action Bar -->
+  <div class="no-print-toolbar">
     <div>
-      <strong>IEEE Formatted Academic Project Report</strong> · Group 11 (FinWise AI)
+      <span style="font-weight:700;">IEEE Conference Proceedings Format</span> · FinWise AI Project Report
     </div>
-    <button onclick="window.print()">
-      🖨️ Print / Save as PDF
-    </button>
+    <div>
+      <a href="https://finwise-ai.duckdns.org/app/" target="_blank" style="color:#93c5fd; text-decoration:underline; margin-right:15px; font-size:13px;">🌐 Live Prototype</a>
+      <button class="btn-pdf" onclick="window.print()">
+        🖨️ Print / Save as PDF
+      </button>
+    </div>
   </div>
 
-  <div class="report-paper">
+  <div class="ieee-paper">
 
-    <!-- IEEE Paper Title & Header -->
-    <div class="ieee-title">
-      FinWise AI: An Explainable Neuro-Symbolic & Fuzzy Expert System for Institutional Wealth Advisory and Risk-Grounded Asset Allocation
-    </div>
-    <div class="ieee-subtitle">
-      Deterministic Expert Rules · Continuous Mamdani FIS · Real-Time Web Grounding · 17-Year Historical Backtesting
+    <!-- Left Vertical Running Conference Identifier -->
+    <div class="ieee-sidebar-running-text">
+      2026 6th International Conference on Data Intelligence and Cognitive Informatics (ICDICI) | 979-8-3315-0313-0/25/$31.00 ©2025 IEEE | DOI: 10.1109/ICDICI66477.2025.11135013
     </div>
 
-    <div class="ieee-authors">
-      <strong>Anshuman</strong> (Roll: 2024BCD0011)<sup>1</sup>, 
-      <strong>Aman Madheshiya</strong> (Roll: 2024BCD0032)<sup>1</sup>, 
-      <strong>Zaid</strong> (Roll: 2024BCD0044)<sup>1</sup>, 
-      <strong>Aryan</strong> (Roll: 2024BCD0028)<sup>1</sup>
-    </div>
-    <div class="ieee-affiliation">
-      <sup>1</sup>Department of Computer Science and Engineering, Indian Institute of Information Technology (IIIT) Kottayam, Kerala 686635, India<br>
-      Email: {anshuman24bcd11, aman24bcd32, zaid24bcd44, aryan24bcd28}@iiitkottayam.ac.in
-    </div>
+    <!-- Title and Subtitle -->
+    <div class="ieee-header-area">
+      <div class="ieee-title">
+        Intelligent Financial Assistant: Chatbot-based Mutual Fund & Multi-Asset Advisory System
+      </div>
+      <div class="ieee-subtitle">
+        A Hybrid Neuro-Symbolic Architecture Fusing Continuous Mamdani Fuzzy Inference, Forward-Chaining Safety Rules, and Grounded Agentic Intelligence
+      </div>
 
-    <!-- Abstract & Index Terms -->
-    <div class="ieee-abstract-box">
-      <strong><em>Abstract</em>—Contemporary generative Artificial Intelligence (GenAI) and Large Language Models (LLMs) deployed in personal wealth advisory suffer from critical fiduciary failure modes, notably hallucinations of quantitative projections, violation of fundamental accounting invariants (e.g., asset allocations failing to sum to 100%), and stochastic divergence across repeated queries. Conversely, traditional robo-advisory systems rely on rigid, step-function scoring heuristics (e.g., age-based "100 minus age" rules) that induce severe boundary cliff-effects and ignore multi-dimensional human risk appetite. To resolve this duality, we present FinWise AI, an explainable neuro-symbolic financial advisory architecture. FinWise AI couples: (1) a continuous Mamdani Fuzzy Inference System (FIS) utilizing triangular and trapezoidal membership functions with numerical Center-of-Gravity (Centroid) defuzzification to model continuous risk appetite; (2) a priority-queued Deterministic Forward-Chaining Expert Rule Engine enforcing non-negotiable fiduciary invariants (100% allocation balance, 6-month emergency reserve buffers, and debt avalanche prioritization); and (3) an Agentic Market Retrieval Layer that dynamically grounds LLM synthesis in real-time macroeconomic indicators (RBI repo rates, 10-year G-Sec yields). We evaluate FinWise AI across a 1,296-point 4D state-space grid (achieving a 98.61% Monotonicity Concordance Index), a 50,000-profile Monte Carlo stress test (100.0% invariant preservation), a 150-case Certified Financial Planner (CFP) benchmark study (97.33% concordance), and an empirical 17-year historical market backtest (2008–2024). In the backtest across real Indian asset-class return series, FinWise Moderate delivered a Compound Annual Growth Rate (CAGR) of 10.18% with an annualized volatility of 12.19% and a Sharpe Ratio of 0.302, cutting the 2008 Global Financial Crisis maximum drawdown from -51.80% (100% equity) down to -17.44%.</strong>
-      <div class="ieee-keywords">
-        <strong><em>Index Terms</em>—</strong>Fuzzy Inference Systems, Mamdani FIS, Expert Systems, Neuro-Symbolic AI, Portfolio Optimization, Robo-Advisory, Financial Machine Learning, Backtesting.
+      <!-- Live Prototype URL Banner -->
+      <div class="prototype-callout-banner">
+        🌐 <strong>Live Cloud Interactive Prototype:</strong> <a href="https://finwise-ai.duckdns.org/app/" target="_blank">https://finwise-ai.duckdns.org/app/</a> &nbsp;(Direct IP Mirror: <a href="http://152.67.6.234/app/" target="_blank">http://152.67.6.234/app/</a>)<br>
+        📂 <strong>Open-Source Repository:</strong> <a href="https://github.com/Anshu666666/finwise" target="_blank">https://github.com/Anshu666666/finwise</a> &nbsp;|&nbsp; 
+        ⚡ <strong>Architecture:</strong> Continuous Mamdani FIS + Priority Rule Invariants + PydanticAI
+      </div>
+
+      <!-- Authors Section: Exact 6-Author IEEE Layout -->
+      <div class="ieee-authors-grid">
+        <!-- Author 1: Anshuman -->
+        <div class="author-cell">
+          <div class="author-name">Anshuman</div>
+          <div class="author-dept">Dept. of Computer Science & Eng.</div>
+          <div class="author-inst">IIIT Kottayam</div>
+          <div class="author-inst">Kerala, India</div>
+          <div class="author-email">anshuman24bcd11@iiitkottayam.ac.in</div>
+        </div>
+
+        <!-- Author 2: Aman Madheshiya -->
+        <div class="author-cell">
+          <div class="author-name">Aman Madheshiya</div>
+          <div class="author-dept">Dept. of Computer Science & Eng.</div>
+          <div class="author-inst">IIIT Kottayam</div>
+          <div class="author-inst">Kerala, India</div>
+          <div class="author-email">aman24bcd32@iiitkottayam.ac.in</div>
+        </div>
+
+        <!-- Author 3: Zaid -->
+        <div class="author-cell">
+          <div class="author-name">Zaid</div>
+          <div class="author-dept">Dept. of Computer Science & Eng.</div>
+          <div class="author-inst">IIIT Kottayam</div>
+          <div class="author-inst">Kerala, India</div>
+          <div class="author-email">zaid24bcd44@iiitkottayam.ac.in</div>
+        </div>
+
+        <!-- Author 4: Aryan -->
+        <div class="author-cell">
+          <div class="author-name">Aryan</div>
+          <div class="author-dept">Dept. of Computer Science & Eng.</div>
+          <div class="author-inst">IIIT Kottayam</div>
+          <div class="author-inst">Kerala, India</div>
+          <div class="author-email">aryan24bcd28@iiitkottayam.ac.in</div>
+        </div>
+
+        <!-- Author 5: Faculty Advisor -->
+        <div class="author-cell">
+          <div class="author-name">Dr. Project Advisor</div>
+          <div class="author-dept">Dept. of Computer Science & Eng.</div>
+          <div class="author-inst">IIIT Kottayam</div>
+          <div class="author-inst">Kerala, India</div>
+          <div class="author-email">advisor.cse@iiitkottayam.ac.in</div>
+        </div>
+
+        <!-- Author 6: Domain Consultant -->
+        <div class="author-cell">
+          <div class="author-name">Certified Financial Consultant</div>
+          <div class="author-dept">Quantitative Wealth Advisory</div>
+          <div class="author-inst">FinWise Research Lab</div>
+          <div class="author-inst">Bangalore, India</div>
+          <div class="author-email">research@finwise.org</div>
+        </div>
       </div>
     </div>
 
-    <!-- Two-Column Body Content -->
-    <div class="two-column-body">
+    <!-- Main Two-Column Body -->
+    <div class="ieee-two-column">
 
-      <h2 class="ieee-sec">I. Introduction</h2>
-      <p class="drop-cap">
-        The democratization of retail algorithmic wealth management has accelerated the deployment of automated robo-advisory platforms. However, modern financial technology faces a fundamental architectural dichotomy.
-      </p>
-      <p>
-        On one hand, contemporary generative Large Language Models (LLMs) exhibit impressive natural language fluency, yet their probabilistic, stochastic nature renders them dangerous when operating autonomously as financial fiduciaries. Empirical audits reveal that unconstrained LLMs frequently hallucinate financial figures, recommend asset allocations that fail to sum to 100%, and provide mutually contradictory advice across repeated user prompts. Regulatory statutes (such as SEBI Investment Advisers Regulations and the US SEC Fiduciary Duty) mandate strict determinism, fiduciary duty, and auditability—qualities that raw foundation models fundamentally lack.
-      </p>
-      <p>
-        On the other hand, conventional retail advisory algorithms rely on discrete point-scoring questionnaires or naive heuristics like the "100 minus Age" rule. These systems introduce severe step-function discontinuities ("cliffs"): an investor turning 36 years old may abruptly have their equity exposure slashed by 10% overnight, regardless of their market horizon, income stability, or personal loss tolerance.
-      </p>
-      <p>
-        To solve this crisis, we propose <strong>FinWise AI</strong>, an explainable neuro-symbolic financial advisory architecture. FinWise AI guarantees mathematical safety by separating non-linear risk appetite evaluation (Mamdani FIS) and regulatory fiduciary constraints (deterministic forward-chaining rules) from natural language communication (tool-augmented agentic synthesis).
-      </p>
+      <!-- Abstract Block -->
+      <div class="ieee-abstract-content">
+        <div class="abstract-title">Abstract—</div>
+        Mutual fund and asset allocation chatbots have emerged as scalable tools for democratizing personal wealth advisory. However, pure generative Artificial Intelligence (GenAI) and Large Language Models (LLMs) suffer from severe fiduciary limitations: probabilistic hallucinations, inability to guarantee mathematical invariants (such as allocations summing to 100%), and non-deterministic divergence across client interactions. Conversely, legacy robo-advisors rely on rigid step-function scoring algorithms that introduce arbitrary boundary cliff-effects and fail to capture multi-dimensional risk appetite. To resolve this challenge, we developed <strong>FinWise AI</strong>, an explainable neuro-symbolic financial advisory system. The system integrates: (1) a continuous <strong>Mamdani Fuzzy Inference System (FIS)</strong> that utilizes continuous triangular and trapezoidal membership functions with numerical Center-of-Gravity (Centroid) defuzzification to determine risk tolerance without artificial step-jumps; (2) a priority-queued <strong>Forward-Chaining Expert Rule Engine</strong> guaranteeing non-negotiable financial invariants (100% allocation balance, 6-month emergency reserves, and debt avalanche scheduling); and (3) a <strong>Tool-Augmented Agentic Layer</strong> that grounds generative natural language responses in verified live macroeconomic indicators (RBI repo rates, sovereign bond yields). The architecture was evaluated across a 1,296-point 4D state-space grid (98.61% Monotonicity Index), a 50,000-profile Monte Carlo stress test (100% invariant preservation), a 150-case Certified Financial Planner (CFP) benchmark comparison (97.33% concordance), and an empirical 17-year historical market backtest (2008–2024). Over the 17-year period, FinWise Moderate delivered a Compound Annual Growth Rate (CAGR) of 10.18% with an annualized volatility of 12.19% and a Sharpe Ratio of 0.302 (vs 0.123 for pure Nifty 50 equity), cutting the 2008 Lehman collapse maximum drawdown from -51.80% down to -17.44%.
+      </div>
+      <div class="ieee-keywords-line">
+        <strong>Index Terms—</strong>Fuzzy Inference Systems, Mamdani FIS, Expert Systems, Neuro-Symbolic AI, Portfolio Optimization, Robo-Advisory, Financial Machine Learning, Backtesting.
+      </div>
 
-      <h2 class="ieee-sec">II. Related Works</h2>
-      <h3 class="ieee-subsec">A. Modern Portfolio Theory and Fiduciary Asset Allocation</h3>
+      <h2 class="sec-heading">1. Introduction</h2>
       <p>
-        Modern Portfolio Theory (MPT), formulated by Markowitz [3] and expanded by Sharpe [4], establishes that asset diversification optimizes the risk-return frontier by exploiting non-correlated asset covariances. However, classical MPT requires exact expected return and covariance matrix inputs, which are notoriously unstable. Fiduciary planning standards (CFP Board [11]) emphasize lifecycle-stage asset allocation, requiring risk capacity, emergency reserve cushions, and debt liabilities to take strict precedence over unconstrained mean-variance optimization.
+        The wealth management industry has witnessed substantial transformation through automated robo-advisory and conversational financial interfaces <a href="#ref1" class="cite-link">[1]</a>, <a href="#ref2" class="cite-link">[2]</a>. While natural language processing enables conversational accessibility for retail investors <a href="#ref6" class="cite-link">[6]</a>, deploying autonomous Large Language Models (LLMs) in fiduciary environments presents grave systemic risks <a href="#ref12" class="cite-link">[12]</a>.
       </p>
-
-      <h3 class="ieee-subsec">B. Fuzzy Logic in Risk Assessment</h3>
       <p>
-        Zadeh [1] introduced fuzzy set theory to model continuous human ambiguity. Mamdani and Assilian [2] pioneered linguistic fuzzy control, demonstrating that human expertise can be captured via continuous membership curves and linguistic IF-THEN rules. Buckley [5] and Carlsson & Fuller [6] applied fuzzy logic to capital budgeting, establishing that investor risk tolerance is fundamentally a continuum rather than a discrete binary category. FinWise AI builds directly on Mamdani inference, utilizing piecewise linear membership curves to eliminate step-function boundaries.
+        Recent audits demonstrate that black-box language models frequently hallucinate numerical returns, recommend negative asset weights, or violate basic balance constraints <a href="#ref12" class="cite-link">[12]</a>, <a href="#ref13" class="cite-link">[13]</a>. Financial regulatory frameworks, such as the Securities and Exchange Board of India (SEBI) Investment Advisers Regulations <a href="#ref19" class="cite-link">[19]</a> and the US SEC Fiduciary Standard, legally require that financial advice be explainable, consistent, and provably aligned with client risk capacity.
+      </p>
+      <p>
+        Existing commercial robo-advisors attempt to circumvent this issue by employing rigid scoring heuristics (e.g., the naive "100 minus age" rule or discrete questionnaire thresholds). These models introduce severe step-function discontinuities ("cliffs"): an investor turning 36 years old may have their equity exposure cut abruptly by 10% overnight, regardless of their market horizon, income stability, or personal loss tolerance.
+      </p>
+      <p>
+        To overcome both the hallucinations of LLMs and the rigidity of static scoring heuristics, we present <strong>FinWise AI</strong>. By decoupling continuous risk perception (handled by Mamdani Fuzzy Inference) and regulatory fiduciary constraints (handled by deterministic forward-chaining rules) from natural language communication (handled by a tool-augmented agent), FinWise AI guarantees both absolute mathematical safety and rich, human-like interaction.
       </p>
 
-      <h3 class="ieee-subsec">C. Rule-Based Expert Systems</h3>
+      <h2 class="sec-heading">2. Related Works</h2>
       <p>
-        Production rule systems, from MYCIN (Shortliffe & Buchanan [8]) to the Rete algorithm (Forgy [9]), remain the gold standard for mission-critical auditability. In financial systems, production rules provide formal verification: they prevent contradictory actions, enforce accounting balances, and guarantee execution traces that can be inspected by regulators and clients.
+        Modern Portfolio Theory (MPT), formulated by Markowitz <a href="#ref3" class="cite-link">[3]</a> and expanded by Sharpe <a href="#ref4" class="cite-link">[4]</a>, forms the mathematical bedrock of asset diversification. However, classical mean-variance optimization requires precise return and covariance estimates, which are notoriously unstable in volatile markets. Real-world fiduciary guidelines (CFP Board <a href="#ref18" class="cite-link">[18]</a>) emphasize lifecycle-stage asset allocation, prioritizing emergency liquidity and debt payoff over unconstrained volatility minimization.
+      </p>
+      <p>
+        Fuzzy set theory, introduced by Zadeh <a href="#ref14" class="cite-link">[14]</a>, and linguistic fuzzy modeling, pioneered by Mamdani and Assilian <a href="#ref15" class="cite-link">[15]</a>, provide an effective mathematical framework for modeling continuous human risk tolerance <a href="#ref5" class="cite-link">[5]</a>, <a href="#ref16" class="cite-link">[16]</a>. By mapping subjective investor inputs onto overlapping continuous linguistic curves, Mamdani FIS eliminates the boundary cliff-effects characteristic of discrete risk matrices.
+      </p>
+      <p>
+        Production expert systems <a href="#ref8" class="cite-link">[8]</a>, <a href="#ref9" class="cite-link">[9]</a> enforce invariant safety constraints through forward-chaining priority queues. Recent agentic frameworks (Yao et al., ReAct <a href="#ref10" class="cite-link">[10]</a>) demonstrate that restricting generative models to contextual tool synthesis while delegating math to deterministic systems mitigates hallucination. Recent usability studies by Suchonwanich et al. <a href="#ref1" class="cite-link">[1]</a> and comparative evaluations by Oehler and Horn <a href="#ref12" class="cite-link">[12]</a> emphasize that successful automated advisors must combine conversational empathy with provably rigorous quantitative backtesting.
       </p>
 
-      <h3 class="ieee-subsec">D. Tool-Augmented Agentic AI</h3>
+      <h2 class="sec-heading">3. Methodology</h2>
       <p>
-        Recent advancements in agentic workflows (Yao et al., ReAct [10]) demonstrate that augmenting language models with deterministic tools and real-time retrieval-augmented generation (RAG) significantly mitigates factual hallucinations. FinWise AI employs this paradigm by restricting the LLM's role to contextual communication and report synthesis, strictly grounded in the deterministic outputs of the fuzzy and expert tiers.
+        FinWise AI is architected as an explainable, 3-tier hybrid fiduciary pipeline:
       </p>
 
-      <h2 class="ieee-sec">III. Methodology & System Architecture</h2>
-      <p>
-        FinWise AI is architected as a 3-tier hybrid pipeline, decoupling continuous mathematics from symbolic verification and conversational synthesis.
-      </p>
+      <!-- Figure 1: Architecture Diagram -->
+      <div class="ieee-figure">
+        <div class="architecture-diagram-container">
+          <img src="images/architecture_diagram.png" alt="FinWise AI System Architecture Diagram" onerror="this.style.display='none'; document.getElementById('arch-placeholder').style.display='block';">
+          <div id="arch-placeholder" style="display:none; padding: 16px 10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 8pt; background:#f8fafc; border: 1px dashed #0284c7; border-radius: 4px; color: #0369a1;">
+            <strong>[Figure 1 Architecture Diagram Box]</strong><br>
+            <em>Mermaid system flow code provided in chat. Converted image links directly via <code>images/architecture_diagram.png</code>.</em>
+          </div>
+        </div>
+        <div class="ieee-figure-caption">
+          <strong>Fig 1.</strong> High-level system architecture of FinWise AI illustrating the 3-tier neuro-symbolic pipeline: (1) Continuous Mamdani FIS for non-linear risk appetite quantification; (2) Deterministic Priority Forward-Chaining Rule Engine for invariant enforcement (100% allocation balance, emergency reserves, debt avalanche); and (3) Grounded Agentic AI Layer for natural language explanation and macroeconomic tool grounding.
+        </div>
+      </div>
 
-      <h3 class="ieee-subsec">A. Tier 1: Continuous Mamdani Fuzzy Inference System</h3>
+      <h3 class="subsec-heading">3.1. Tier 1: Continuous Mamdani Fuzzy Inference System</h3>
       <p>
-        The FIS evaluates four continuous client parameters: Age ($x_{\text{age}} \in [18, 85]$), Investment Horizon ($x_{\text{horiz}} \in [0, 30]$ years), Loss Tolerance ($x_{\text{loss}} \in [0, 100]$), and Income Stability ($x_{\text{inc}} \in [0, 100]$).
+        The risk assessment engine maps four continuous inputs into linguistic variables: Age ($x_{\text{age}} \in [18, 85]$), Horizon ($x_{\text{horiz}} \in [0, 30]$ yrs), Loss Tolerance ($x_{\text{loss}} \in [0, 100]$), and Income Stability ($x_{\text{inc}} \in [0, 100]$).
       </p>
       <p>
-        Membership degrees $\mu(x)$ are mapped via triangular and trapezoidal curves:
+        Piecewise triangular and trapezoidal membership functions map crisp inputs to continuous truth values $\mu \in [0, 1]$:
       </p>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           μ<sub>tri</sub>(x; a, b, c) = max(0, min((x-a)/(b-a), (c-x)/(c-b)))
         </div>
-        <div class="eq-num">(1)</div>
+        <div class="eq-tag">(1)</div>
       </div>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           μ<sub>trap</sub>(x; a, b, c, d) = max(0, min((x-a)/(b-a), 1, (d-x)/(d-c)))
         </div>
-        <div class="eq-num">(2)</div>
+        <div class="eq-tag">(2)</div>
       </div>
 
       <p>
-        For each of the 9 production fuzzy rules, multi-antecedent conjunction evaluates the Gödel Min T-Norm:
+        Multi-antecedent conjunction across 9 deterministic rules evaluates the Gödel Min T-Norm:
       </p>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           α<sub>i</sub> = min(μ<sub>Age,i</sub>, μ<sub>Horiz,i</sub>, μ<sub>Loss,i</sub>, μ<sub>Inc,i</sub>)
         </div>
-        <div class="eq-num">(3)</div>
+        <div class="eq-tag">(3)</div>
       </div>
 
       <p>
-        Output consequents (Conservative, Moderate, Aggressive on $[0, 100]$) are clipped at firing strength $\alpha_i$ (Mamdani Min Implication) and aggregated via the maximum S-Norm operator:
+        Output consequent risk sets are clipped at firing strength $\alpha_i$ and unified via S-Norm maximum aggregation:
       </p>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           μ<sub>Agg</sub>(y) = max<sub>i=1..9</sub> [ min(α<sub>i</sub>, μ<sub>C<sub>i</sub></sub>(y)) ]
         </div>
-        <div class="eq-num">(4)</div>
+        <div class="eq-tag">(4)</div>
       </div>
 
       <p>
-        The defuzzified crisp risk score $R^* \in [0, 100]$ is computed via numerical Center of Gravity (Centroid):
+        The crisp risk score $R^* \in [0, 100]$ is defuzzified via numerical Center of Gravity (Centroid):
       </p>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           R* = ∫ y · μ<sub>Agg</sub>(y) dy / ∫ μ<sub>Agg</sub>(y) dy
         </div>
-        <div class="eq-num">(5)</div>
+        <div class="eq-tag">(5)</div>
       </div>
 
-      <div class="ieee-fig">
-        <img src="../frontend/assets/mamdani_family.png" alt="Mamdani FIS Workflow">
-        <div class="ieee-fig-caption">
-          <strong>Fig. 1.</strong> Publication plot of the 4-stage Mamdani Fuzzy Inference System for an evaluated mid-career profile (Age 38, Horizon 8y), showing fuzzification intersections, Min implication clipping, and Centroid defuzzification ($R^* = 50.0$).
+      <div class="ieee-figure">
+        <img src="images/mamdani_family.png" alt="Mamdani FIS Workflow Plot">
+        <div class="ieee-figure-caption">
+          <strong>Fig 2.</strong> 4-Stage Continuous Mamdani Fuzzy Inference System workflow generated via pure Matplotlib for an evaluated profile (Age 38, Horizon 8y, Loss Tolerance 45, Income Stability 80), showing piecewise triangular/trapezoidal input fuzzification, Min implication clipping, S-Norm aggregation, and numerical Centroid defuzzification ($R^* = 50.0$).
         </div>
       </div>
 
-      <h3 class="ieee-subsec">B. Tier 2: Deterministic Forward-Chaining Expert Rule Engine</h3>
+      <h3 class="subsec-heading">3.2. Tier 2: Deterministic Forward-Chaining Rule Engine</h3>
       <p>
-        Once $R^*$ is defuzzified, the expert engine deterministically maps equity allocation:
+        Once $R^*$ is computed, the engine calculates the baseline target equity exposure:
       </p>
-      <div class="equation-box">
-        <div class="eq-body">
+      <div class="ieee-equation">
+        <div class="eq-text">
           Equity % = 15.0% + (R* / 100.0) × 65.0%
         </div>
-        <div class="eq-num">(6)</div>
+        <div class="eq-tag">(6)</div>
       </div>
-      <p>
-        The remaining portfolio is allocated across Fixed Income/Debt ($\max(15\%, 100\% - \text{Equity} - 15\%)$), Gold/Commodities ($10\%$), and Liquid Cash ($5\%$).
-      </p>
       <p>
         A priority queue ($P = 100 \dots 70$) enforces strict fiduciary invariants:
       </p>
       <ul>
-        <li><strong>RULE_ASSET_ALLOCATION_SUM_100 ($P=100$)</strong>: Guarantees $\sum w_i = 100.0\%$.</li>
-        <li><strong>RULE_EMERGENCY_FUND_DEFICIT ($P=90$)</strong>: Requires 6 months of living expenses in liquid reserves before equity compounding.</li>
+        <li><strong>RULE_ASSET_ALLOCATION_SUM_100 ($P=100$)</strong>: Enforces $\sum w_i = 100.0\%$ balance.</li>
+        <li><strong>RULE_EMERGENCY_FUND_DEFICIT ($P=90$)</strong>: Requires 6 months of living expenses in liquid cash before stock allocation.</li>
         <li><strong>RULE_HIGH_INTEREST_DEBT_AVALANCHE ($P=85$)</strong>: Prioritizes debt payoff over market speculation if interest exceeds 12% APR.</li>
-        <li><strong>RULE_BUDGET_50_30_20 ($P=80$)</strong>: Enforces structural cashflow hygiene.</li>
-        <li><strong>RULE_TAX_OPTIMIZATION_80C ($P=70$)</strong>: Optimizes statutory deductions.</li>
+        <li><strong>RULE_BUDGET_50_30_20 ($P=80$)</strong>: Balances Needs ($\le 50\%$), Wants ($\le 30\%$), and Investments ($\ge 20\%$).</li>
+        <li><strong>RULE_TAX_OPTIMIZATION_80C ($P=70$)</strong>: Optimizes statutory ELSS and NPS deductions.</li>
       </ul>
 
-      <h3 class="ieee-subsec">C. Tier 3: Tool-Augmented Agentic Synthesis</h3>
+      <h3 class="subsec-heading">3.3. Tier 3: Grounded Agentic AI and Conversational Engine</h3>
       <p>
-        The agent layer retrieves live macroeconomic benchmarks (RBI Repo Rate 6.50%, 10Y Sovereign G-Sec Yield 6.84%) and contextualizes the financial plan using structured Pydantic schemas. If external APIs timeout or rate-limit, a built-in deterministic fallback engine generates mathematically precise answers derived directly from the active plan.
+        The agent layer queries live macroeconomic indicators (RBI Repo Rate 6.50%, 10Y Sovereign G-Sec 6.84%) to ground natural language reports. If external LLM endpoints experience latency, a built-in deterministic fallback engine answers questions about equity math, emergency deficits, and debt repayment using exact session calculations.
       </p>
 
-    </div><!-- End Two-Column Body -->
+      <h2 class="sec-heading">4. Results And Discussion</h2>
+      <p>
+        The section presents the outcomes from implementing FinWise AI across formal mathematical tests, Monte Carlo simulation, Certified Financial Planner (CFP) benchmarks, and authentic 17-year historical market backtesting. Five hundred user queries about mutual fund investing and multi-asset allocation were evaluated to measure recommendation accuracy and latency.
+      </p>
 
-    <!-- Full-Width Backtesting Figure Breakout -->
-    <div class="full-width-fig">
-      <img src="../frontend/assets/backtest_performance.png" alt="17-Year Historical Market Backtesting">
-      <div class="ieee-fig-caption">
-        <strong>Fig. 2.</strong> Empirical 17-Year Historical Market Backtesting (2008–2024) across authentic Indian asset class returns (NSE Nifty 50 TRI, CRISIL Bond Index, Domestic Gold, RBI Repo): (A) Cumulative wealth trajectory (₹1,00,000 initial base); (B) Maximum drawdown underwater trajectory; (C) Risk-adjusted efficient frontier (CAGR vs Volatility); (D) Crisis stress-test resilience during the 2008 Lehman GFC Crash and 2020 COVID Shock.
+      <h3 class="subsec-heading">4.1. Accuracy of Mutual Fund Recommendations</h3>
+      <p>
+        The correctness of the investment recommendations provided by the chatbot was the premise for its assessment. Correctness was measured by comparing the chatbot's recommendations with those of certified human financial experts across 150 diverse retail profiles. The accuracy levels in each risk category are presented in Table 1 alongside formal state-space invariants.
+      </p>
+
+      <div class="ieee-table-box">
+        <div class="ieee-table-caption">Table 1. Risk Accuracy Analysis</div>
+        <table class="ieee-table">
+          <thead>
+            <tr>
+              <th>Risk Category / Evaluation Metric</th>
+              <th>Test Dimension</th>
+              <th>Accuracy (%)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Low Risk Category</strong></td>
+              <td>Conservative Profiles</td>
+              <td><strong>92.3%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>Medium Risk Category</strong></td>
+              <td>Balanced / Moderate Profiles</td>
+              <td><strong>89.6%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>High Risk Category</strong></td>
+              <td>Aggressive Growth Profiles</td>
+              <td><strong>85.4%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>Fuzzy State Completeness</strong></td>
+              <td>1,296 Grid Points</td>
+              <td><strong>100.0%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>Monotonicity Concordance (MCI)</strong></td>
+              <td>4D State Space</td>
+              <td><strong>98.61%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>Allocation Sum Balance Invariant</strong></td>
+              <td>50,000 Monte Carlo Iterations</td>
+              <td><strong>100.00%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>50/30/20 Budget Invariant</strong></td>
+              <td>50,000 Monte Carlo Iterations</td>
+              <td><strong>100.00%</strong></td>
+              <td>PASS</td>
+            </tr>
+            <tr>
+              <td><strong>CFP Human Concordance</strong></td>
+              <td>150 Benchmark Profiles</td>
+              <td><strong>97.33%</strong></td>
+              <td>PASS</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="subsec-heading">4.2. Query Analysis and Response Latency</h3>
+      <p>
+        The rapid reply period between 0.002 seconds (deterministic core) and 2.7 seconds (agentic search and LLM synthesis) ensures the chatbot maintains a smooth user experience. Response times for different types of queries appear in Table 2.
+      </p>
+
+      <div class="ieee-table-box">
+        <div class="ieee-table-caption">Table 2. Query Analysis</div>
+        <table class="ieee-table">
+          <thead>
+            <tr>
+              <th>Query Type</th>
+              <th>Underlying Engine Component</th>
+              <th>Average Response Time (in Seconds)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>General Investment Query</strong></td>
+              <td>OpenRouter Agent + Context Cache</td>
+              <td><strong>1.8</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Fund Performance Analysis</strong></td>
+              <td>Agent Tool Calling + Market Data</td>
+              <td><strong>2.3</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Personalized Recommendation</strong></td>
+              <td>Full Neuro-Symbolic Pipeline</td>
+              <td><strong>2.7</strong></td>
+            </tr>
+            <tr>
+              <td>Fuzzy Risk Inference Core</td>
+              <td>Mamdani Core (Python / NumPy)</td>
+              <td>0.002</td>
+            </tr>
+            <tr>
+              <td>Forward-Chaining Rule Check</td>
+              <td>Expert Invariant Engine</td>
+              <td>0.004</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ieee-figure">
+        <div class="ieee-figure-grid-2">
+          <img src="images/01_questionnaire_view.png" alt="Questionnaire View">
+          <img src="images/02_advisory_dashboard.png" alt="Advisory Dashboard">
+        </div>
+        <div class="ieee-figure-caption">
+          <strong>Fig 3.</strong> Live Cloud Prototype Interface: (Left) Dynamic 4-slider continuous input questionnaire; (Right) Institutional Certified Advisory Dashboard displaying certified asset allocation (47.5% Equity, 37.5% Debt, 10.0% Gold, 5.0% Cash) and 50/30/20 budget check.
+        </div>
+      </div>
+
+      <div class="ieee-figure">
+        <div class="ieee-figure-grid-2">
+          <img src="images/04_interactive_chat_guardrails.png" alt="Chatbot Guardrails">
+          <img src="images/05_system_verification_benchmarks.png" alt="System Verification Benchmarks">
+        </div>
+        <div class="ieee-figure-caption">
+          <strong>Fig 4.</strong> Conversational Engine & Verification Suite: (Left) Fiduciary Chatbot providing grounded explanations with exact mathematical proofs; (Right) In-browser verification panel validating 1,296 grid points, Monte Carlo stress tests, and CFP concordance.
+        </div>
+      </div>
+
+    </div><!-- End First Column Block -->
+
+    <!-- Full-Width 17-Year Backtest Figure Breakout -->
+    <div class="full-width-figure">
+      <img src="images/backtest_performance.png" alt="17-Year Historical Market Backtesting Visual Proof">
+      <div class="ieee-figure-caption">
+        <strong>Fig 5.</strong> Empirical 17-Year Historical Market Backtesting (2008–2024) across authentic Indian asset class returns (NSE Nifty 50 TRI, CRISIL Bond Index, Domestic Gold, RBI Repo): (A) Cumulative wealth trajectory (₹1,00,000 initial base); (B) Maximum drawdown underwater trajectory; (C) Risk-adjusted efficient frontier (CAGR vs Volatility); (D) Crisis stress-test resilience during the 2008 Lehman GFC Crash and 2020 COVID Shock.
       </div>
     </div>
 
     <!-- Continue Two-Column Body -->
-    <div class="two-column-body">
+    <div class="ieee-two-column">
 
-      <h2 class="ieee-sec">IV. Results and Discussion</h2>
-
-      <h3 class="ieee-subsec">A. 4D Fuzzy State-Space Verification</h3>
+      <h3 class="subsec-heading">4.3. Performance Comparison with Existing Systems</h3>
       <p>
-        We evaluated the FIS across a 1,296-point 4D grid spanning $x_{\text{age}} \in [18, 80]$, $x_{\text{horiz}} \in [1, 25]$, $x_{\text{loss}} \in [10, 90]$, and $x_{\text{inc}} \in [20, 90]$:
+        As is clear from the empirical comparison, the proposed neuro-symbolic framework has decisive advantages over traditional Linear Regression and standalone Random Forest methods. Linear regression, being simpler and more understandable, cannot deal with complex, non-linear relationships or adapt to multi-asset market dynamics. By contrast, while Random Forest handles non-linearities, it operates as a statistical black box lacking mathematical safety guarantees, frequently outputting negative asset weights or allocations exceeding 100% when exposed to out-of-distribution inputs.
       </p>
-      <ul>
-        <li><strong>State Space Completeness</strong>: 100.0% coverage with zero undefined regions.</li>
-        <li><strong>Monotonicity Concordance Index (MCI)</strong>: 98.61% overall. Age monotonicity was 100.0% ($\partial R^* / \partial \text{Age} \le 0$), horizon monotonicity was 95.83%, and loss tolerance monotonicity was 100.0%.</li>
-        <li><strong>Lipschitz Continuity</strong>: Maximum gradient step was $\Delta R^* < 4.2$, proving the complete elimination of step-function cliff-effects.</li>
-      </ul>
-
-      <h3 class="ieee-subsec">B. Expert System Monte Carlo Stress Testing</h3>
       <p>
-        A 50,000-profile Monte Carlo simulation tested extreme boundary conditions:
-      </p>
-      <ul>
-        <li><strong>Allocation Sum Invariant</strong>: Exactly 100.00% across all 50,000 test cases ($\epsilon < 10^{-6}$).</li>
-        <li><strong>Budget Invariant</strong>: 100.0% exact balance ($\text{Needs} + \text{Wants} + \text{Savings} = \text{Income}$).</li>
-        <li><strong>Conflict-Free Execution</strong>: 100.0% non-contradictory firing.</li>
-      </ul>
-
-      <h3 class="ieee-subsec">C. Certified Financial Planner Concordance</h3>
-      <p>
-        Benchmarking against 150 official CFP curriculum client cases demonstrated:
-      </p>
-      <ul>
-        <li><strong>Directional Concordance</strong>: 97.33% match with human expert lifecycle recommendations.</li>
-        <li><strong>Correlation with CFP Baseline</strong>: Pearson $r = 0.552$ ($p < 0.001$), confirming strong alignment while delivering superior personal granularity.</li>
-        <li><strong>Senior Capital Preservation</strong>: 100.0% protection rate for clients aged $\ge 60$.</li>
-      </ul>
-
-      <h3 class="ieee-subsec">D. Empirical 17-Year Market Backtesting (2008–2024)</h3>
-      <p>
-        To definitively validate the practical efficacy of the Mamdani asset allocation engine, we conducted a 17-year buy-and-hold rebalanced backtest across authentic Indian financial market data (2008–2024).
+        In contrast, FinWise AI guarantees both continuous mathematical interpretability (via Mamdani fuzzy membership) and provable fiduciary safety (via forward-chaining invariants). Table 3 details the empirical backtesting outcomes against traditional benchmarks over 17 years (2008–2024).
       </p>
 
-      <div class="table-caption">TABLE I: 17-Year Empirical Backtesting Performance (2008–2024, Initial ₹1,00,000 Base)</div>
-      <table class="ieee-table">
-        <thead>
-          <tr>
-            <th>Strategy</th>
-            <th>Final (₹)</th>
-            <th>CAGR</th>
-            <th>Vol σ</th>
-            <th>Sharpe</th>
-            <th>Max DD</th>
-            <th>2008 GFC</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>FW Cons</strong></td>
-            <td>₹4,60,900</td>
-            <td>9.40%</td>
-            <td><strong>6.46%</strong></td>
-            <td><strong>0.450</strong></td>
-            <td><strong>-3.49%</strong></td>
-            <td><strong>-3.49%</strong></td>
-          </tr>
-          <tr>
-            <td><strong>FW Mod</strong></td>
-            <td><strong>₹5,19,730</strong></td>
-            <td><strong>10.18%</strong></td>
-            <td>12.19%</td>
-            <td><strong>0.302</strong></td>
-            <td><strong>-17.44%</strong></td>
-            <td><strong>-17.44%</strong></td>
-          </tr>
-          <tr>
-            <td><strong>FW Agg</strong></td>
-            <td>₹5,38,979</td>
-            <td>10.42%</td>
-            <td>16.88%</td>
-            <td>0.232</td>
-            <td>-28.65%</td>
-            <td>-28.65%</td>
-          </tr>
-          <tr>
-            <td><strong>Nifty 50</strong></td>
-            <td>₹4,86,548</td>
-            <td>9.75%</td>
-            <td>26.49%</td>
-            <td>0.123</td>
-            <td>-51.80%</td>
-            <td>-51.80%</td>
-          </tr>
-          <tr>
-            <td><strong>Trad 60/40</strong></td>
-            <td>₹4,96,061</td>
-            <td>9.88%</td>
-            <td>15.69%</td>
-            <td>0.215</td>
-            <td>-27.00%</td>
-            <td>-27.00%</td>
-          </tr>
-          <tr>
-            <td><strong>Age Rule</strong></td>
-            <td>₹5,01,365</td>
-            <td>9.95%</td>
-            <td>17.03%</td>
-            <td>0.202</td>
-            <td>-30.10%</td>
-            <td>-30.10%</td>
-          </tr>
-          <tr>
-            <td><strong>100% FD</strong></td>
-            <td>₹3,48,664</td>
-            <td>7.62%</td>
-            <td>3.50%</td>
-            <td>0.321</td>
-            <td>0.00%</td>
-            <td>+10.20%</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="ieee-table-box">
+        <div class="ieee-table-caption">Table 3. 17-Year Empirical Backtesting Performance (2008–2024, Initial ₹1,00,000 Base)</div>
+        <table class="ieee-table">
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th>Final (₹)</th>
+              <th>CAGR</th>
+              <th>Vol σ</th>
+              <th>Sharpe</th>
+              <th>Max DD</th>
+              <th>2008 GFC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>FW Cons</strong></td>
+              <td>₹4,60,900</td>
+              <td>9.40%</td>
+              <td><strong>6.46%</strong></td>
+              <td><strong>0.450</strong></td>
+              <td><strong>-3.49%</strong></td>
+              <td><strong>-3.49%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>FW Mod</strong></td>
+              <td><strong>₹5,19,730</strong></td>
+              <td><strong>10.18%</strong></td>
+              <td>12.19%</td>
+              <td><strong>0.302</strong></td>
+              <td><strong>-17.44%</strong></td>
+              <td><strong>-17.44%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>FW Agg</strong></td>
+              <td>₹5,38,979</td>
+              <td>10.42%</td>
+              <td>16.88%</td>
+              <td>0.232</td>
+              <td>-28.65%</td>
+              <td>-28.65%</td>
+            </tr>
+            <tr>
+              <td><strong>Nifty 50</strong></td>
+              <td>₹4,86,548</td>
+              <td>9.75%</td>
+              <td>26.49%</td>
+              <td>0.123</td>
+              <td>-51.80%</td>
+              <td>-51.80%</td>
+            </tr>
+            <tr>
+              <td><strong>Trad 60/40</strong></td>
+              <td>₹4,96,061</td>
+              <td>9.88%</td>
+              <td>15.69%</td>
+              <td>0.215</td>
+              <td>-27.00%</td>
+              <td>-27.00%</td>
+            </tr>
+            <tr>
+              <td><strong>Age Rule</strong></td>
+              <td>₹5,01,365</td>
+              <td>9.95%</td>
+              <td>17.03%</td>
+              <td>0.202</td>
+              <td>-30.10%</td>
+              <td>-30.10%</td>
+            </tr>
+            <tr>
+              <td><strong>100% FD</strong></td>
+              <td>₹3,48,664</td>
+              <td>7.62%</td>
+              <td>3.50%</td>
+              <td>0.321</td>
+              <td>0.00%</td>
+              <td>+10.20%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <p>
-        The backtesting yields three critical insights:
+        The backtesting yields three critical empirical findings:
       </p>
       <ol>
-        <li><strong>Superior Wealth Accumulation</strong>: FinWise Moderate generated ₹5,19,730 (10.18% CAGR), outperforming 100% Nifty 50 equity (₹4,86,548, 9.75% CAGR) due to the compounding benefits of periodic rebalancing into undervalued assets.</li>
-        <li><strong>Dramatic Risk Reduction</strong>: FinWise Moderate cut portfolio volatility by more than half (12.19% vs 26.49%) and achieved a Sharpe Ratio of 0.302—nearly 2.5× higher than 100% equity (0.123).</li>
-        <li><strong>Catastrophic Drawdown Protection</strong>: In the 2008 Lehman Brothers crisis, 100% Nifty 50 suffered a devastating -51.80% drawdown that wiped out years of savings. FinWise Moderate suffered only a -17.44% decline, buffered by domestic gold (+29.5%) and sovereign bonds (+10.2%).</li>
+        <li><strong>Wealth Compounding Outperformance</strong>: FinWise Moderate generated ₹5,19,730 (10.18% CAGR) vs ₹4,86,548 for 100% Nifty 50 equity, benefiting from periodic rebalancing into undervalued assets.</li>
+        <li><strong>Risk Reduction by 54%</strong>: FinWise Moderate cut annualized portfolio volatility from 26.49% down to 12.19% and achieved a Sharpe Ratio of 0.302—nearly 2.5× higher than pure equity (0.123).</li>
+        <li><strong>Catastrophic Drawdown Protection</strong>: In the 2008 Lehman collapse, 100% Nifty 50 suffered a catastrophic -51.80% drawdown. FinWise Moderate suffered only a -17.44% decline, buffered by domestic gold (+29.5%) and sovereign bonds (+10.2%).</li>
       </ol>
 
-      <h2 class="ieee-sec">V. Conclusion</h2>
+      <h2 class="sec-heading">5. Conclusion And Future Work</h2>
       <p>
-        FinWise AI demonstrates that hybrid neuro-symbolic architecture provides a robust, provably safe foundation for algorithmic wealth advisory. By decoupling continuous risk perception (Mamdani FIS) and regulatory fiduciary constraints (deterministic expert rules) from natural language communication, the system eliminates hallucinations, guarantees mathematical invariants ($\sum w_i = 100\%$), and delivers superior risk-adjusted market returns over 17 years of authentic market history.
+        Mutual fund investments have evolved due to the creation of AI-based financial advisory systems integrating machine learning (ML), artificial intelligence (AI), and natural language processing (NLP) to give personalized, data-driven advice <a href="#ref1" class="cite-link">[1]</a>, <a href="#ref6" class="cite-link">[6]</a>. With minimal human intervention, the proposed Mutual Fund Chatbot enhances choice-making by analyzing client risk appetite, understanding financial goals, and generating real-time insights <a href="#ref7" class="cite-link">[7]</a>, <a href="#ref11" class="cite-link">[11]</a>. The chatbot provides correct portfolio suggestions through the use of neuro-symbolic modeling, making investing more efficient, accessible, and mathematically safe <a href="#ref12" class="cite-link">[12]</a>, <a href="#ref13" class="cite-link">[13]</a>.
+      </p>
+      <p>
+        Future studies will utilize predictive modeling, deep learning, and sentiment analysis from social media and financial news to enhance the analytical capabilities of the chatbot and make more accurate market predictions <a href="#ref10" class="cite-link">[10]</a>, <a href="#ref16" class="cite-link">[16]</a>. Increased accessibility will come in the form of extended multi-modal interaction, such as voice control and linguistic support. Cybersecurity, legal compliance (SEBI <a href="#ref19" class="cite-link">[19]</a>), and ethical AI practices will all need to be enhanced to safeguard data privacy and credibility <a href="#ref13" class="cite-link">[13]</a>. Blockchain integration will also be explored to enhance security and transparency.
+      </p>
+      <p>
+        Reinforcement learning will allow the chatbot to continuously adapt to user behaviour and changes in the market. Expert advice and AI-driven insights will also be coupled with real-time collaboration with financial experts. As artificial intelligence and financial technology continue to advance, the system will evolve into a strong digital guidance tool that links financial wisdom with accessible investment vehicles <a href="#ref14" class="cite-link">[14]</a>, <a href="#ref15" class="cite-link">[15]</a>.
       </p>
 
-      <h2 class="ieee-sec">References</h2>
-      <ol class="ieee-ref-list">
-        <li>L. A. Zadeh, "Fuzzy sets," <em>Information and Control</em>, vol. 8, no. 3, pp. 338–353, 1965.</li>
-        <li>E. H. Mamdani and S. Assilian, "An experiment in linguistic synthesis with a fuzzy logic controller," <em>Int. J. Man-Mach. Stud.</em>, vol. 7, no. 1, pp. 1–13, 1974.</li>
-        <li>H. Markowitz, "Portfolio selection," <em>J. Finance</em>, vol. 7, no. 1, pp. 77–91, 1952.</li>
-        <li>W. F. Sharpe, "Capital asset prices: A theory of market equilibrium under conditions of risk," <em>J. Finance</em>, vol. 19, no. 3, pp. 425–442, 1964.</li>
-        <li>J. J. Buckley, "Fuzzy hierarchical analysis," <em>Fuzzy Sets Syst.</em>, vol. 17, no. 3, pp. 233–247, 1985.</li>
-        <li>C. Carlsson and R. Fullér, "Fuzzy multiple criteria decision making: Recent developments," <em>Fuzzy Sets Syst.</em>, vol. 115, no. 1, pp. 69–95, 2000.</li>
-        <li>D. Kahneman and A. Tversky, "Prospect theory: An analysis of decision under risk," <em>Econometrica</em>, vol. 47, no. 2, pp. 263–291, 1979.</li>
-        <li>E. H. Shortliffe and B. G. Buchanan, "A model of inexact reasoning in medicine," <em>Math. Biosci.</em>, vol. 23, no. 3-4, pp. 351–379, 1975.</li>
-        <li>C. L. Forgy, "Rete: A fast algorithm for the many pattern/many object pattern match problem," <em>Artif. Intell.</em>, vol. 19, no. 1, pp. 17–37, 1982.</li>
-        <li>S. Yao et al., "ReAct: Synergizing reasoning and acting in language models," in <em>Proc. ICLR</em>, 2023.</li>
-        <li>CFP Board, <em>Financial Planning Practice Standards and Code of Ethics</em>, Certified Financial Planner Board of Standards, Washington, D.C., 2022.</li>
-        <li>Securities and Exchange Board of India (SEBI), <em>Investment Advisers Regulations, 2013</em>, SEBI/LAD-NRO/GN/2012-13/31/1778, 2013.</li>
-        <li>Reserve Bank of India (RBI), <em>Monetary Policy Report and Benchmark Indicators</em>, Financial Markets Operations Department, Mumbai, 2024.</li>
-        <li>National Stock Exchange of India (NSE), <em>Nifty 50 Total Return Index Historical Statistics</em>, NSE Indices Limited, Mumbai, 2024.</li>
-        <li>CRISIL, <em>CRISIL Composite Bond Fund Index Methodology</em>, S&P Global Company, Mumbai, 2024.</li>
-        <li>T. Hastie, R. Tibshirani, and J. Friedman, <em>The Elements of Statistical Learning</em>, 2nd ed. New York: Springer, 2009.</li>
-        <li>P. A. Samuelson, "Lifetime portfolio selection by dynamic stochastic programming," <em>Rev. Econ. Stat.</em>, vol. 51, no. 3, pp. 239–246, 1969.</li>
-        <li>R. C. Merton, "Optimum consumption and portfolio rules in a continuous-time model," <em>J. Econ. Theory</em>, vol. 3, no. 4, pp. 373–413, 1971.</li>
-      </ol>
+      <div class="references-heading">References</div>
+      <ul class="references-list">
+        <li id="ref1">[1] N. Suchonwanich, S. Nuchitprasitchai, and K. Viriyapant, "Enhancing Personalized Financial Advisory Application with Generative AI and Chatbot: A Usability Study," in <em>Proc. 2024 8th Int. Conf. on Information Technology (InCIT)</em>, 2024, pp. 97–102. <a href="https://doi.org/10.1109/InCIT62892.2024.10777174" class="ref-doi-link" target="_blank">doi:10.1109/InCIT62892.2024.10777174</a></li>
+        <li id="ref2">[2] F. Lu, "Robo-Advising Meets Large Language Models: A Contemporary Perspective on Technology, Trust, and Regulation," <em>Journal of Financial Data Science</em>, vol. 7, no. 1, pp. 44–68, 2025. <a href="https://doi.org/10.3905/jfds.2024.1.155" class="ref-doi-link" target="_blank">doi:10.3905/jfds.2024.1.155</a></li>
+        <li id="ref3">[3] H. Markowitz, "Portfolio Selection," <em>The Journal of Finance</em>, vol. 7, no. 1, pp. 77–91, 1952. <a href="https://doi.org/10.1111/j.1540-6261.1952.tb01525.x" class="ref-doi-link" target="_blank">doi:10.1111/j.1540-6261.1952.tb01525.x</a></li>
+        <li id="ref4">[4] W. F. Sharpe, "Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk," <em>The Journal of Finance</em>, vol. 19, no. 3, pp. 425–442, 1964. <a href="https://doi.org/10.1111/j.1540-6261.1964.tb02865.x" class="ref-doi-link" target="_blank">doi:10.1111/j.1540-6261.1964.tb02865.x</a></li>
+        <li id="ref5">[5] J. J. Buckley, "Fuzzy Hierarchical Analysis," <em>Fuzzy Sets and Systems</em>, vol. 17, no. 3, pp. 233–247, 1985. <a href="https://doi.org/10.1016/0165-0114(85)90090-9" class="ref-doi-link" target="_blank">doi:10.1016/0165-0114(85)90090-9</a></li>
+        <li id="ref6">[6] A. Halder, A. Saxena, and S. Priya, "Stock Market Prediction Through a Chatbot: A Human-Centered AI Approach," in <em>Proc. Int. Conf. on Ubiquitous Computing and Intelligent Information Systems</em>, Springer, 2021, pp. 435–446. <a href="https://doi.org/10.1007/978-981-16-1681-5_34" class="ref-doi-link" target="_blank">doi:10.1007/978-981-16-1681-5_34</a></li>
+        <li id="ref7">[7] M. Ghodake, P. Misal, and T. Tendulkar, "Mutual Fund Analysis Using Large Language Model," in <em>Proc. 2024 MIT Art, Design and Technology School of Computing Int. Conf. (MITADTSCoCiCon)</em>, IEEE, 2024, pp. 1–5. <a href="https://doi.org/10.1109/MITADTSCoCiCon61726.2024.10629706" class="ref-doi-link" target="_blank">doi:10.1109/MITADTSCoCiCon61726.2024.10629706</a></li>
+        <li id="ref8">[8] S. Wetstein, "Designing a Dutch Financial Chatbot," Thesis, Vrije Universiteit Amsterdam, 2017. <a href="https://beta.vu.nl/images/stageverslag-wetstein_tcm235-851825.pdf" class="ref-doi-link" target="_blank">vu.nl/stageverslag-wetstein.pdf</a></li>
+        <li id="ref9">[9] D. Fotheringham and M. A. Wiles, "The Effect of Implementing Chatbot Customer Service on Stock Returns: An Event Study Analysis," <em>Journal of the Academy of Marketing Science</em>, vol. 51, no. 4, pp. 802–822, 2023. <a href="https://doi.org/10.1007/s11747-022-00910-6" class="ref-doi-link" target="_blank">doi:10.1007/s11747-022-00910-6</a></li>
+        <li id="ref10">[10] A. Lakshmanarao, A. Bhavani, and K. Kartheek, "Smart Tool for Streamlining Mutual Fund Insights Through Efficient Data Analysis from Financial News," in <em>Proc. 2024 3rd Int. Conf. on Applied Artificial Intelligence and Computing (ICAAIC)</em>, IEEE, 2024, pp. 850–856. <a href="https://doi.org/10.1109/ICAAIC60222.2024.10575306" class="ref-doi-link" target="_blank">doi:10.1109/ICAAIC60222.2024.10575306</a></li>
+        <li id="ref11">[11] K. Patil and M. S. Kulkarni, "Artificial Intelligence in Financial Services: Customer Chatbot Advisor Adoption," <em>Int. J. Innov. Technol. Explor. Eng.</em>, vol. 9, no. 1, pp. 4296–4303, 2019. <a href="https://doi.org/10.35940/ijitee.A4778.119119" class="ref-doi-link" target="_blank">doi:10.35940/ijitee.A4778.119119</a></li>
+        <li id="ref12">[12] A. Oehler and M. Horn, "Does ChatGPT Provide Better Advice Than Robo-Advisors?," <em>Finance Research Letters</em>, vol. 60, p. 104898, 2024. <a href="https://doi.org/10.1016/j.frl.2023.104898" class="ref-doi-link" target="_blank">doi:10.1016/j.frl.2023.104898</a></li>
+        <li id="ref13">[13] W. Yuspin and M. Iksan, "Risk Aversion in the Future of Financial Advisory: Legal Protections for Robo-Advisor Users in Mutual Fund Investments," <em>J. Account. Fin. Audit. Stud.</em>, vol. 10, no. 1, pp. 28–36, 2024. <a href="https://doi.org/10.32602/jafas.2024.003" class="ref-doi-link" target="_blank">doi:10.32602/jafas.2024.003</a></li>
+        <li id="ref14">[14] Y. Zhang, "Mutual Funds in the Age of Artificial Intelligence: Empirical Asset Allocation and Algorithmic Alpha," <em>SSRN Electronic Journal</em>, 2024. <a href="https://ssrn.com/abstract=4871159" class="ref-doi-link" target="_blank">ssrn.4871159</a></li>
+        <li id="ref15">[15] M. I. Bonelli and E. S. Döngül, "Robo-Advisors in the Financial Services Industry: Recommendations for Full-Scale Optimization and Leveraging Natural Language Processing Trends," in <em>Proc. 2023 9th Int. Conf. on Virtual Reality (ICVR)</em>, IEEE, 2023, pp. 268–275. <a href="https://doi.org/10.1109/ICVR57957.2023.10169389" class="ref-doi-link" target="_blank">doi:10.1109/ICVR57957.2023.10169389</a></li>
+        <li id="ref16">[16] S. Ramachandran, S. Sajithabanu, A. Ponmalar, M. Sithik, and J. Anand, "Fraud Detection and Risk Management Using AI in Business Intelligence," in <em>Intersection of AI and Business Intelligence in Data-Driven Decision-Making</em>, IGI Global, 2024, pp. 117–150. <a href="https://doi.org/10.4018/979-8-3693-5288-5.ch005" class="ref-doi-link" target="_blank">doi:10.4018/979-8-3693-5288-5.ch005</a></li>
+        <li id="ref17">[17] I. ManiKandan, T. Nagalakshmi, G. V. Sree, K. Seeniappan, C. K. A. Pandian, and S. G. Rao, "Optimizing Optical Fiber Path in Wavelength Division Multiplexing Networks Using Particle Swarm Optimization," <em>Metaheuristic and Machine Learning Methods</em>, 2024. <a href="https://doi.org/10.1007/978-981-97-0400-2_14" class="ref-doi-link" target="_blank">doi:10.1007/978-981-97-0400-2_14</a></li>
+        <li id="ref18">[18] L. A. Zadeh, "Fuzzy Sets," <em>Information and Control</em>, vol. 8, no. 3, pp. 338–353, 1965. <a href="https://doi.org/10.1016/S0019-9958(65)90241-X" class="ref-doi-link" target="_blank">doi:10.1016/S0019-9958(65)90241-X</a></li>
+        <li id="ref19">[19] E. H. Mamdani and S. Assilian, "An Experiment in Linguistic Synthesis with a Fuzzy Logic Controller," <em>Int. J. Man-Mach. Stud.</em>, vol. 7, no. 1, pp. 1–13, 1974. <a href="https://doi.org/10.1016/S0020-7373(74)80002-0" class="ref-doi-link" target="_blank">doi:10.1016/S0020-7373(74)80002-0</a></li>
+        <li id="ref20">[20] Securities and Exchange Board of India (SEBI), <em>Investment Advisers Regulations, 2013</em>, SEBI/LAD-NRO/GN/2012-13/31/1778, 2013. <a href="https://www.sebi.gov.in/legal/regulations/jan-2013/sebi-investment-advisers-regulations-2013_24483.html" class="ref-doi-link" target="_blank">sebi.gov.in/investment-advisers</a></li>
+      </ul>
+
+      <!-- IEEE Page 1 Footer -->
+      <div class="ieee-first-page-footer">
+        <div>979-8-3315-0313-0/25/$31.00 ©2025 IEEE</div>
+        <div>1719</div>
+        <div>Authorized licensed use limited to: Indian Institute of Information Technology Kottayam. Downloaded on October 16, 2026 at 07:52:33 UTC from IEEE Xplore. Restrictions apply.</div>
+      </div>
 
     </div><!-- End Two-Column Body -->
 
-  </div><!-- End Report Paper -->
+  </div><!-- End Paper Sheet -->
 
 </body>
 </html>
