@@ -95,8 +95,9 @@ def generate_mamdani_plot(
     c_tan = "#C9A66B"
     c_green = "#15803D"
 
-    fig = plt.figure(figsize=(14, 9), facecolor=c_cream)
-    gs = fig.add_gridspec(2, 2, hspace=0.38, wspace=0.25, left=0.08, right=0.95, top=0.90, bottom=0.08)
+    fig = plt.figure(figsize=(14, 10.5), facecolor=c_cream)
+    gs = fig.add_gridspec(2, 2, hspace=0.38, wspace=0.25, left=0.08, right=0.95, top=0.81, bottom=0.08)
+
 
     # --------------------------------------------------------------------------
     # SUBPLOT 1: INPUT 1 – AGE FUZZIFICATION
@@ -211,11 +212,17 @@ def generate_mamdani_plot(
     ax4.legend(loc="upper left", framealpha=0.9, fontsize=9)
     ax4.grid(True, linestyle=":", alpha=0.5, color=c_ink)
 
-    # Global Figure Title
-    fig.suptitle(
-        f"Mamdani Fuzzy Inference System (FIS) Workflow — {user_name}\n"
-        f"Inputs: Age={age}y | Horizon={horizon_years}y | LossTol={loss_tolerance_val:.1f} | Result={crisp_score:.1f} ({risk_cat})",
-        fontsize=15, fontweight="bold", color=c_ink, y=0.97
+    # Global Figure Title & Profile Subtitle (Cleanly spaced without overlap)
+    fig.text(
+        0.5, 0.965,
+        f"Mamdani Fuzzy Inference System (FIS) Workflow — {user_name}",
+        fontsize=15, fontweight="bold", color=c_ink, ha="center", va="top"
+    )
+    fig.text(
+        0.5, 0.920,
+        f"Evaluated Profile: Age={age}y  |  Horizon={horizon_years}y  |  LossTol={loss_tolerance_val:.1f}/100  |  Defuzzified Score R*={crisp_score:.1f} ({risk_cat})",
+        fontsize=10.5, fontweight="semibold", color=c_ink, ha="center", va="top",
+        bbox=dict(boxstyle="round,pad=0.45", fc="#FFFFFF", ec=c_ink, lw=1.2, alpha=0.95)
     )
 
     # Save to disk or buffer
