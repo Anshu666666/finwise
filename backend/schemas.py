@@ -139,12 +139,31 @@ class ProfileSummary(BaseModel):
     total_debt: float = 0.0
 
 
+class FuzzyRuleFiringDetail(BaseModel):
+    """Detailed trace for an individual Mamdani fuzzy production rule."""
+    rule_id: str
+    age: str
+    income_stability: str
+    loss_tolerance: str
+    horizon: str
+    antecedents: str
+    consequent: str
+    weight: float
+    firing_strength: float
+    triggered: bool
+
+
 class FuzzyRiskAssessment(BaseModel):
     """Output from Aman's Fuzzy Logic Engine."""
     crisp_score: float = Field(description="Defuzzified risk appetite score from 0.0 to 100.0")
     category: str = Field(description="Linguistic category: Conservative, Moderate, or Aggressive")
     fuzzy_memberships: Dict[str, float] = Field(description="Degree of membership in each fuzzy set")
     reasoning: str = Field(description="Linguistic explanation of fuzzy inference firing")
+    rule_firings: Optional[List[FuzzyRuleFiringDetail]] = Field(
+        default=[],
+        description="Full inventory of all 22 fuzzy rules with exact firing strengths and triggered status"
+    )
+
 
 
 class RuleFired(BaseModel):

@@ -3,7 +3,7 @@ Mamdani Fuzzy Rule Base for Financial Risk Appetite Evaluation.
 Combines linguistic antecedents using T-norm (Min) operator to evaluate firing strengths.
 """
 
-from typing import Dict, List
+from typing import Any, Dict, List
 
 
 class FuzzyRule:
@@ -102,3 +102,37 @@ def evaluate_rule_base(
             consequent_alphas[rule.consequent] = max(consequent_alphas[rule.consequent], alpha)
 
     return consequent_alphas
+
+
+def evaluate_rule_base_detailed(
+    age_mems: Dict[str, float],
+    inc_mems: Dict[str, float],
+    loss_mems: Dict[str, float],
+    horiz_mems: Dict[str, float],
+) -> List[Dict[str, Any]]:
+    """
+    Evaluates every rule in RULE_BASE individually, returning its condition,
+    consequent, exact firing strength (alpha), and triggered flag.
+    Used for transparent explainability in the dashboard and audit log.
+    """
+    detailed_rules = []
+    for rule in RULE_BASE:
+        alpha = rule.evaluate(age_mems, inc_mems, loss_mems, horiz_mems)
+        antecedents = (
+            f"Age={rule.age}, Income={rule.income_stability}, "
+            f"LossTol={rule.loss_tolerance}, Horizon={rule.horizon}"
+        )
+        detailed_rules.append({
+            "rule_id": rule.rule_id,
+            "age": rule.age,
+            "income_stability": rule.income_stability,
+            "loss_tolerance": rule.loss_tolerance,
+            "horizon": rule.horizon,
+            "antecedents": antecedents,
+            "consequent": rule.consequent,
+            "weight": rule.weight,
+            "firing_strength": round(alpha, 3),
+            "triggered": alpha > 0.0,
+        })
+    return detailed_rules
+

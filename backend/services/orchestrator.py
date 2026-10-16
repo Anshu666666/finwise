@@ -31,6 +31,7 @@ from backend.schemas import (
     EvaluateResponse,
     ExpertSystemPlan,
     FuzzyRiskAssessment,
+    FuzzyRuleFiringDetail,
     ProfileSummary,
     RecommendedAllocation,
     RuleFired,
@@ -325,6 +326,25 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
                 )
             )
 
+    # Fuzzy rule execution trace
+    fuzzy_rule_items = []
+    if fuzzy_result.detailed_rule_firings:
+        for fr in fuzzy_result.detailed_rule_firings:
+            fuzzy_rule_items.append(
+                FuzzyRuleFiringDetail(
+                    rule_id=fr["rule_id"],
+                    age=fr["age"],
+                    income_stability=fr["income_stability"],
+                    loss_tolerance=fr["loss_tolerance"],
+                    horizon=fr["horizon"],
+                    antecedents=fr["antecedents"],
+                    consequent=fr["consequent"],
+                    weight=fr["weight"],
+                    firing_strength=fr["firing_strength"],
+                    triggered=fr["triggered"],
+                )
+            )
+
     return EvaluateResponse(
         status="success",
         session_id=session_id,
@@ -337,7 +357,9 @@ async def evaluate_financial_profile(req: EvaluateRequest) -> EvaluateResponse:
                 for k, v in fuzzy_result.rule_firing_strengths.items()
             },
             reasoning=fuzzy_result.rationale,
+            rule_firings=fuzzy_rule_items,
         ),
+
         expert_system_plan=expert_plan_resp,
         agent_market_intelligence=AgentMarketIntelligence(
             market_summary=agent_summary,

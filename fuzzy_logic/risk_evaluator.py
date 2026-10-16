@@ -4,7 +4,7 @@ Pure Python implementation designed for deterministic risk scoring and full expl
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 from fuzzy_logic.membership import (
     LinguisticVariables,
     fuzzify_age,
@@ -14,7 +14,7 @@ from fuzzy_logic.membership import (
     trapmf,
     trimf,
 )
-from fuzzy_logic.rules import evaluate_rule_base
+from fuzzy_logic.rules import evaluate_rule_base, evaluate_rule_base_detailed
 
 
 @dataclass
@@ -25,6 +25,7 @@ class FuzzyRiskResult:
     membership_breakdown: Dict[str, Dict[str, float]]
     rule_firing_strengths: Dict[str, float]
     rationale: str
+    detailed_rule_firings: Optional[List[Dict[str, Any]]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary conforming to API contracts."""
@@ -36,7 +37,9 @@ class FuzzyRiskResult:
                 k: round(v, 3) for k, v in self.rule_firing_strengths.items()
             },
             "rationale": self.rationale,
+            "detailed_rule_firings": self.detailed_rule_firings or [],
         }
+
 
 
 class FuzzyRiskEvaluator:
@@ -69,6 +72,7 @@ class FuzzyRiskEvaluator:
 
         # Step 2: Rule Base Evaluation (T-norm Min & S-norm Max)
         alphas = evaluate_rule_base(age_mems, inc_mems, loss_mems, horiz_mems)
+        detailed_rules = evaluate_rule_base_detailed(age_mems, inc_mems, loss_mems, horiz_mems)
 
         # Step 3 & 4: Centroid Defuzzification across y in [0, 100]
         numerator = 0.0
@@ -126,7 +130,9 @@ class FuzzyRiskEvaluator:
             },
             rule_firing_strengths=alphas,
             rationale=rationale,
+            detailed_rule_firings=detailed_rules,
         )
+
 
     def _generate_rationale(
         self,
