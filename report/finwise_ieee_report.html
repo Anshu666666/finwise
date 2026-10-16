@@ -544,19 +544,35 @@
         <div class="eq-num">(5)</div>
       </div>
 
-      <!-- Separate Mamdani Plot 1: Balanced Investor -->
+      <!-- Separate Mamdani Stage 1: Input Fuzzification -->
       <div class="ieee-figure">
-        <img src="images/mamdani_family.png" alt="Mamdani FIS Workflow - Balanced Profile">
+        <img src="images/mamdani_step1_inputs.png" alt="Mamdani FIS Step 1: Input Fuzzification">
         <div class="ieee-figure-caption">
-          <strong>Fig 2.</strong> Continuous Mamdani FIS workflow for a Balanced Investor Profile (Age 38, Horizon 8 yrs, Loss Tolerance 45, Income Stability 80), showing fuzzification across 4 inputs, Min implication clipping, S-Norm aggregation, and numerical Centroid defuzzification ($R^* = 50.0$).
+          <strong>Fig 2.</strong> Step 1: Input Fuzzification across Age ($x_{\text{age}}=38\text{y}$), Horizon ($x_{\text{horiz}}=8\text{y}$), Loss Tolerance ($x_{\text{loss}}=50$), and Income Stability ($x_{\text{inc}}=85$), calculating continuous membership degrees $\mu \in [0, 1]$ via triangular and trapezoidal functions.
         </div>
       </div>
 
-      <!-- Separate Mamdani Plot 2: Aggressive Growth Investor -->
+      <!-- Separate Mamdani Stage 2: Rule Evaluation Firing Strengths -->
       <div class="ieee-figure">
-        <img src="images/mamdani_techie.png" alt="Mamdani FIS Workflow - Aggressive Profile">
+        <img src="images/mamdani_step2_rules.png" alt="Mamdani FIS Step 2: Rule Firing Strengths">
         <div class="ieee-figure-caption">
-          <strong>Fig 3.</strong> Continuous Mamdani FIS workflow for an Aggressive Growth Profile (Age 26, Horizon 15 yrs, Loss Tolerance 80, Income Stability 70), illustrating heavy activation of Rule 1 and Rule 4 yielding a high crisp risk appetite score ($R^* = 78.4$).
+          <strong>Fig 3.</strong> Step 2: Mamdani Rule Base Evaluation evaluating the 9 Gödel Min conjunction rules, yielding firing strengths $\alpha_{\text{cons}} = 0.40$, $\alpha_{\text{mod}} = 0.50$, and $\alpha_{\text{agg}} = 0.00$.
+        </div>
+      </div>
+
+      <!-- Separate Mamdani Stage 3: Implication Clipping -->
+      <div class="ieee-figure">
+        <img src="images/mamdani_step3_implication.png" alt="Mamdani FIS Step 3: Implication">
+        <div class="ieee-figure-caption">
+          <strong>Fig 4.</strong> Step 3: Mamdani Min-Implication truncating the output consequent fuzzy sets at their respective firing strengths $\alpha_i$, preserving qualitative linguistic boundaries without step-cliff artifacts.
+        </div>
+      </div>
+
+      <!-- Separate Mamdani Stage 4: Aggregation and Centroid Defuzzification -->
+      <div class="ieee-figure">
+        <img src="images/mamdani_step4_defuzzification.png" alt="Mamdani FIS Step 4: Centroid Defuzzification">
+        <div class="ieee-figure-caption">
+          <strong>Fig 5.</strong> Step 4: S-Norm Maximum Aggregation and Center of Gravity (Centroid) Defuzzification computing the exact continuous risk score $R^* = 50.0 / 100$ (Moderate Category).
         </div>
       </div>
 
@@ -711,7 +727,7 @@
       <div class="ieee-figure">
         <img src="images/01_questionnaire_view.png" alt="Questionnaire View">
         <div class="ieee-figure-caption">
-          <strong>Fig 4.</strong> Multi-dimensional Investor Questionnaire interface with dynamic continuous sliders, allowing smooth risk parameter specification across Age, Investment Horizon, Loss Tolerance, and Income Stability without discrete boundary cliff-effects.
+          <strong>Fig 6.</strong> Multi-dimensional Investor Questionnaire interface with dynamic continuous sliders, allowing smooth risk parameter specification across Age, Investment Horizon, Loss Tolerance, and Income Stability without discrete boundary cliff-effects.
         </div>
       </div>
 
@@ -719,7 +735,7 @@
       <div class="ieee-figure">
         <img src="images/02_advisory_dashboard.png" alt="Advisory Dashboard">
         <div class="ieee-figure-caption">
-          <strong>Fig 5.</strong> Certified Institutional Advisory Dashboard displaying certified asset allocation (47.5% Equity, 37.5% Debt, 10.0% Gold, 5.0% Cash), 50/30/20 monthly cashflow budget check, and actionable rule execution audit trace.
+          <strong>Fig 7.</strong> Certified Institutional Advisory Dashboard displaying certified asset allocation (47.5% Equity, 37.5% Debt, 10.0% Gold, 5.0% Cash), 50/30/20 monthly cashflow budget check, and actionable rule execution audit trace.
         </div>
       </div>
 
@@ -727,19 +743,27 @@
       <div class="ieee-figure">
         <img src="images/04_interactive_chat_guardrails.png" alt="Chatbot Guardrails">
         <div class="ieee-figure-caption">
-          <strong>Fig 6.</strong> Fiduciary Conversational Chatbot demonstrating intent-driven query parsing, mathematical derivation explanations, emergency fund shortfall auditing, and debt avalanche scheduling.
+          <strong>Fig 8.</strong> Fiduciary Conversational Chatbot demonstrating intent-driven query parsing, mathematical derivation explanations, emergency fund shortfall auditing, and debt avalanche scheduling.
+        </div>
+      </div>
+
+      <!-- Standalone Backtest Figure 1: Wealth Compounding -->
+      <div class="ieee-figure">
+        <img src="images/backtest_wealth_trajectory.png" alt="17-Year Wealth Compounding Trajectory">
+        <div class="ieee-figure-caption">
+          <strong>Fig 9.</strong> 17-Year Historical Market Wealth Trajectory (2008–2024, Initial Base: ₹1,00,000) comparing FinWise Moderate against pure equity (Nifty 50 TRI), Traditional 60/40, and 100% Fixed Deposit.
+        </div>
+      </div>
+
+      <!-- Standalone Backtest Figure 2: Drawdown & Crisis Resilience -->
+      <div class="ieee-figure">
+        <img src="images/backtest_drawdown_underwater.png" alt="Historical Drawdown Underwater Curve">
+        <div class="ieee-figure-caption">
+          <strong>Fig 10.</strong> Historical Maximum Drawdown & Crisis Resilience comparing FinWise Moderate (-17.44% max DD) against pure Nifty 50 equity (-51.80% crash) during the 2008 Lehman GFC collapse and 2020 COVID shock.
         </div>
       </div>
 
     </div><!-- End First Column Block -->
-
-    <!-- Full-Width 17-Year Backtest Figure Breakout -->
-    <div class="full-width-figure">
-      <img src="images/backtest_performance.png" alt="17-Year Historical Market Backtesting Visual Proof">
-      <div class="ieee-figure-caption">
-        <strong>Fig 7.</strong> Empirical 17-Year Historical Market Backtesting (2008–2024) across authentic Indian asset class returns (NSE Nifty 50 TRI, CRISIL Bond Index, Domestic Gold, RBI Repo): (A) Cumulative wealth trajectory (₹1,00,000 initial base); (B) Maximum drawdown underwater trajectory; (C) Risk-adjusted efficient frontier (CAGR vs Volatility); (D) Crisis stress-test resilience during the 2008 Lehman GFC Crash and 2020 COVID Shock.
-      </div>
-    </div>
 
     <!-- Continue Two-Column Body -->
     <div class="ieee-two-column">
