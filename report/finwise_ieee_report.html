@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinWise AI: Intelligent Financial Advisory System · IIIT Kottayam CS301 Project</title>
+  <title>FinWise AI: Intelligent Financial Advisory System · IIIT Kottayam CSE311 Artificial Intelligence</title>
 
   <!-- MathJax Configuration for LaTeX Equation Rendering -->
   <script>
@@ -22,8 +22,8 @@
 
   <style>
     /* =========================================================================
-       FORMAL ACADEMIC COURSE PROJECT REPORT STYLESHEET
-       Target: Exactly 14 Pages A4 Portrait (CS301 Artificial Intelligence)
+       FORMAL ACADEMIC PROJECT REPORT STYLESHEET
+       Target: Exactly 14 Pages A4 Portrait (CSE311 Artificial Intelligence)
        Institution: Indian Institute of Information Technology (IIIT) Kottayam
        ========================================================================= */
     @page {
@@ -35,7 +35,7 @@
         font-size: 8.5pt;
       }
       @bottom-left {
-        content: "FinWise AI · IIIT Kottayam (CS301 AI Course Project)";
+        content: "FinWise AI · IIIT Kottayam (CSE311 Artificial Intelligence)";
         font-family: 'Times New Roman', Georgia, serif;
         font-size: 8pt;
         color: #475569;
@@ -353,20 +353,21 @@
       color: #0f172a;
     }
 
-    /* Architecture Box (~3:4 Aspect Ratio) */
+    /* Architecture Box (Vector SVG Diagram) */
     .architecture-box {
-      border: 1.5px dashed #0284c7;
-      background: #f0f9ff;
-      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      border-radius: 6px;
       padding: 6px;
       text-align: center;
       margin: 6px auto;
-      max-width: 145mm;
+      max-width: 175mm;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .architecture-box img {
+    .architecture-box svg {
       width: 100%;
-      max-height: 120mm;
-      object-fit: contain;
+      height: auto;
+      max-height: 110mm;
       display: block;
       margin: 0 auto;
       border: none;
@@ -480,10 +481,11 @@
   <!-- Screen Action Toolbar -->
   <div class="no-print-toolbar">
     <div>
-      <span style="font-weight:700;">FinWise AI Project Report</span> · CS301 Artificial Intelligence Course Project
+      <span style="font-weight:700;">FinWise AI Project Report</span> · CSE311 Artificial Intelligence
     </div>
     <div>
       <a href="https://finwise-ai.duckdns.org/app/" target="_blank" style="color:#93c5fd; text-decoration:underline; margin-right:16px; font-size:13px;">🌐 Live Prototype (HTTPS)</a>
+      <a href="https://anshu666666.github.io/finwise/report/finwise_architecture_light.html" target="_blank" style="color:#67e8f9; text-decoration:underline; margin-right:16px; font-size:13px;">🗺️ Light Theme Arch Diagram (Live)</a>
       <button class="btn-pdf" onclick="window.print()">
         🖨️ Print / Save as PDF
       </button>
@@ -499,11 +501,10 @@
       
       <div class="cover-institute-header">
         <div class="cover-institute-name">Indian Institute of Information Technology (IIIT) Kottayam</div>
-        <div class="cover-dept-name">Department of Computer Science & Engineering · Course: Artificial Intelligence (CS301)</div>
+        <div class="cover-dept-name">Course: CSE311 Artificial Intelligence</div>
       </div>
 
       <div class="cover-title-area">
-        <div class="cover-doc-type">3rd Year B.Tech Course Project Report</div>
         <div class="cover-title">
           FinWise AI: Intelligent Financial Advisory System
         </div>
@@ -536,7 +537,7 @@
       </div>
 
       <div class="cover-footer">
-        Submitted in partial fulfillment of the requirements for the course CS301: Artificial Intelligence<br>
+        Submitted in partial fulfillment of the requirements for the course CSE311: Artificial Intelligence<br>
         Topic Focus: Fuzzy Logic, Rule-Based Expert Systems, and Deterministic AI Invariants
       </div>
 
@@ -551,7 +552,7 @@
 
       <div class="abstract-box">
         <div class="abstract-title">Project Abstract</div>
-        For our 3rd-year Artificial Intelligence course project (CS301) at IIIT Kottayam, our team developed <strong>FinWise AI</strong>, an explainable financial advisory system. In preliminary experiments, we observed that while standard Large Language Models (LLMs) can generate natural language responses, they frequently hallucinate asset allocation percentages that do not add up to 100%, recommend conflicting financial actions, and lack mathematical accountability. Conversely, textbook heuristics (such as the rigid "100 minus age" rule) introduce arbitrary boundary cliff-edges where a single birthday drastically alters asset allocations.
+        For CSE311: Artificial Intelligence at IIIT Kottayam, our team developed <strong>FinWise AI</strong>, an explainable financial advisory system. In preliminary experiments, we observed that while standard Large Language Models (LLMs) can generate natural language responses, they frequently hallucinate asset allocation percentages that do not add up to 100%, recommend conflicting financial actions, and lack mathematical accountability. Conversely, textbook heuristics (such as the rigid "100 minus age" rule) introduce arbitrary boundary cliff-edges where a single birthday drastically alters asset allocations.
         <br><br>
         To address these limitations, we designed and implemented a modular AI pipeline:
         <ol style="margin-top: 4px; margin-bottom: 4px;">
@@ -593,17 +594,17 @@
 
       <h1 class="chapter-title">Chapter 1: Introduction & Problem Statement</h1>
 
-      <h2 class="section-heading">1.1. Motivation for the AI Course Project</h2>
+      <h2 class="section-heading">1.1. Motivation for the AI Project</h2>
       <p>
         In personal finance, selecting an appropriate asset allocation (the split between equities, debt, gold, and cash) is the single biggest determinant of long-term investment success. However, retail investors in India face a significant guidance gap: certified financial planners are expensive, while online advice is either overly generic or driven by sales commissions.
       </p>
       <p>
-        With recent advances in generative AI, chatbots have become a popular tool for automated advice <a href="#ref1" class="cite-link">[1]</a>, <a href="#ref5" class="cite-link">[5]</a>. In our initial experiments, we tested prompting standard LLMs directly for personal financial planning advice. We discovered three critical technical shortcomings:
+        With recent advances in generative AI, chatbots have become a popular tool for automated advice <a href="#ref1" class="cite-link">[1]</a>, <a href="#ref2" class="cite-link">[2]</a>. In our initial experiments, we tested prompting standard LLMs directly for personal financial planning advice. We discovered three critical technical shortcomings:
       </p>
       <ul>
         <li><strong>Arithmetic Inconsistency</strong>: Because LLMs predict tokens probabilistically, they often output asset allocation percentages that do not add up to 100% (e.g., suggesting 60% equity, 30% debt, 15% gold, and 5% cash), or produce negative numbers when constrained.</li>
         <li><strong>Missing Financial Safety Rules</strong>: LLMs lack a deterministic mechanism to enforce essential safety constraints. For example, a chatbot might advise an individual with high-interest credit card debt (costing 40% annually) to invest in volatile small-cap stocks, violating basic financial common sense.</li>
-        <li><strong>Hallucinated Facts & Rates</strong>: General LLMs lack accurate, real-time awareness of current macroeconomic data such as the Reserve Bank of India (RBI) repo rate or government treasury bond yields, leading to misleading yield projections.</li>
+        <li><strong>Hallucinated Facts & Rates</strong>: General LLMs lack accurate, real-time awareness of current macroeconomic data such as the Reserve Bank of India (RBI) repo rate <a href="#ref8" class="cite-link">[8]</a> or government treasury bond yields, leading to misleading yield projections.</li>
       </ul>
 
       <h2 class="section-heading">1.2. Shortcomings of Existing Heuristic Systems</h2>
@@ -617,7 +618,7 @@
 
       <h2 class="section-heading">1.3. Project Goal & AI Approach</h2>
       <p>
-        The goal of this course project was to build <strong>FinWise AI</strong> by combining two fundamental AI paradigms covered in our syllabus:
+        The goal of this project was to build <strong>FinWise AI</strong> by combining two fundamental AI paradigms covered in our syllabus:
       </p>
       <ol>
         <li><strong>Fuzzy Logic (Knowledge Representation)</strong>: Continuous membership functions that model human risk perception without discrete boundary cliffs.</li>
@@ -649,10 +650,10 @@
 
       <h2 class="section-heading">2.2. Fuzzy Set Theory & Mamdani Inference</h2>
       <p>
-        Lotfi Zadeh (1965) <a href="#ref8" class="cite-link">[8]</a> introduced fuzzy set theory to represent human concepts with continuous truth degrees $\mu \in [0, 1]$ rather than binary Boolean logic $\{0, 1\}$. In finance, terms like "young investor", "moderate horizon", and "stable income" have gradual boundaries that are naturally modeled by fuzzy sets.
+        Lotfi Zadeh (1965) <a href="#ref5" class="cite-link">[5]</a> introduced fuzzy set theory to represent human concepts with continuous truth degrees $\mu \in [0, 1]$ rather than binary Boolean logic $\{0, 1\}$. In finance, terms like "young investor", "moderate horizon", and "stable income" have gradual boundaries that are naturally modeled by fuzzy sets.
       </p>
       <p>
-        Mamdani and Assilian (1974) <a href="#ref9" class="cite-link">[9]</a> developed the Mamdani fuzzy inference system (FIS). By combining rule antecedents using the Gödel Min T-norm ($\alpha_i = \min_j \mu_{ij}$), clipping output sets via min-implication, and defuzzifying through Center-of-Gravity (Centroid), the Mamdani engine produces a smooth, continuous mapping from input parameters to risk scores without sudden jumps.
+        Mamdani and Assilian (1975) <a href="#ref6" class="cite-link">[6]</a> developed the Mamdani fuzzy inference system (FIS). As formulated in Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx <a href="#ref7" class="cite-link">[7]</a>, by combining rule antecedents using the Gödel Min T-norm ($\alpha_i = \min_j \mu_{ij}$), clipping output sets via min-implication, and defuzzifying through Center-of-Gravity (Centroid), the Mamdani engine produces a smooth, continuous mapping from input parameters to risk scores without sudden jumps.
       </p>
 
       <h2 class="section-heading">2.3. Production Rules & Forward Chaining</h2>
@@ -681,14 +682,474 @@
       <!-- Figure 1: Architecture Diagram Box (~3:4 Ratio) -->
       <div class="report-figure">
         <div class="architecture-box">
-          <img src="images/architecture_diagram.png" alt="FinWise AI Architecture Diagram" class="img-single" onerror="this.style.display='none'; document.getElementById('arch-err').style.display='block';">
-          <div id="arch-err" style="display:none; padding: 22px; font-family: monospace; font-size: 8.5pt; color: #0284c7;">
-            <strong>[Figure 1: Balanced ~3:4 System Architecture Diagram]</strong><br>
-            <em>The 2-column Phase 1 / Phase 2 architecture code renders cleanly into this container.</em>
-          </div>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 518" role="img" lang="en" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="classic" data-quality-profile="showcase" data-node-ui="" data-reader-fit="intrinsic-height" data-reader-min-text="7.5" data-reader-primary-text="14">
+
+  <style>
+    :root, svg {
+      --bg: #ffffff;
+      --grid: #e9edf2;
+      --canvas-dot: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #64748b;
+      --text-faint: #94a3b8;
+      --panel: #ffffff;
+      --panel-border: #cbd5e1;
+      --lane-fill: rgba(248, 250, 252, 0.7);
+      --lane-stroke: #cbd5e1;
+      --arrow: #64748b;
+      --arrow-emphasis: #0284c7;
+      --mask: #ffffff;
+      --frontend-fill: rgba(34, 211, 238, 0.14);
+      --frontend-stroke: #0891b2;
+      --backend-fill: rgba(52, 211, 153, 0.16);
+      --backend-stroke: #059669;
+      --database-fill: rgba(167, 139, 250, 0.18);
+      --database-stroke: #7c3aed;
+      --cloud-fill: rgba(251, 191, 36, 0.16);
+      --cloud-stroke: #d97706;
+      --security-fill: rgba(251, 113, 133, 0.14);
+      --security-stroke: #e11d48;
+      --messagebus-fill: rgba(251, 146, 60, 0.14);
+      --messagebus-stroke: #ea580c;
+      --external-fill: rgba(148, 163, 184, 0.16);
+      --external-stroke: #64748b;
+    }
+
+    svg {
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color-scheme: light;
+      border-radius: 8px;
+    }
+
+    /* Grid pattern */
+    .c-grid {
+      fill: none !important;
+      stroke: #e9edf2;
+      stroke-width: 0.5px;
+    }
+
+    /* Structural boundaries */
+    .c-region {
+      fill: rgba(248, 250, 252, 0.65);
+      stroke: #0284c7;
+      stroke-width: 1.4px;
+      stroke-dasharray: 6 4;
+      rx: 10px;
+    }
+    .c-security-group {
+      fill: rgba(255, 241, 242, 0.45);
+      stroke: #e11d48;
+      stroke-width: 1.4px;
+      stroke-dasharray: 4 3;
+      rx: 8px;
+    }
+
+    /* Component node rectangles */
+    [data-node-id] > rect:not(.c-mask) {
+      stroke-width: 1.4px;
+      rx: 7px;
+    }
+    .c-frontend   { fill: var(--frontend-fill);   stroke: var(--frontend-stroke); }
+    .c-backend    { fill: var(--backend-fill);    stroke: var(--backend-stroke); }
+    .c-database   { fill: var(--database-fill);   stroke: var(--database-stroke); }
+    .c-cloud      { fill: var(--cloud-fill);      stroke: var(--cloud-stroke); }
+    .c-security   { fill: var(--security-fill);   stroke: var(--security-stroke); }
+    .c-external   { fill: var(--external-fill);   stroke: var(--external-stroke); }
+    .c-mask       { fill: #ffffff; }
+
+    /* Connection routes */
+    .a-default  { stroke: #64748b; stroke-width: 1.5px; fill: none !important; }
+    .a-emphasis { stroke: #0284c7; stroke-width: 2.2px; fill: none !important; }
+    .a-dashed   { stroke: #64748b; stroke-width: 1.5px; stroke-dasharray: 5 4; fill: none !important; }
+
+    /* Markers */
+    .m-default  { fill: #64748b; }
+    .m-emphasis { fill: #0284c7; }
+    .m-dashed   { fill: #64748b; }
+    .m-security { fill: #e11d48; }
+
+    /* Labels & Typography */
+    .t-primary {
+      fill: #0f172a;
+      font-weight: 700;
+      font-size: 11.5px;
+    }
+    .t-muted {
+      fill: #475569;
+      font-size: 9.2px;
+      font-weight: 500;
+    }
+    .t-dim {
+      fill: #64748b;
+      font-size: 9px;
+    }
+    .t-edge-default, .t-edge-emphasis, .t-edge-dashed {
+      fill: #1e293b;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    /* Component type badges */
+    .t-frontend { fill: var(--frontend-stroke); font-weight: 600; }
+    .t-backend  { fill: var(--backend-stroke); font-weight: 600; }
+    .t-database { fill: var(--database-stroke); font-weight: 600; }
+    .t-cloud    { fill: var(--cloud-stroke); font-weight: 600; }
+    .t-security { fill: var(--security-stroke); font-weight: 600; }
+    .t-external { fill: var(--external-stroke); font-weight: 600; }
+
+    /* Sigil icons & colors */
+    .s-frontend { color: var(--frontend-stroke); }
+    .s-backend  { color: var(--backend-stroke); }
+    .s-database { color: var(--database-stroke); }
+    .s-cloud    { color: var(--cloud-stroke); }
+    .s-security { color: var(--security-stroke); }
+    .s-external { color: var(--external-stroke); }
+    .semantic-sigil { opacity: 0.85; }
+    .sigil-fill { fill: currentColor; }
+
+    /* Label boundary masks */
+    [data-graph-role="structural-frame-label-mask"] {
+      rx: 4px;
+      fill: #f0fdf4;
+      stroke: #86efac;
+      stroke-width: 1px;
+    }
+    [data-composition-frame-kind="security-group"] > [data-graph-role="structural-frame-label-mask"] {
+      fill: #fff1f2;
+      stroke: #fca5a5;
+    }
+    g[data-edge-from] > rect.c-mask {
+      rx: 5px;
+      fill: #ffffff;
+      stroke: #cbd5e1;
+      stroke-width: 1px;
+    }
+  </style>
+
+
+        <title id="archify-diagram-title">FinWise AI: Intelligent Financial Advisory System</title>
+        <desc id="archify-diagram-description">An architecture diagram generated by Archify.</desc>
+        <!-- Definitions -->
+        <defs>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-default" />
+          </marker>
+          <marker id="arrowhead-emphasis" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-emphasis" />
+          </marker>
+          <marker id="arrowhead-security" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-security" />
+          </marker>
+          <marker id="arrowhead-dashed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" class="m-dashed" />
+          </marker>
+          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" class="c-grid" fill="none" stroke="#e9edf2" stroke-width="0.5"/>
+          </pattern>
+        </defs>
+        <style>
+          svg[data-node-ui] [data-node-id] > rect:not(.c-mask) { stroke-width: 1.25px; }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-frontend { fill: color-mix(in srgb, var(--frontend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--frontend-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-backend { fill: color-mix(in srgb, var(--backend-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--backend-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-database { fill: color-mix(in srgb, var(--database-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--database-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-cloud { fill: color-mix(in srgb, var(--cloud-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-security { fill: color-mix(in srgb, var(--security-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-messagebus { fill: color-mix(in srgb, var(--messagebus-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--messagebus-stroke) 72%, var(--mask)); }
+          :is([data-theme="dark"] svg[data-node-ui], svg[data-node-ui][data-theme="dark"]) [data-node-id] > rect:not(.c-mask).c-external { fill: color-mix(in srgb, var(--external-stroke) 13%, var(--mask)); stroke: color-mix(in srgb, var(--external-stroke) 72%, var(--mask)); }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-region { fill: color-mix(in srgb, var(--cloud-stroke) 3%, transparent); stroke: color-mix(in srgb, var(--cloud-stroke) 42%, var(--lane-stroke)); stroke-dasharray: none; }
+          svg[data-node-ui] .c-security-group { stroke: color-mix(in srgb, var(--security-stroke) 58%, var(--lane-stroke)); }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-security-group { stroke-dasharray: 4 3; }
+          svg[data-node-ui]:is([data-preset="classic"], [data-preset="signal-flow"], [data-preset="editorial"]) .c-lane { stroke: var(--lane-stroke); stroke-dasharray: none; }
+          svg[data-node-ui] [data-graph-role="structural-frame-label-mask"] { rx: 5px; fill: color-mix(in srgb, var(--cloud-stroke) 10%, var(--mask)); stroke: color-mix(in srgb, var(--cloud-stroke) 38%, var(--mask)); stroke-width: .8px; }
+          svg[data-node-ui] [data-composition-frame-kind="security-group"] > [data-graph-role="structural-frame-label-mask"] { fill: color-mix(in srgb, var(--security-stroke) 9%, var(--mask)); stroke: color-mix(in srgb, var(--security-stroke) 36%, var(--mask)); }
+          svg[data-node-ui] .phase-rule { opacity: .5; stroke-dasharray: none; }
+          svg[data-node-ui] .phase-chip { stroke: var(--lane-stroke); stroke-width: .75px; }
+          svg[data-node-ui] g[data-edge-from] > rect.c-mask { rx: 7px; stroke: var(--lane-stroke); stroke-width: .75px; }
+          svg[data-node-ui][data-preset="blueprint"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] > rect.c-mask, .phase-chip) { rx: 2px; }
+          svg[data-node-ui][data-preset="editorial"] :is([data-graph-role="structural-frame-label-mask"], g[data-edge-from] > rect.c-mask, .phase-chip) { rx: 3px; }
+        </style>
+
+        <!-- Background Grid -->
+        <rect width="100%" height="100%" fill="#ffffff" rx="8"/>
+<rect width="100%" height="100%" fill="url(#grid)" rx="8" />
+
+        <!-- Boundaries (behind everything) -->
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="region" data-composition-frame-id="0" data-composition-frame-label="FinWise Core System Boundary" x="590" y="90" width="690" height="350" rx="12" class="c-region" stroke-width="1"/>
+
+        <rect data-graph-role="structural-frame" data-composition-frame-kind="security-group" data-composition-frame-id="1" data-composition-frame-label="Ingress Perimeter" x="190" y="210" width="390" height="110" rx="8" class="c-security-group" stroke-width="1"/>
+
+        <!-- Connection paths (before components for correct z-order) -->
+        <g data-graph-role="automatic-crossover" style="--step:0">
+          <path data-graph-role="automatic-crossover-underlay" d="M 105 300 L 105 316 Q 105 324 113 324 L 282 324 Q 290 324 290 316 L 290 300" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="client_browser" data-edge-to="frontend_ui" data-edge-label="user events" data-edge-key="0" data-edge-id="client-to-ui" data-composition-points="105,300;105,324;290,324;290,300" data-composition-crossover="halo" data-composition-independent="true" d="M 105 300 L 105 316 Q 105 324 113 324 L 282 324 Q 290 324 290 316 L 290 300" class="a-emphasis" data-animate="edge" style="--step:0" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:1">
+          <path data-graph-role="automatic-crossover-underlay" d="M 306.1 300 L 306.1 316 Q 306.1 324 314.1 324 L 472 324 Q 480 324 480 316 L 480 300" fill="none" stroke="var(--mask)" stroke-width="5.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="frontend_ui" data-edge-to="ingress_proxy" data-edge-label="HTTPS :443" data-edge-key="1" data-edge-id="ui-to-proxy" data-composition-points="306.1,300;306.1,324;480,324;480,300" data-composition-crossover="halo" data-composition-independent="true" d="M 306.1 300 L 306.1 316 Q 306.1 324 314.1 324 L 472 324 Q 480 324 480 316 L 480 300" class="a-emphasis" data-animate="edge" style="--step:1" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:2">
+          <path data-graph-role="automatic-crossover-underlay" d="M 550 270 L 620 270" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="ingress_proxy" data-edge-to="fastapi_server" data-edge-label="reverse proxy" data-edge-key="2" data-edge-id="proxy-to-api" data-composition-points="550,270;620,270" data-composition-crossover="halo" data-composition-independent="true" d="M 550 270 L 620 270" class="a-default" data-animate="edge" style="--step:2" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:3">
+          <path data-graph-role="automatic-crossover-underlay" d="M 560 120 L 687 120 Q 695 120 695 128 L 695 240" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="macro_rates" data-edge-to="fastapi_server" data-edge-label="live rates" data-edge-key="3" data-edge-id="macro-to-api" data-composition-points="560,120;695,120;695,240" data-composition-crossover="halo" data-composition-independent="true" d="M 560 120 L 687 120 Q 695 120 695 128 L 695 240" class="a-default" data-animate="edge" style="--step:3" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:4">
+          <path data-graph-role="automatic-crossover-underlay" d="M 770 270 L 797 270 Q 805 270 805 262 L 805 158 Q 805 150 813 150 L 840 150" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="fastapi_server" data-edge-to="fuzzy_engine" data-edge-label="investor metrics" data-edge-key="4" data-edge-id="api-to-fuzzy" data-composition-points="770,270;805,270;805,150;840,150" data-composition-crossover="halo" data-composition-independent="true" d="M 770 270 L 797 270 Q 805 270 805 262 L 805 158 Q 805 150 813 150 L 840 150" class="a-default" data-animate="edge" style="--step:4" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:5">
+          <path data-graph-role="automatic-crossover-underlay" d="M 920 180 L 920 240" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="fuzzy_engine" data-edge-to="rule_engine" data-edge-label="raw allocations" data-edge-key="5" data-edge-id="fuzzy-to-rules" data-composition-points="920,180;920,240" data-composition-crossover="halo" data-composition-independent="true" d="M 920 180 L 920 240" class="a-default" data-animate="edge" style="--step:5" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:6">
+          <path data-graph-role="automatic-crossover-underlay" d="M 920 300 L 920 360" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="rule_engine" data-edge-to="backtest_engine" data-edge-label="tested weights" data-edge-key="6" data-edge-id="rules-to-backtest" data-composition-points="920,300;920,360" data-composition-crossover="halo" data-composition-independent="true" d="M 920 300 L 920 360" class="a-default" data-animate="edge" style="--step:6" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:7">
+          <path data-graph-role="automatic-crossover-underlay" d="M 1000 390 L 1110 390" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="backtest_engine" data-edge-to="market_data" data-edge-label="historical data" data-edge-key="7" data-edge-id="backtest-to-data" data-composition-points="1000,390;1110,390" data-composition-crossover="halo" data-composition-independent="true" d="M 1000 390 L 1110 390" class="a-default" data-animate="edge" style="--step:7" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:8">
+          <path data-graph-role="automatic-crossover-underlay" d="M 1000 270 L 1110 270" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="rule_engine" data-edge-to="sqlite_db" data-edge-label="save decisions" data-edge-key="8" data-edge-id="rules-to-db" data-composition-points="1000,270;1110,270" data-composition-crossover="halo" data-composition-independent="true" d="M 1000 270 L 1110 270" class="a-default" data-animate="edge" style="--step:8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+        </g>
+        <g data-graph-role="automatic-crossover" style="--step:9">
+          <path data-graph-role="automatic-crossover-underlay" d="M 695 300 L 695 412 Q 695 420 687 420 L 560 420" fill="none" stroke="var(--mask)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"/>
+          <path data-edge-from="fastapi_server" data-edge-to="grounded_llm" data-edge-label="certified trace prompt" data-edge-key="9" data-edge-id="api-to-llm" data-composition-points="695,300;695,420;560,420" data-composition-crossover="halo" data-composition-independent="true" d="M 695 300 L 695 412 Q 695 420 687 420 L 560 420" class="a-dashed" data-animate="edge" style="--step:9" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
+        </g>
+
+        <!-- Components -->
+        <g id="node-client_browser" data-node-id="client_browser" data-node-label="Investor Client" tabindex="0" role="button" aria-label="Focus Investor Client, Browser / Mobile View, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Browser / Mobile View" data-node-tag="HTTPS / UI" data-node-context="Architecture component">
+          <title>Investor Client · Browser / Mobile View · Architecture component · HTTPS / UI</title>
+          <rect x="40" y="240" width="130" height="60" rx="8" class="c-mask"/>
+          <rect x="40" y="240" width="130" height="60" rx="8" class="c-external" data-animate="node" style="--step:0" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="external" class="semantic-sigil s-external" transform="translate(46 246) scale(0.6875)">
+            <rect x="2.5" y="5" width="8.5" height="8" rx="1.5"/>
+            <path d="M8 2.5h5.5V8M13.5 2.5 7.5 8.5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="105" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Investor Client</text>
+        <text data-detail="context" x="105" y="284" class="t-muted" font-size="9" text-anchor="middle">Browser / Mobile View</text>
+        <text data-detail="fine" x="105" y="292" class="t-external" font-size="7" text-anchor="middle">HTTPS / UI</text>
+        </g>
+
+        <g id="node-frontend_ui" data-node-id="frontend_ui" data-node-label="FinWise Web Client" tabindex="0" role="button" aria-label="Focus FinWise Web Client, HTML5 / Vanilla JS, Ingress Perimeter" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="HTML5 / Vanilla JS" data-node-tag="Sliders &amp; LaTeX" data-node-context="Ingress Perimeter">
+          <title>FinWise Web Client · HTML5 / Vanilla JS · Ingress Perimeter · Sliders &amp; LaTeX</title>
+          <rect x="220" y="240" width="140" height="60" rx="8" class="c-mask"/>
+          <rect x="220" y="240" width="140" height="60" rx="8" class="c-frontend" data-animate="node" style="--step:1" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="frontend" class="semantic-sigil s-frontend" transform="translate(226 246) scale(0.6875)">
+            <rect x="2" y="3" width="12" height="10" rx="2"/>
+            <path d="M2 6.5h12"/>
+            <circle cx="4.1" cy="4.8" r=".7" class="sigil-fill"/>
+            <circle cx="6.3" cy="4.8" r=".7" class="sigil-fill"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="290" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">FinWise Web Client</text>
+        <text data-detail="context" x="290" y="284" class="t-muted" font-size="9" text-anchor="middle">HTML5 / Vanilla JS</text>
+        <text data-detail="fine" x="290" y="292" class="t-frontend" font-size="7" text-anchor="middle">Sliders &amp; LaTeX</text>
+        </g>
+
+        <g id="node-ingress_proxy" data-node-id="ingress_proxy" data-node-label="DuckDNS SSL Proxy" tabindex="0" role="button" aria-label="Focus DuckDNS SSL Proxy, HTTPS :443 / SSL Term, Ingress Perimeter" aria-pressed="false" data-node-kind="security" data-node-sublabel="HTTPS :443 / SSL Term" data-node-tag="TLS Certificate" data-node-context="Ingress Perimeter">
+          <title>DuckDNS SSL Proxy · HTTPS :443 / SSL Term · Ingress Perimeter · TLS Certificate</title>
+          <rect x="410" y="240" width="140" height="60" rx="8" class="c-mask"/>
+          <rect x="410" y="240" width="140" height="60" rx="8" class="c-security" data-animate="node" style="--step:2" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="security" class="semantic-sigil s-security" transform="translate(416 246) scale(0.6875)">
+            <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
+            <path d="m5.8 8 1.5 1.5 3-3"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="480" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">DuckDNS SSL Proxy</text>
+        <text data-detail="context" x="480" y="284" class="t-muted" font-size="9" text-anchor="middle">HTTPS :443 / SSL Term</text>
+        <text data-detail="fine" x="480" y="292" class="t-security" font-size="7" text-anchor="middle">TLS Certificate</text>
+        </g>
+
+        <g id="node-macro_rates" data-node-id="macro_rates" data-node-label="Macro Rates Feed" tabindex="0" role="button" aria-label="Focus Macro Rates Feed, RBI Repo 6.50% &amp; G-Sec, Architecture component" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="RBI Repo 6.50% &amp; G-Sec" data-node-tag="Live Yields" data-node-context="Architecture component">
+          <title>Macro Rates Feed · RBI Repo 6.50% &amp; G-Sec · Architecture component · Live Yields</title>
+          <rect x="410" y="90" width="150" height="60" rx="8" class="c-mask"/>
+          <rect x="410" y="90" width="150" height="60" rx="8" class="c-cloud" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(416 96) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="485" y="118" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Macro Rates Feed</text>
+        <text data-detail="context" x="485" y="134" class="t-muted" font-size="9" text-anchor="middle">RBI Repo 6.50% &amp; G-Sec</text>
+        <text data-detail="fine" x="485" y="142" class="t-cloud" font-size="7" text-anchor="middle">Live Yields</text>
+        </g>
+
+        <g id="node-grounded_llm" data-node-id="grounded_llm" data-node-label="Grounded LLM Advisor" tabindex="0" role="button" aria-label="Focus Grounded LLM Advisor, DeepSeek / Gemini API, Architecture component" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="DeepSeek / Gemini API" data-node-tag="Trace Guardrails" data-node-context="Architecture component">
+          <title>Grounded LLM Advisor · DeepSeek / Gemini API · Architecture component · Trace Guardrails</title>
+          <rect x="410" y="390" width="150" height="60" rx="8" class="c-mask"/>
+          <rect x="410" y="390" width="150" height="60" rx="8" class="c-cloud" data-animate="node" style="--step:10" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(416 396) scale(0.6875)">
+            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="485" y="418" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Grounded LLM Advisor</text>
+        <text data-detail="context" x="485" y="434" class="t-muted" font-size="9" text-anchor="middle">DeepSeek / Gemini API</text>
+        <text data-detail="fine" x="485" y="442" class="t-cloud" font-size="7" text-anchor="middle">Trace Guardrails</text>
+        </g>
+
+        <g id="node-fastapi_server" data-node-id="fastapi_server" data-node-label="FastAPI App Server" tabindex="0" role="button" aria-label="Focus FastAPI App Server, REST API &amp; Routing, FinWise Core System Boundary" aria-pressed="false" data-node-kind="backend" data-node-sublabel="REST API &amp; Routing" data-node-tag="Uvicorn :8000" data-node-context="FinWise Core System Boundary">
+          <title>FastAPI App Server · REST API &amp; Routing · FinWise Core System Boundary · Uvicorn :8000</title>
+          <rect x="620" y="240" width="150" height="60" rx="8" class="c-mask"/>
+          <rect x="620" y="240" width="150" height="60" rx="8" class="c-backend" data-animate="node" style="--step:3" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(626 246) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="695" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">FastAPI App Server</text>
+        <text data-detail="context" x="695" y="284" class="t-muted" font-size="9" text-anchor="middle">REST API &amp; Routing</text>
+        <text data-detail="fine" x="695" y="292" class="t-backend" font-size="7" text-anchor="middle">Uvicorn :8000</text>
+        </g>
+
+        <g id="node-fuzzy_engine" data-node-id="fuzzy_engine" data-node-label="Mamdani Fuzzy Engine" tabindex="0" role="button" aria-label="Focus Mamdani Fuzzy Engine, 4 Inputs + Centroid FIS, FinWise Core System Boundary" aria-pressed="false" data-node-kind="backend" data-node-sublabel="4 Inputs + Centroid FIS" data-node-tag="No Cliff-Edges" data-node-context="FinWise Core System Boundary">
+          <title>Mamdani Fuzzy Engine · 4 Inputs + Centroid FIS · FinWise Core System Boundary · No Cliff-Edges</title>
+          <rect x="840" y="120" width="160" height="60" rx="8" class="c-mask"/>
+          <rect x="840" y="120" width="160" height="60" rx="8" class="c-backend" data-animate="node" style="--step:5" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(846 126) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="920" y="148" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Mamdani Fuzzy Engine</text>
+        <text data-detail="context" x="920" y="164" class="t-muted" font-size="9" text-anchor="middle">4 Inputs + Centroid FIS</text>
+        <text data-detail="fine" x="920" y="172" class="t-backend" font-size="7" text-anchor="middle">No Cliff-Edges</text>
+        </g>
+
+        <g id="node-rule_engine" data-node-id="rule_engine" data-node-label="Priority Rule Engine" tabindex="0" role="button" aria-label="Focus Priority Rule Engine, Conflict Res. &amp; Invariants, FinWise Core System Boundary" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Conflict Res. &amp; Invariants" data-node-tag="Sum w_i = 100%" data-node-context="FinWise Core System Boundary">
+          <title>Priority Rule Engine · Conflict Res. &amp; Invariants · FinWise Core System Boundary · Sum w_i = 100%</title>
+          <rect x="840" y="240" width="160" height="60" rx="8" class="c-mask"/>
+          <rect x="840" y="240" width="160" height="60" rx="8" class="c-backend" data-animate="node" style="--step:6" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(846 246) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="920" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Priority Rule Engine</text>
+        <text data-detail="context" x="920" y="284" class="t-muted" font-size="9" text-anchor="middle">Conflict Res. &amp; Invariants</text>
+        <text data-detail="fine" x="920" y="292" class="t-backend" font-size="7" text-anchor="middle">Sum w_i = 100%</text>
+        </g>
+
+        <g id="node-backtest_engine" data-node-id="backtest_engine" data-node-label="17-Yr Market Backtest" tabindex="0" role="button" aria-label="Focus 17-Yr Market Backtest, Historical Simulator, FinWise Core System Boundary" aria-pressed="false" data-node-kind="backend" data-node-sublabel="Historical Simulator" data-node-tag="Sharpe &amp; Drawdown" data-node-context="FinWise Core System Boundary">
+          <title>17-Yr Market Backtest · Historical Simulator · FinWise Core System Boundary · Sharpe &amp; Drawdown</title>
+          <rect x="840" y="360" width="160" height="60" rx="8" class="c-mask"/>
+          <rect x="840" y="360" width="160" height="60" rx="8" class="c-backend" data-animate="node" style="--step:7" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(846 366) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="920" y="388" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">17-Yr Market Backtest</text>
+        <text data-detail="context" x="920" y="404" class="t-muted" font-size="9" text-anchor="middle">Historical Simulator</text>
+        <text data-detail="fine" x="920" y="412" class="t-backend" font-size="7" text-anchor="middle">Sharpe &amp; Drawdown</text>
+        </g>
+
+        <g id="node-sqlite_db" data-node-id="sqlite_db" data-node-label="SQLite Database" tabindex="0" role="button" aria-label="Focus SQLite Database, Users, Allocations, Logs, FinWise Core System Boundary" aria-pressed="false" data-node-kind="database" data-node-sublabel="Users, Allocations, Logs" data-node-tag="ACID Storage" data-node-context="FinWise Core System Boundary">
+          <title>SQLite Database · Users, Allocations, Logs · FinWise Core System Boundary · ACID Storage</title>
+          <rect x="1110" y="240" width="140" height="60" rx="8" class="c-mask"/>
+          <rect x="1110" y="240" width="140" height="60" rx="8" class="c-database" data-animate="node" style="--step:9" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1116 246) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1180" y="268" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">SQLite Database</text>
+        <text data-detail="context" x="1180" y="284" class="t-muted" font-size="9" text-anchor="middle">Users, Allocations, Logs</text>
+        <text data-detail="fine" x="1180" y="292" class="t-database" font-size="7" text-anchor="middle">ACID Storage</text>
+        </g>
+
+        <g id="node-market_data" data-node-id="market_data" data-node-label="Historical Datasets" tabindex="0" role="button" aria-label="Focus Historical Datasets, 2008-2024 Nifty &amp; Bonds, FinWise Core System Boundary" aria-pressed="false" data-node-kind="database" data-node-sublabel="2008-2024 Nifty &amp; Bonds" data-node-tag="17-Yr Indian Data" data-node-context="FinWise Core System Boundary">
+          <title>Historical Datasets · 2008-2024 Nifty &amp; Bonds · FinWise Core System Boundary · 17-Yr Indian Data</title>
+          <rect x="1110" y="360" width="140" height="60" rx="8" class="c-mask"/>
+          <rect x="1110" y="360" width="140" height="60" rx="8" class="c-database" data-animate="node" style="--step:8" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(1116 366) scale(0.6875)">
+            <ellipse cx="8" cy="4" rx="5" ry="2"/>
+            <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
+          </g>
+          <text data-node-label="" data-detail-anchor="" x="1180" y="388" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Historical Datasets</text>
+        <text data-detail="context" x="1180" y="404" class="t-muted" font-size="9" text-anchor="middle">2008-2024 Nifty &amp; Bonds</text>
+        <text data-detail="fine" x="1180" y="412" class="t-database" font-size="7" text-anchor="middle">17-Yr Indian Data</text>
+        </g>
+
+        <!-- Connection labels -->
+        <g data-detail="context" data-edge-from="client_browser" data-edge-to="frontend_ui" data-edge-label="user events" data-edge-key="0" data-edge-id="client-to-ui">
+          <rect x="166.1" y="304" width="62.8" height="14" rx="3" class="c-mask"/>
+          <text x="197.5" y="314" class="t-edge-emphasis" font-size="8" text-anchor="middle">user events</text>
+        </g>
+        <g data-detail="context" data-edge-from="frontend_ui" data-edge-to="ingress_proxy" data-edge-label="HTTPS :443" data-edge-key="1" data-edge-id="ui-to-proxy">
+          <rect x="364.05" y="304" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="393.05" y="314" class="t-edge-emphasis" font-size="8" text-anchor="middle">HTTPS :443</text>
+        </g>
+        <g data-detail="context" data-edge-from="ingress_proxy" data-edge-to="fastapi_server" data-edge-label="reverse proxy" data-edge-key="2" data-edge-id="proxy-to-api">
+          <rect x="548.8" y="250" width="72.4" height="14" rx="3" class="c-mask"/>
+          <text x="585" y="260" class="t-edge-default" font-size="8" text-anchor="middle">reverse proxy</text>
+        </g>
+        <g data-detail="context" data-edge-from="macro_rates" data-edge-to="fastapi_server" data-edge-label="live rates" data-edge-key="3" data-edge-id="macro-to-api">
+          <rect x="666" y="160" width="58" height="14" rx="3" class="c-mask"/>
+          <text x="695" y="170" class="t-edge-default" font-size="8" text-anchor="middle">live rates</text>
+        </g>
+        <g data-detail="context" data-edge-from="fastapi_server" data-edge-to="fuzzy_engine" data-edge-label="investor metrics" data-edge-key="4" data-edge-id="api-to-fuzzy">
+          <rect x="761.6" y="190" width="86.8" height="14" rx="3" class="c-mask"/>
+          <text x="805" y="200" class="t-edge-default" font-size="8" text-anchor="middle">investor metrics</text>
+        </g>
+        <g data-detail="context" data-edge-from="fuzzy_engine" data-edge-to="rule_engine" data-edge-label="raw allocations" data-edge-key="5" data-edge-id="fuzzy-to-rules">
+          <rect x="926" y="203" width="82" height="14" rx="3" class="c-mask"/>
+          <text x="967" y="213" class="t-edge-default" font-size="8" text-anchor="middle">raw allocations</text>
+        </g>
+        <g data-detail="context" data-edge-from="rule_engine" data-edge-to="backtest_engine" data-edge-label="tested weights" data-edge-key="6" data-edge-id="rules-to-backtest">
+          <rect x="836.8" y="323" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="875.4" y="333" class="t-edge-default" font-size="8" text-anchor="middle">tested weights</text>
+        </g>
+        <g data-detail="context" data-edge-from="backtest_engine" data-edge-to="market_data" data-edge-label="historical data" data-edge-key="7" data-edge-id="backtest-to-data">
+          <rect x="1014" y="370" width="82" height="14" rx="3" class="c-mask"/>
+          <text x="1055" y="380" class="t-edge-default" font-size="8" text-anchor="middle">historical data</text>
+        </g>
+        <g data-detail="context" data-edge-from="rule_engine" data-edge-to="sqlite_db" data-edge-label="save decisions" data-edge-key="8" data-edge-id="rules-to-db">
+          <rect x="1016.4" y="250" width="77.2" height="14" rx="3" class="c-mask"/>
+          <text x="1055" y="260" class="t-edge-default" font-size="8" text-anchor="middle">save decisions</text>
+        </g>
+        <g data-detail="context" data-edge-from="fastapi_server" data-edge-to="grounded_llm" data-edge-label="certified trace prompt" data-edge-key="9" data-edge-id="api-to-llm">
+          <rect x="569.7" y="400" width="115.6" height="14" rx="3" class="c-mask"/>
+          <text x="627.5" y="410" class="t-edge-dashed" font-size="8" text-anchor="middle">certified trace prompt</text>
+        </g>
+
+        <!-- Boundary labels (foreground masks keep routes out of titles) -->
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="0" data-composition-frame-kind="region" data-composition-frame-label="FinWise Core System Boundary">
+          <rect data-graph-role="structural-frame-label-mask" x="594" y="100" width="161.2" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="598" y="113" class="t-cloud" font-size="9" font-weight="600">FinWise Core System Boundary</text>
+        </g>
+
+        <g data-graph-role="structural-frame-label" data-composition-frame-id="1" data-composition-frame-kind="security-group" data-composition-frame-label="Ingress Perimeter">
+          <rect data-graph-role="structural-frame-label-mask" x="194" y="220" width="101.8" height="16" rx="3" class="c-mask"/>
+          <text data-boundary-label="" x="198" y="233" class="t-security" font-size="9" font-weight="600">Ingress Perimeter</text>
+        </g>
+
+        <!-- Legend -->
+        <g data-legend="" data-legend-bridge="">
+          <text x="40" y="482" class="t-primary" font-size="12" font-weight="650">Legend</text>
+          <g data-legend-semantic-kind="frontend" data-legend-kind="frontend" data-legend-label="Frontend" data-legend-x="40" data-legend-baseline="502" data-legend-width="93">
+            <rect x="40" y="493" width="16" height="10" rx="2.5" class="c-frontend" stroke-width="1"/>
+            <text x="62" y="502" class="t-muted" font-size="10" font-weight="500">Frontend</text>
+          </g>
+          <g data-legend-semantic-kind="backend" data-legend-kind="backend" data-legend-label="Backend" data-legend-x="155" data-legend-baseline="502" data-legend-width="87">
+            <rect x="155" y="493" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
+            <text x="177" y="502" class="t-muted" font-size="10" font-weight="500">Backend</text>
+          </g>
+          <g data-legend-semantic-kind="database" data-legend-kind="database" data-legend-label="Database" data-legend-x="264" data-legend-baseline="502" data-legend-width="93">
+            <rect x="264" y="493" width="16" height="10" rx="2.5" class="c-database" stroke-width="1"/>
+            <text x="286" y="502" class="t-muted" font-size="10" font-weight="500">Database</text>
+          </g>
+          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="379" data-legend-baseline="502" data-legend-width="74">
+            <rect x="379" y="493" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
+            <text x="401" y="502" class="t-muted" font-size="10" font-weight="500">Cloud</text>
+          </g>
+          <g data-legend-semantic-kind="security" data-legend-kind="security" data-legend-label="Security" data-legend-x="475" data-legend-baseline="502" data-legend-width="93">
+            <rect x="475" y="493" width="16" height="10" rx="2.5" class="c-security" stroke-width="1"/>
+            <text x="497" y="502" class="t-muted" font-size="10" font-weight="500">Security</text>
+          </g>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="590" data-legend-baseline="502" data-legend-width="93">
+            <rect x="590" y="493" width="16" height="10" rx="2.5" class="c-external" stroke-width="1"/>
+            <text x="612" y="502" class="t-muted" font-size="10" font-weight="500">External</text>
+          </g>
+        </g>
+      </svg>
         </div>
         <div class="figure-caption">
           <strong>Fig 1.</strong> FinWise AI End-to-End System Architecture (~3:4 Aspect Ratio). Phase 1 (Left) processes continuous client inputs through the Mamdani FIS to compute crisp score $R^*$. Phase 2 (Right) routes $R^*$ through the forward-chaining rule engine to enforce safety invariants, verified by backtesting simulations and SQLite session persistence.
+          <div style="margin-top: 5px;">
+            <a href="https://anshu666666.github.io/finwise/report/finwise_architecture_light.html" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: underline;">🔍 Open Interactive Light Theme Architecture Diagram (Archify)</a>
+          </div>
         </div>
       </div>
 
@@ -714,7 +1175,7 @@
         We model 4 continuous input variables: Age ($x_{\text{age}} \in [18, 85]$), Investment Horizon ($x_{\text{horiz}} \in [0, 30]$ yrs), Loss Tolerance ($x_{\text{loss}} \in [0, 100]$), and Income Stability ($x_{\text{inc}} \in [0, 100]$).
       </p>
       <p>
-        We implemented standard piecewise triangular ($\mu_{\text{tri}}$) and trapezoidal ($\mu_{\text{trap}}$) functions from scratch in Python:
+        In accordance with the continuous membership definitions presented in Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx <a href="#ref7" class="cite-link">[7]</a>, we implemented standard piecewise triangular ($\mu_{\text{tri}}$) and trapezoidal ($\mu_{\text{trap}}$) functions from scratch in Python:
       </p>
 
       <div class="math-block">
@@ -758,7 +1219,7 @@
 
       <h2 class="section-heading">4.2. Input Fuzzification: Loss Tolerance & Income Stability</h2>
       <p>
-        In financial planning, an investor's risk profile depends on both psychological readiness (willingness to accept volatility) and financial stability (ability to withstand financial shocks without liquidating assets). We model these using two normalized inputs $[0, 100]$:
+        In financial planning, an investor's risk profile depends on both psychological readiness (willingness to accept volatility) and financial stability (ability to withstand financial shocks without liquidating assets). We model these using two normalized inputs $[0, 100]$ partitioned into linguistic fuzzy sets as defined in Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx <a href="#ref7" class="cite-link">[7]</a>:
       </p>
 
       <!-- Standalone Plot 3: Loss Tolerance Fuzzification -->
@@ -792,7 +1253,7 @@
 
       <h2 class="section-heading">4.3. Gödel Min Conjunction, Implication & Centroid Defuzzification</h2>
       <p>
-        Our rule base consists of 9 linguistic IF-THEN rules designed around standard financial planning heuristics. Rule antecedents are evaluated using the Gödel Min T-Norm:
+        Our rule base consists of 9 linguistic IF-THEN rules designed around standard financial planning heuristics. In accordance with the inference pipeline in Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx <a href="#ref7" class="cite-link">[7]</a>, rule antecedents are evaluated using the Gödel Min T-Norm:
       </p>
       <div class="math-block">
         <div class="math-equation">
@@ -810,7 +1271,7 @@
       </div>
 
       <p>
-        In Mamdani min-implication, consequent fuzzy sets are truncated by their firing height: $\mu_{C'_i}(y) = \min(\alpha_i, \mu_{C_i}(y))$. The clipped sets are aggregated using the Max S-Norm $\mu_{\text{Agg}}(y) = \max_i[\min(\alpha_i, \mu_{C_i}(y))]$ and defuzzified via numerical Center-of-Gravity (Centroid):
+        In Mamdani min-implication, consequent fuzzy sets are truncated by their firing height: $\mu_{C'_i}(y) = \min(\alpha_i, \mu_{C_i}(y))$. The clipped sets are aggregated using the Max S-Norm $\mu_{\text{Agg}}(y) = \max_i[\min(\alpha_i, \mu_{C_i}(y))]$ and defuzzified via numerical Center-of-Gravity (Centroid) as specified in Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx <a href="#ref7" class="cite-link">[7]</a>:
       </p>
 
       <div class="math-block">
@@ -861,7 +1322,7 @@
 
       <h2 class="section-heading">5.2. Priority Queue Conflict Resolution</h2>
       <p>
-        To prevent rule conflicts, our forward-chaining engine uses a priority-ordered agenda ($P = 100 \dots 70$):
+        To prevent rule conflicts and enforce prudential safety standards aligning with SEBI advisory norms <a href="#ref9" class="cite-link">[9]</a>, our forward-chaining engine uses a priority-ordered agenda ($P = 100 \dots 70$):
       </p>
 
       <div class="table-container">
@@ -1185,16 +1646,15 @@
 
       <h2 class="section-heading">9.2. Academic References</h2>
       <ul class="references-list">
-        <li id="ref1">[1] N. Suchonwanich, S. Nuchitprasitchai, and K. Viriyapant, "Enhancing Personalized Financial Advisory Application with Generative AI and Chatbot: A Usability Study," in <em>Proc. 2024 8th Int. Conf. on Information Technology (InCIT)</em>, 2024, pp. 97–102. <a href="https://doi.org/10.1109/InCIT62892.2024.10777174" class="ref-doi-link" target="_blank">doi:10.1109/InCIT62892.2024.10777174</a></li>
-        <li id="ref2">[2] F. Lu, "Robo-Advising Meets Large Language Models: A Contemporary Perspective on Technology, Trust, and Regulation," <em>Journal of Financial Data Science</em>, vol. 7, no. 1, pp. 44–68, 2025. <a href="https://doi.org/10.3905/jfds.2024.1.155" class="ref-doi-link" target="_blank">doi:10.3905/jfds.2024.1.155</a></li>
-        <li id="ref3">[3] H. Markowitz, "Portfolio Selection," <em>The Journal of Finance</em>, vol. 7, no. 1, pp. 77–91, 1952. <a href="https://doi.org/10.1111/j.1540-6261.1952.tb01525.x" class="ref-doi-link" target="_blank">doi:10.1111/j.1540-6261.1952.tb01525.x</a></li>
-        <li id="ref4">[4] W. F. Sharpe, "Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk," <em>The Journal of Finance</em>, vol. 19, no. 3, pp. 425–442, 1964. <a href="https://doi.org/10.1111/j.1540-6261.1964.tb02865.x" class="ref-doi-link" target="_blank">doi:10.1111/j.1540-6261.1964.tb02865.x</a></li>
-        <li id="ref5">[5] A. Halder, A. Saxena, and S. Priya, "Stock Market Prediction Through a Chatbot: A Human-Centered AI Approach," in <em>Proc. Int. Conf. on Ubiquitous Computing and Intelligent Information Systems</em>, Springer, 2021, pp. 435–446. <a href="https://doi.org/10.1007/978-981-16-1681-5_34" class="ref-doi-link" target="_blank">doi:10.1007/978-981-16-1681-5_34</a></li>
-        <li id="ref6">[6] A. Oehler and M. Horn, "Does ChatGPT Provide Better Advice Than Robo-Advisors?," <em>Finance Research Letters</em>, vol. 60, p. 104898, 2024. <a href="https://doi.org/10.1016/j.frl.2023.104898" class="ref-doi-link" target="_blank">doi:10.1016/j.frl.2023.104898</a></li>
-        <li id="ref7">[7] W. Yuspin and M. Iksan, "Risk Aversion in the Future of Financial Advisory: Legal Protections for Robo-Advisor Users in Mutual Fund Investments," <em>J. Account. Fin. Audit. Stud.</em>, vol. 10, no. 1, pp. 28–36, 2024. <a href="https://doi.org/10.32602/jafas.2024.003" class="ref-doi-link" target="_blank">doi:10.32602/jafas.2024.003</a></li>
-        <li id="ref8">[8] L. A. Zadeh, "Fuzzy Sets," <em>Information and Control</em>, vol. 8, no. 3, pp. 338–353, 1965. <a href="https://doi.org/10.1016/S0019-9958(65)90241-X" class="ref-doi-link" target="_blank">doi:10.1016/S0019-9958(65)90241-X</a></li>
-        <li id="ref9">[9] E. H. Mamdani and S. Assilian, "An Experiment in Linguistic Synthesis with a Fuzzy Logic Controller," <em>Int. J. Man-Mach. Stud.</em>, vol. 7, no. 1, pp. 1–13, 1974. <a href="https://doi.org/10.1016/S0020-7373(74)80002-0" class="ref-doi-link" target="_blank">doi:10.1016/S0020-7373(74)80002-0</a></li>
-        <li id="ref10">[10] Securities and Exchange Board of India (SEBI), <em>Investment Advisers Regulations, 2013</em>, Mumbai, India, 2013. <a href="https://www.sebi.gov.in/legal/regulations/jan-2013/sebi-investment-advisers-regulations-2013_24483.html" class="ref-doi-link" target="_blank">sebi.gov.in/investment-advisers</a></li>
+        <li id="ref1">[1] N. Suchonwanich, S. Nuchitprasitchai, and K. Viriyapant, "Enhancing Personalized Financial Advisory Application with Generative AI and Chatbot: A Usability Study," in <em>Proc. 2024 8th Int. Conf. on Information Technology (InCIT)</em>, 2024, pp. 97–102. <a href="https://doi.org/10.1109/InCIT63192.2024.10810647" class="ref-doi-link" target="_blank">doi:10.1109/InCIT63192.2024.10810647</a></li>
+        <li id="ref2">[2] A. Halder, A. Saxena, and S. Priya, "Stock Market Prediction Through a Chatbot: A Human-Centered AI Approach," in <em>Ubiquitous Intelligent Systems (Proc. ICUIS 2022)</em>, Springer SIST, vol. 302, 2022, pp. 435–446. <a href="https://doi.org/10.1007/978-981-19-2541-2_34" class="ref-doi-link" target="_blank">doi:10.1007/978-981-19-2541-2_34</a></li>
+        <li id="ref3">[3] H. Markowitz, "Portfolio Selection," <em>The Journal of Finance</em>, vol. 7, no. 1, pp. 77–91, 1952. <a href="https://www.jstor.org/stable/2975974" class="ref-doi-link" target="_blank">jstor.org/stable/2975974</a></li>
+        <li id="ref4">[4] W. F. Sharpe, "Capital Asset Prices: A Theory of Market Equilibrium under Conditions of Risk," <em>The Journal of Finance</em>, vol. 19, no. 3, pp. 425–442, 1964. <a href="https://www.jstor.org/stable/2977928" class="ref-doi-link" target="_blank">jstor.org/stable/2977928</a></li>
+        <li id="ref5">[5] L. A. Zadeh, "Fuzzy Sets," <em>Information and Control</em>, vol. 8, no. 3, pp. 338–353, 1965. <a href="https://doi.org/10.1016/S0019-9958(65)90241-X" class="ref-doi-link" target="_blank">doi:10.1016/S0019-9958(65)90241-X</a></li>
+        <li id="ref6">[6] E. H. Mamdani and S. Assilian, "An Experiment in Linguistic Synthesis with a Fuzzy Logic Controller," <em>Int. J. Man-Mach. Stud.</em>, vol. 7, no. 1, pp. 1–13, 1975. <a href="https://doi.org/10.1016/S0020-7373(75)80002-2" class="ref-doi-link" target="_blank">doi:10.1016/S0020-7373(75)80002-2</a></li>
+        <li id="ref7">[7] IIIT Kottayam CSE311 Faculty, "Course PPT: 3.5 Fuzzy Inference - Mamdani Style.pptx," Course Lecture Material on Fuzzy Logic &amp; Inference Systems, Department of Computer Science &amp; Engineering, Indian Institute of Information Technology (IIIT) Kottayam, 2026.</li>
+        <li id="ref8">[8] Reserve Bank of India (RBI), "Monetary Policy Report &amp; Benchmark Policy Rates," Mumbai, India, 2024. <a href="https://www.rbi.org.in/" class="ref-doi-link" target="_blank">rbi.org.in</a></li>
+        <li id="ref9">[9] Securities and Exchange Board of India (SEBI), "Securities and Exchange Board of India (Investment Advisers) Regulations, 2013," Mumbai, India. <a href="https://www.sebi.gov.in/" class="ref-doi-link" target="_blank">sebi.gov.in</a></li>
       </ul>
 
     </section>

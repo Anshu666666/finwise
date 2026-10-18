@@ -1,0 +1,316 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "FinWise AI: Intelligent Financial Advisory System",
+    "output": ".archify/finwise_architecture_light.html",
+    "quality_profile": "showcase",
+    "visual_preset": "classic"
+  },
+  "components": [
+    {
+      "id": "client_browser",
+      "type": "external",
+      "label": "Investor Client",
+      "sublabel": "Browser / Mobile View",
+      "pos": [
+        40,
+        240
+      ],
+      "size": [
+        130,
+        60
+      ],
+      "tag": "HTTPS / UI"
+    },
+    {
+      "id": "frontend_ui",
+      "type": "frontend",
+      "label": "FinWise Web Client",
+      "sublabel": "HTML5 / Vanilla JS",
+      "pos": [
+        220,
+        240
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "Sliders & LaTeX"
+    },
+    {
+      "id": "ingress_proxy",
+      "type": "security",
+      "label": "DuckDNS SSL Proxy",
+      "sublabel": "HTTPS :443 / SSL Term",
+      "pos": [
+        410,
+        240
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "TLS Certificate"
+    },
+    {
+      "id": "macro_rates",
+      "type": "cloud",
+      "label": "Macro Rates Feed",
+      "sublabel": "RBI Repo 6.50% & G-Sec",
+      "pos": [
+        410,
+        90
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "Live Yields"
+    },
+    {
+      "id": "grounded_llm",
+      "type": "cloud",
+      "label": "Grounded LLM Advisor",
+      "sublabel": "DeepSeek / Gemini API",
+      "pos": [
+        410,
+        390
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "Trace Guardrails"
+    },
+    {
+      "id": "fastapi_server",
+      "type": "backend",
+      "label": "FastAPI App Server",
+      "sublabel": "REST API & Routing",
+      "pos": [
+        620,
+        240
+      ],
+      "size": [
+        150,
+        60
+      ],
+      "tag": "Uvicorn :8000"
+    },
+    {
+      "id": "fuzzy_engine",
+      "type": "backend",
+      "label": "Mamdani Fuzzy Engine",
+      "sublabel": "4 Inputs + Centroid FIS",
+      "pos": [
+        840,
+        120
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "No Cliff-Edges"
+    },
+    {
+      "id": "rule_engine",
+      "type": "backend",
+      "label": "Priority Rule Engine",
+      "sublabel": "Conflict Res. & Invariants",
+      "pos": [
+        840,
+        240
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "Sum w_i = 100%"
+    },
+    {
+      "id": "backtest_engine",
+      "type": "backend",
+      "label": "17-Yr Market Backtest",
+      "sublabel": "Historical Simulator",
+      "pos": [
+        840,
+        360
+      ],
+      "size": [
+        160,
+        60
+      ],
+      "tag": "Sharpe & Drawdown"
+    },
+    {
+      "id": "sqlite_db",
+      "type": "database",
+      "label": "SQLite Database",
+      "sublabel": "Users, Allocations, Logs",
+      "pos": [
+        1110,
+        240
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "ACID Storage"
+    },
+    {
+      "id": "market_data",
+      "type": "database",
+      "label": "Historical Datasets",
+      "sublabel": "2008-2024 Nifty & Bonds",
+      "pos": [
+        1110,
+        360
+      ],
+      "size": [
+        140,
+        60
+      ],
+      "tag": "17-Yr Indian Data"
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "FinWise Core System Boundary",
+      "wraps": [
+        "fastapi_server",
+        "fuzzy_engine",
+        "rule_engine",
+        "backtest_engine",
+        "sqlite_db",
+        "market_data"
+      ]
+    },
+    {
+      "kind": "security-group",
+      "label": "Ingress Perimeter",
+      "wraps": [
+        "frontend_ui",
+        "ingress_proxy"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "client-to-ui",
+      "from": "client_browser",
+      "to": "frontend_ui",
+      "label": "user events",
+      "variant": "emphasis"
+    },
+    {
+      "id": "ui-to-proxy",
+      "from": "frontend_ui",
+      "to": "ingress_proxy",
+      "label": "HTTPS :443",
+      "variant": "emphasis"
+    },
+    {
+      "id": "proxy-to-api",
+      "from": "ingress_proxy",
+      "to": "fastapi_server",
+      "label": "reverse proxy"
+    },
+    {
+      "id": "macro-to-api",
+      "from": "macro_rates",
+      "to": "fastapi_server",
+      "label": "live rates",
+      "fromSide": "right",
+      "toSide": "top"
+    },
+    {
+      "id": "api-to-fuzzy",
+      "from": "fastapi_server",
+      "to": "fuzzy_engine",
+      "label": "investor metrics",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "fuzzy-to-rules",
+      "from": "fuzzy_engine",
+      "to": "rule_engine",
+      "label": "raw allocations",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "rules-to-backtest",
+      "from": "rule_engine",
+      "to": "backtest_engine",
+      "label": "tested weights",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "backtest-to-data",
+      "from": "backtest_engine",
+      "to": "market_data",
+      "label": "historical data",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "rules-to-db",
+      "from": "rule_engine",
+      "to": "sqlite_db",
+      "label": "save decisions",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "api-to-llm",
+      "from": "fastapi_server",
+      "to": "grounded_llm",
+      "label": "certified trace prompt",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "right"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Continuous Mamdani FIS",
+      "items": [
+        "Continuous input modeling across 4 dimensions: Age, Horizon, Loss Tolerance, Income Stability",
+        "Zero cliff-edge boundary jumps: Smooth monotonic transitions via Centroid defuzzification",
+        "Empirically validated across 1,296-point Cartesian grid with 98.61% monotonicity"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Rule-Based Expert Invariants",
+      "items": [
+        "Priority conflict resolution strictly enforcing mathematical sum constraint (weights sum to 100%)",
+        "Mandatory 6-month liquid emergency fund allocated before speculative equity exposure",
+        "50,000 Monte Carlo test runs confirming 100% preservation of financial safety rules"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Empirical 17-Year Market Backtest",
+      "items": [
+        "Tested across 2008-2024 real Indian market data (Nifty 50, CRISIL Bonds, Physical Gold, Repo Cash)",
+        "FinWise Moderate: 10.18% CAGR, 12.19% volatility (Sharpe 0.302 vs 0.123 for pure Nifty 50)",
+        "Reduced 2008 Lehman crisis maximum drawdown from -51.80% down to -17.44%"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Grounded Conversational AI",
+      "items": [
+        "LLM responses strictly conditioned on certified deterministic rule traces",
+        "Prevents hallucinated yields, non-100% portfolio sums, or reckless debt advice",
+        "Automatic fallback to deterministic templates if external LLM APIs fail"
+      ]
+    }
+  ]
+}
