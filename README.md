@@ -8,6 +8,8 @@
 *Continuous Mamdani Fuzzy Inference • Deterministic Forward-Chaining Rule Engine • Web-Grounded PydanticAI Agent*
 
 [![Live Dashboard](https://img.shields.io/badge/LIVE%20DASHBOARD-127.0.0.1%3A8000%2Fapp%2F-15803d?style=for-the-badge&logo=fastapi&logoColor=white)](http://127.0.0.1:8000/app/)
+[![Interactive Diagram](https://img.shields.io/badge/ARCHIFY-INTERACTIVE%20DIAGRAM-0284c7?style=for-the-badge&logo=diagramsdotnet&logoColor=white)](https://anshu666666.github.io/finwise/report/finwise_architecture_light.html)
+[![Academic Report](https://img.shields.io/badge/REPORT-14--PAGE%20IEEE%20REPORT-6366f1?style=for-the-badge&logo=readme&logoColor=white)](https://anshu666666.github.io/finwise/report/finwise_ieee_report.html)
 [![Python](https://img.shields.io/badge/PYTHON-3.11%2B-1F3A8A?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Core](https://img.shields.io/badge/CORE-MAMDANI%20FIS%20%2B%20PYDANTICAI-b45309?style=for-the-badge)](fuzzy_logic/)
 [![Invariants](https://img.shields.io/badge/INVARIANTS-100%25%20PRESERVED-0E1430?style=for-the-badge)](evaluation/)
@@ -15,6 +17,8 @@
 
 ---
 
+**[🗺️ Interactive Architecture Diagram](https://anshu666666.github.io/finwise/report/finwise_architecture_light.html)** • 
+**[📄 Full Academic Report](https://anshu666666.github.io/finwise/report/finwise_ieee_report.html)** • 
 **[🌐 Live Dashboard](#-live-web-dashboard)** • 
 **[📖 Overview](#-overview)** • 
 **[📷 Visual Showcase](#-visual-showcase)** • 
@@ -228,6 +232,20 @@ FinWise AI was subjected to formal verification across 3 rigorous test suites:
 │ 3. Human CFP Concordance │ 150 Human Planner Cases     │ Directional Corr │ 97.33% (r=0.552)│
 └──────────────────────────┴─────────────────────────────┴──────────────────┴─────────────────┘
 ```
+
+---
+
+## 🗺️ System Architecture (Interactive Archify Diagram)
+
+FinWise AI is organized across a two-phase architecture: continuous linguistic inputs are processed by the **Mamdani Fuzzy Inference System** to calculate risk aversion $R^* \in [0, 100]$, which is subsequently validated against deterministic financial invariants by the **Forward-Chaining Rule Engine**.
+
+> 🌐 **Interactive Web Diagram:** [Open Live Archify Light Theme Architecture Diagram](https://anshu666666.github.io/finwise/report/finwise_architecture_light.html) *(Features live node tracing, layer isolation, and responsive pan/zoom)*.
+
+<p align="center">
+  <a href="https://anshu666666.github.io/finwise/report/finwise_architecture_light.html">
+    <img src="report/images/architecture_diagram.svg" alt="FinWise System Architecture Diagram" width="100%">
+  </a>
+</p>
 
 ---
 
